@@ -1,9 +1,54 @@
+INSTALL TARGET SYSTEM:
+
+# Compile the entire system
+$ ./rebar compile
+
+# Start Erlang with path to ebin/ of all applications
 $ erl -pa tcp_interface/ebin
-> % systools:make_script("erlymud", [local]).
-> % systools:make_script("erlymud").
-> % systools:make_tar("erlymud").
+
+# If you like, test it first; generate a local .boot / .script
+> % systools:make_script("erlymud-0.1.0", [local]).
+# ..and start the system locally
+$ erl -boot ./erlymud-0.1.0
+
+# Generate a release package and install it
 > c(target_system).
-> target_system:create("erlymud").
-> target_system:install("erlymud", "/usr/local/erlymud").
+> target_system:create("erlymud-0.1.0").
+> target_system:install("erlymud-0.1.0", "/usr/local/erlymud").
+
+# Start the target system
 $ /usr/local/erlymud/bin/start
 
+# Test it..
+$ telnet localhost 1155
+
+
+MAKE CHANGES:
+
+# Make new .rel file and move old one to oldvsn/:
+$ cp erlymud-0.1.0.rel erlymud-0.1.1.rel
+$ mv erlymud-0.1.0.rel oldvsn/
+
+# Copy old .app file(s) to oldvsn/:
+$ cp */ebin/*.app oldvsn/
+
+# Make changes, perhaps adding something in ti_app.erl
+$ vi tcp_interface/ti_app.erl
+
+
+UPGRADE TARGET SYSTEM:
+
+# Compile changes
+$ ./rebar compile
+
+# Create/modify ebin/<app_name>.appup file(s) for applications that changed
+# - for example tcp_interface/ebin/tcp_interface.appup:
+$ cat > tcp_interface/ebin/tcp_interface.appup
+{"0.1.1",
+ [{"0.1.0", [{load_module, ti_app}]}],
+ [{"0.1.0", [{load_module, ti_app}]}]
+}.
+
+# Generate relup file; note need to provide path to previous versions of .app files:
+> systools:make_relup("erlymud-0.1.1", ["erlymud-0.1.0"], ["erlymud-0.1.0"], 
+    [{path, ["oldvsn/"]}]).

@@ -4,6 +4,8 @@ syntax: glob
 *.boot
 *.beam
 *.swp
+*.tar.gz
 *~
 
+plain.*
 rel/erlymud

@@ -51,8 +51,9 @@ create(RelFileName) ->
     io:fwrite("Extracting \"~s\" into directory \"tmp\" ...~n", [TarFileName]),
     extract_tar(TarFileName, "tmp"),
 
-    io:fwrite("Creating directory \"log\" ...~n"),
-    file:make_dir(filename:join("tmp", "log")), 
+    TmpLogDir = filename:join(["tmp", "log"]),
+    io:fwrite("Creating directory \"~s\" ...~n", [TmpLogDir]),
+    file:make_dir(TmpLogDir), 
 
     TmpBinDir = filename:join(["tmp", "bin"]),
     ErtsBinDir = filename:join(["tmp", "erts-" ++ ErtsVsn, "bin"]),
@@ -92,6 +93,7 @@ create(RelFileName) ->
     erl_tar:add(Tar, "erts-" ++ ErtsVsn, []),
     erl_tar:add(Tar, "releases", []),
     erl_tar:add(Tar, "lib", []),
+    erl_tar:add(Tar, "log", []),
     erl_tar:close(Tar),
     file:set_cwd(Cwd),
     io:fwrite("Removing directory \"tmp\" ...~n"),
@@ -105,7 +107,7 @@ install(RelFileName, RootDir) ->
     extract_tar(TarFile, RootDir),
     StartErlDataFile = filename:join([RootDir, "releases", "start_erl.data"]),
     {ok, StartErlData} = read_txt_file(StartErlDataFile),
-    [ErlVsn, RelVsn| _] = string:tokens(StartErlData, " \n"),
+    [ErlVsn, _RelVsn| _] = string:tokens(StartErlData, " \n"),
     ErtsBinDir = filename:join([RootDir, "erts-" ++ ErlVsn, "bin"]),
     BinDir = filename:join([RootDir, "bin"]),
     io:fwrite("Substituting in erl.src, start.src and start_erl.src to\n"
