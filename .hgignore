@@ -1,0 +1,9 @@
+syntax: glob
+
+*.script
+*.boot
+*.beam
+*.swp
+*~
+
+rel/erlymud
