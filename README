@@ -1,0 +1,9 @@
+$ erl -pa tcp_interface/ebin
+> % systools:make_script("erlymud", [local]).
+> % systools:make_script("erlymud").
+> % systools:make_tar("erlymud").
+> c(target_system).
+> target_system:create("erlymud").
+> target_system:install("erlymud", "/usr/local/erlymud").
+$ /usr/local/erlymud/bin/start
+
