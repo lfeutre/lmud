@@ -1,0 +1,9 @@
+%% erlymud.rel
+{release,
+ {"erlymud", "0.1.1"},
+ {erts, "5.8.2"},
+ [{kernel, "2.14.2"},
+  {stdlib, "1.17.2"},
+  {sasl, "2.1.9.2"},
+  {tcp_interface, "0.1.1"}
+]}.    
