@@ -1,0 +1,24 @@
+#############################################################################
+#
+#  ErlyMUD
+#
+#############################################################################
+
+So what's this? Well, not very much at all yet.. The beginnings of a MUD
+server implemented in Erlang, written for the fun of it, and as an exercise
+for me to learn Erlang/OTP.
+
+Current status:
+
+* Will accept telnet connections on port 1155, where everything written
+  simply gets echoed back at you. Except for "quit" which, for convenience,
+  drops the connection.
+
+* Works nicely with release_manager; code upgrades can indeed happen
+  online, if there are no other factors involved that will prevent it.
+
+That's all really. Better documentation might happen sooner or later,
+if this project doesn't die off ;)
+
+
+Johan Wärlander
