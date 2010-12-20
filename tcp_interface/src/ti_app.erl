@@ -14,7 +14,7 @@ default_handler(Data, State) ->
     "" ->
       {ok, Data, State};
     _Other -> 
-      Response = Data ++ "\n",
+      Response = "ECHO: " ++ Data ++ "\n",
       {ok, Response, State}
   end.
 
