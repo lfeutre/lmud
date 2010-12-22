@@ -13,7 +13,8 @@ connect(Socket) ->
   gen_tcp:send(Socket, "User: "),
   {?MODULE, login, got_user}.
 
-login(Socket, _Data, got_user) ->
+login(Socket, UserName, got_user) ->
+  erlymud_users:add(UserName, self()),
   gen_tcp:send(Socket, "Logging in..\n\n"),
   gen_tcp:send(Socket, "You're in the Void. Type 'quit' to leave.\n"),
   gen_tcp:send(Socket, "> "),
@@ -21,6 +22,10 @@ login(Socket, _Data, got_user) ->
 
 parse(Socket, Data, State) ->
   case Data of
+    "who" ->
+      display_users(Socket),
+      gen_tcp:send(Socket, "\n> "),
+      {ok, State};
     "quit" ->
       gen_tcp:send(Socket, "Goodbye!\n"),
       done;
@@ -29,3 +34,15 @@ parse(Socket, Data, State) ->
       gen_tcp:send(Socket, "\n> "),
       {ok, State}
   end.
+
+%% Private functions
+
+display_users(Socket) ->
+  {ok, List} = erlymud_users:get(),
+  Users = [User || {User, _Pid} <- List],
+  gen_tcp:send(Socket, "Users:\n"),
+  lists:foreach(
+    fun(User) -> 
+      gen_tcp:send(Socket, " " ++ User ++ "\n") 
+    end,
+    Users).

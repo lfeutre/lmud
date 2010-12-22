@@ -25,7 +25,8 @@ start_link() ->
 %% ===================================================================
 
 init([]) ->
-  Children = [],
+  UserServer = ?CHILD(erlymud_users, worker),
+  Children = [UserServer],
   RestartStrategy = {one_for_one, 5, 10},
   {ok, {RestartStrategy, Children}}.
 
