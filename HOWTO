@@ -12,7 +12,11 @@ $ erl -pa tcp_interface/ebin
 
 # If you like, test it first; generate a local .boot / .script
 > % systools:make_script("erlymud-0.1.0", [local]).
-# ..and start the system locally
+
+# In case you get error messages related to application versions, put the
+# right versions in the .rel file
+
+# ..and then start the system locally
 $ erl -boot ./erlymud-0.1.0
 
 # Generate a release package and install it
