@@ -1,0 +1,8 @@
+{"0.1.2",
+ %% Upgrade from
+ [{"0.1.1", [{load_module, ti_app},
+             {update, ti_server, {advanced, []}, [erlymud]},
+             {load_module, ti_sup}]}],
+ %% Downgrade to
+ [{"0.1.1", [{restart_application, tcp_interface}]}]
+}.

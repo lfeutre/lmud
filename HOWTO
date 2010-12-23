@@ -11,18 +11,18 @@ $ ./rebar compile
 $ erl -pa tcp_interface/ebin
 
 # If you like, test it first; generate a local .boot / .script
-> % systools:make_script("erlymud-0.1.0", [local]).
+> % systools:make_script("erlymud-0.1.2", [local]).
 
 # In case you get error messages related to application versions, put the
 # right versions in the .rel file
 
 # ..and then start the system locally
-$ erl -boot ./erlymud-0.1.0
+$ erl -boot ./erlymud-0.1.2
 
 # Generate a release package and install it
 > c(target_system).
-> target_system:create("erlymud-0.1.0").
-> target_system:install("erlymud-0.1.0", "/usr/local/erlymud").
+> target_system:create("erlymud-0.1.2").
+> target_system:install("erlymud-0.1.2", "/usr/local/erlymud").
 
 # Start the target system
 $ /usr/local/erlymud/bin/start
@@ -38,37 +38,38 @@ $ telnet localhost 1155
 #############################################################################
 
 # Make new oldvsn directory for old version:
-$ mkdir oldvsn/0.1.0
+$ mkdir oldvsn/0.1.2
 
 # Make new .rel file and move old one to oldvsn/:
-$ cp erlymud-0.1.0.rel erlymud-0.1.1.rel
-$ hg mv erlymud-0.1.0.rel oldvsn/0.1.0/
+$ cp erlymud-0.1.2.rel erlymud-0.1.3.rel
+$ hg mv erlymud-0.1.2.rel oldvsn/0.1.2/
 
 # Update version number of new .rel file
-$ vi erlymud-0.1.1.rel
-... {"erlymud", "0.1.1"}, ...
+$ vi erlymud-0.1.3.rel
+... {"erlymud", "0.1.3"}, ...
 
-# Copy old .app / .appup file(s) to oldvsn/:
-$ cp */ebin/*.app oldvsn/0.1.0/
-$ cp */ebin/*.appup oldvsn/0.1.0/
+# Copy old .app / .appup / relup file(s) to oldvsn/:
+$ cp lib/*/ebin/*.app oldvsn/0.1.2/
+$ cp lib/*/ebin/*.appup oldvsn/0.1.2/
+$ cp relup oldvsn/0.1.2/
 
 # Make changes, perhaps adding something in ti_app.erl
 $ vi tcp_interface/ti_app.erl
 
 # Update version number of .app files in changed applications
 $ vi tcp_interface/ebin/tcp_interface.app
-... {vsn, "0.1.1"}, ...
+... {vsn, "0.1.3"}, ...
 
 # Create/modify ebin/<app_name>.appup file(s) for applications that changed
 # - for example tcp_interface/ebin/tcp_interface.appup:
 $ cat > tcp_interface/ebin/tcp_interface.appup
-{"0.1.1",
- [{"0.1.0", [{load_module, ti_app}]}],
- [{"0.1.0", [{load_module, ti_app}]}]
+{"0.1.3",
+ [{"0.1.2", [{load_module, ti_app}]}],
+ [{"0.1.2", [{load_module, ti_app}]}]
 }.
 
 # Generate relup file; note need to provide path to previous versions of .app files:
-> systools:make_relup("erlymud-0.1.1", ["erlymud-0.1.0"], ["erlymud-0.1.0"], 
+> systools:make_relup("erlymud-0.1.3", ["erlymud-0.1.2"], ["erlymud-0.1.2"], 
     [{path, ["oldvsn/*/"]}]).
 
 
@@ -82,10 +83,10 @@ $ cat > tcp_interface/ebin/tcp_interface.appup
 $ ./rebar compile
 
 # Create release package
-> target_system:create("erlymud-0.1.1").
+> target_system:create("erlymud-0.1.3").
 
 # Copy release package to target system
-$ cp erlymud-0.1.1.tar.gz /usr/local/erlymud/releases/
+$ cp erlymud-0.1.3.tar.gz /usr/local/erlymud/releases/
 
 # Connect to target system
 $ /usr/local/erlymud/bin/to_erl
@@ -94,15 +95,15 @@ Attaching to /tmp/erlang.pipe.3 (^D to exit)
 >
 
 # Unpack release package
-> release_handler:unpack_release("erlymud-0.1.1").
-{ok,"0.1.1"}
+> release_handler:unpack_release("erlymud-0.1.3").
+{ok,"0.1.3"}
 
 # Install new release
-> release_handler:install_release("0.1.1").
-{ok,"0.1.0",[]}
+> release_handler:install_release("0.1.3").
+{ok,"0.1.2",[]}
 
 # If everything is OK, make new release permanent; otherwise, 
 # the old one will be used at reboot
-> release_handler:make_permanent("0.1.1").
+> release_handler:make_permanent("0.1.3").
 ok
 
