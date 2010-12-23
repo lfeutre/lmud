@@ -2,7 +2,7 @@
 
 -behaviour(gen_server).
 
--export([start_link/1]).
+-export([start_link/1, reset_connection/3]).
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
@@ -40,8 +40,9 @@ handle_info(timeout, #state{lsock = LSock, handlers = Handlers} = State) ->
 terminate(_Reason, _State) ->
   ok.
 
-code_change(_OldVsn, State, _Extra) ->
-  {ok, State}.
+code_change(_Vsn, State, _Extra) ->
+  Handlers = [{?MODULE, reset_connection, []}],
+  {ok, State#state{handlers = Handlers}}.
 
 %% Internal functions
 handle_data(Socket, RawData, State) ->
@@ -60,4 +61,9 @@ handle_data(Socket, RawData, State) ->
     Other -> 
       {error, Other}
   end.
+
+reset_connection(Socket, _Data, _HandlerState) ->
+  gen_tcp:send(Socket, "Your connection has been upgraded; sorry for any inconvenience..\n\n"),
+  Handler = erlymud:connect(Socket),
+  {next, Handler}.
 
