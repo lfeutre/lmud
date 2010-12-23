@@ -1,4 +1,8 @@
-{"0.1.1",
- [{"0.1.0", [{load_module, ti_app}]}],
- [{"0.1.0", [{load_module, ti_app}]}]
+{"0.1.2",
+ [{"0.1.1", [{load_module, ti_app},
+             {load_module, ti_server},
+             {load_module, ti_sup}]}],
+ [{"0.1.1", [{load_module, ti_app},
+             {load_module, ti_server},
+             {load_module, ti_sup}]}]
 }.

@@ -48,8 +48,9 @@ $ hg mv erlymud-0.1.0.rel oldvsn/0.1.0/
 $ vi erlymud-0.1.1.rel
 ... {"erlymud", "0.1.1"}, ...
 
-# Copy old .app file(s) to oldvsn/:
+# Copy old .app / .appup file(s) to oldvsn/:
 $ cp */ebin/*.app oldvsn/0.1.0/
+$ cp */ebin/*.appup oldvsn/0.1.0/
 
 # Make changes, perhaps adding something in ti_app.erl
 $ vi tcp_interface/ti_app.erl
