@@ -26,7 +26,10 @@ login(Socket, Data, got_user) ->
     {error, user_exists} ->
       gen_tcp:send(Socket, "User already logged in, pick another.\n\n"),
       gen_tcp:send(Socket, "User: "),
-      {ok, got_user}
+      {ok, got_user};
+    _Other ->
+      gen_tcp:send(Socket, "Unknown error, please reconnect.\n"),
+      done
   end.
 
 parse(Socket, Data, State) ->

@@ -32,11 +32,11 @@ init([]) ->
   {ok, #state{users = dict:new()}}.
 
 handle_call({add, User, Pid}, _From, State) ->
-  case dict:is_key(User, State#state.users) of
+  UserID = string:to_lower(User),
+  case dict:is_key(UserID, State#state.users) of
     true ->
       {reply, {error, user_exists}, State};
     false ->
-      UserID = string:to_lower(User),
       Users = dict:store(UserID, Pid, State#state.users),
       {reply, ok, State#state{users = Users}}
   end;
@@ -55,7 +55,8 @@ handle_call({get, Token}, _From, State) ->
   {reply, Reply, State}.
 
 handle_cast({remove, User}, State) ->
-  Users = dict:erase(User, State#state.users),
+  UserID = string:to_lower(User),
+  Users = dict:erase(UserID, State#state.users),
   {noreply, State#state{users = Users}}.
 
 handle_info(_Msg, State) ->
