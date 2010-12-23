@@ -14,7 +14,8 @@ connect(Socket) ->
   gen_tcp:send(Socket, "User: "),
   {?MODULE, login, got_user}.
 
-login(Socket, UserName, got_user) ->
+login(Socket, Data, got_user) ->
+  UserName = capitalize(Data),
   case erlymud_users:add(UserName, Socket) of
     ok -> 
       gen_tcp:send(Socket, "Logging in..\n\n"),
@@ -31,11 +32,11 @@ login(Socket, UserName, got_user) ->
 parse(Socket, Data, State) ->
   case Data of
     "" ->
-      gen_tcp:send(Socket, "\n> "),
+      gen_tcp:send(Socket, "> "),
       {ok, State};
     "who" ->
       display_users(Socket),
-      gen_tcp:send(Socket, "\n> "),
+      gen_tcp:send(Socket, "> "),
       {ok, State};
     "quit" ->
       gen_tcp:send(Socket, "Goodbye!\n"),
@@ -44,11 +45,11 @@ parse(Socket, Data, State) ->
     Text ->
       case try_parse(Socket, Text, State) of
         ok ->
-          gen_tcp:send(Socket, "\n> "),
+          gen_tcp:send(Socket, "> "),
           {ok, State};
         {error, no_parse_match} ->
           gen_tcp:send(Socket, "From within the Void, you hear an echo.. '" ++ Text ++ "'\n"),
-          gen_tcp:send(Socket, "\n> "),
+          gen_tcp:send(Socket, "> "),
           {ok, State}
       end
   end.
@@ -66,9 +67,11 @@ try_parse(Socket, Text, State) ->
 
 try_parse_tell(Socket, [], _State) ->
   gen_tcp:send(Socket, "Syntax: tell <who> <what>\n");
-try_parse_tell(Socket, [Who | []], _State) ->
+try_parse_tell(Socket, [Token | []], _State) ->
+  Who = capitalize(Token),
   gen_tcp:send(Socket, "Tell " ++ Who ++ " what?\n");
-try_parse_tell(Socket, [Who | What], State) ->
+try_parse_tell(Socket, [Token | What], State) ->
+  Who = capitalize(Token),
   case erlymud_users:get(Who) of
     {ok, Socket} -> 
       gen_tcp:send(Socket, "Talking to yourself, huh?\n");
@@ -82,6 +85,10 @@ try_parse_tell(Socket, [Who | What], State) ->
     {error, not_found} ->
       gen_tcp:send(Socket, "No such user found.\n")
   end.
+
+capitalize(S) ->
+  F = fun([H|T]) -> [string:to_upper(H) | string:to_lower(T)] end,
+  string:join(lists:map(F, string:tokens(S, " ")), " ").
 
 display_users(Socket) ->
   {ok, List} = erlymud_users:get(),

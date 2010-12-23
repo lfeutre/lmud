@@ -36,16 +36,19 @@ handle_call({add, User, Pid}, _From, State) ->
     true ->
       {reply, {error, user_exists}, State};
     false ->
-      Users = dict:store(User, Pid, State#state.users),
+      UserID = string:to_lower(User),
+      Users = dict:store(UserID, Pid, State#state.users),
       {reply, ok, State#state{users = Users}}
   end;
 handle_call(get, _From, State) ->
-  UserList = dict:to_list(State#state.users),
+  UserList = [{capitalize(User), Pid} || {User, Pid} <- dict:to_list(State#state.users)],
   {reply, {ok, UserList}, State};
-handle_call({get, Who}, _From, State) ->
-  Reply = case dict:is_key(Who, State#state.users) of
+handle_call({get, Token}, _From, State) ->
+  UserID = string:to_lower(Token),
+  Reply = case dict:is_key(UserID, State#state.users) of
             true ->
-              {ok, dict:fetch(Who, State#state.users)};
+              Socket = dict:fetch(UserID, State#state.users),
+              {ok, Socket};
             false ->
               {error, not_found}
           end,
@@ -63,3 +66,11 @@ terminate(_Reason, _State) ->
 
 code_change(_OldVsn, State, _Extra) ->
   {ok, State}.
+
+
+%% Internal functions
+
+capitalize(S) ->
+  F = fun([H|T]) -> [string:to_upper(H) | string:to_lower(T)] end,
+  string:join(lists:map(F, string:tokens(S, " ")), " ").
+        
