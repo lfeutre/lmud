@@ -1,8 +1,10 @@
 {application,erlymud,
              [{description,"ErlyMUD Game Server"},
-              {vsn,"0.1.0"},
+              {vsn,"0.1.1"},
               {registered,[erlymud_sup]},
-              {applications,[kernel,stdlib]},
+              {applications,[kernel,stdlib,tcp_interface]},
               {mod,{erlymud_app,[]}},
               {env,[]},
-              {modules,[erlymud,erlymud_app,erlymud_sup,erlymud_users]}]}.
+              {modules,[erlymud,erlymud_app,erlymud_cmd,erlymud_room,
+                        erlymud_room_mgr,erlymud_sup,erlymud_text,
+                        erlymud_users]}]}.

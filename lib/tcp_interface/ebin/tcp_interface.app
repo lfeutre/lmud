@@ -1,6 +1,6 @@
 {application, tcp_interface,
  [{description, "Text-based TCP interface"},
-  {vsn, "0.1.2"},
+  {vsn, "0.1.3"},
   {modules, [ti_app,
              ti_sup,
              ti_server]},

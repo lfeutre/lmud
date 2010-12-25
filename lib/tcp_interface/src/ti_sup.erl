@@ -3,7 +3,7 @@
 -behaviour(supervisor).
 
 %% API
--export([start_link/1, start_child/0]).
+-export([start_link/1, start_child/1]).
 
 %% Supervisor callbacks
 -export([init/1]).
@@ -13,8 +13,8 @@
 start_link(LSock) ->
   supervisor:start_link({local, ?SERVER}, ?MODULE, [LSock]).
 
-start_child() ->
-  supervisor:start_child(?SERVER, []).
+start_child(ConnectFunc) ->
+  supervisor:start_child(?SERVER, [ConnectFunc]).
 
 init([LSock]) ->
   Server = {ti_server, {ti_server, start_link, [LSock]},
