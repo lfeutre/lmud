@@ -5,4 +5,5 @@
               {applications,[kernel,stdlib]},
               {mod,{erlymud_app,[]}},
               {env,[]},
-              {modules,[erlymud,erlymud_app,erlymud_sup,erlymud_users]}]}.
+              {modules,[erlymud,erlymud_app,erlymud_sup,erlymud_text,
+                        erlymud_users]}]}.

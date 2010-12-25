@@ -14,8 +14,9 @@ connect(Socket) ->
   gen_tcp:send(Socket, "User: "),
   {?MODULE, login, got_user}.
 
+
 login(Socket, Data, got_user) ->
-  UserName = capitalize(Data),
+  UserName = erlymud_text:capitalize(Data),
   case erlymud_users:add(UserName, Socket) of
     ok -> 
       gen_tcp:send(Socket, "Logging in..\n\n"),
@@ -57,7 +58,10 @@ parse(Socket, Data, State) ->
       end
   end.
 
+
+%% ===================================================================
 %% Private functions
+%% ===================================================================
 
 try_parse(Socket, Text, State) ->
   [Verb | Rest ] = string:tokens(Text, " "),
@@ -71,10 +75,10 @@ try_parse(Socket, Text, State) ->
 try_parse_tell(Socket, [], _State) ->
   gen_tcp:send(Socket, "Syntax: tell <who> <what>\n");
 try_parse_tell(Socket, [Token | []], _State) ->
-  Who = capitalize(Token),
+  Who = erlymud_text:capitalize(Token),
   gen_tcp:send(Socket, "Tell " ++ Who ++ " what?\n");
 try_parse_tell(Socket, [Token | What], State) ->
-  Who = capitalize(Token),
+  Who = erlymud_text:capitalize(Token),
   case erlymud_users:get(Who) of
     {ok, Socket} -> 
       gen_tcp:send(Socket, "Talking to yourself, huh?\n");
@@ -88,10 +92,6 @@ try_parse_tell(Socket, [Token | What], State) ->
     {error, not_found} ->
       gen_tcp:send(Socket, "No such user found.\n")
   end.
-
-capitalize(S) ->
-  F = fun([H|T]) -> [string:to_upper(H) | string:to_lower(T)] end,
-  string:join(lists:map(F, string:tokens(S, " ")), " ").
 
 display_users(Socket) ->
   {ok, List} = erlymud_users:get(),

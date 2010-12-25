@@ -41,7 +41,7 @@ handle_call({add, User, Pid}, _From, State) ->
       {reply, ok, State#state{users = Users}}
   end;
 handle_call(get, _From, State) ->
-  UserList = [{capitalize(User), Pid} || {User, Pid} <- dict:to_list(State#state.users)],
+  UserList = [{erlymud_text:capitalize(User), Pid} || {User, Pid} <- dict:to_list(State#state.users)],
   {reply, {ok, UserList}, State};
 handle_call({get, Token}, _From, State) ->
   UserID = string:to_lower(Token),
@@ -68,10 +68,3 @@ terminate(_Reason, _State) ->
 code_change(_OldVsn, State, _Extra) ->
   {ok, State}.
 
-
-%% Internal functions
-
-capitalize(S) ->
-  F = fun([H|T]) -> [string:to_upper(H) | string:to_lower(T)] end,
-  string:join(lists:map(F, string:tokens(S, " ")), " ").
-        
