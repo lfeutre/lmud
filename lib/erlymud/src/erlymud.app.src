@@ -1,11 +1,12 @@
 {application, erlymud,
  [
   {description, "ErlyMUD Game Server"},
-  {vsn, "0.1.0"},
+  {vsn, "0.1.1"},
   {registered, [erlymud_sup]},
   {applications, [
                   kernel,
-                  stdlib
+                  stdlib,
+                  tcp_interface
                  ]},
   {mod, {erlymud_app, []}},
   {env, []}

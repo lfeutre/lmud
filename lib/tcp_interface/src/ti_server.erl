@@ -2,18 +2,18 @@
 
 -behaviour(gen_server).
 
--export([start_link/1, reset_connection/3]).
+-export([start_link/2, reset_connection/3]).
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
--record(state, {lsock, handlers}).
+-record(state, {lsock, connectfunc, handlers}).
 
-start_link(LSock) ->
-  gen_server:start_link(?MODULE, [LSock], []).
+start_link(LSock, ConnectFunc) ->
+  gen_server:start_link(?MODULE, [LSock, ConnectFunc], []).
 
-init([LSock]) ->
-  {ok, #state{lsock = LSock, handlers = []}, 0}.
+init([LSock, ConnectFunc]) ->
+  {ok, #state{lsock = LSock, connectfunc = ConnectFunc, handlers = []}, 0}.
 
 handle_call(Msg, _From, State) ->
   {reply, {ok, Msg}, State}.
@@ -31,10 +31,11 @@ handle_info({tcp, Socket, RawData}, State) ->
   end;
 handle_info({tcp_closed, _Socket}, State) ->
   {stop, normal, State};
-handle_info(timeout, #state{lsock = LSock, handlers = Handlers} = State) ->
+handle_info(timeout, #state{lsock = LSock, connectfunc = ConnectFunc, handlers = Handlers} = State) ->
   {ok, Socket} = gen_tcp:accept(LSock),
-  ti_sup:start_child(),
-  NewHandlers = [erlymud:connect(Socket) | Handlers],
+  ti_sup:start_child(ConnectFunc),
+  {M, F, A} = ConnectFunc,
+  NewHandlers = [apply(M, F, A ++ [Socket]) | Handlers],
   {noreply, State#state{handlers = NewHandlers}}.
 
 terminate(_Reason, _State) ->

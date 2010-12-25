@@ -12,6 +12,7 @@
 start(_StartType, _StartArgs) ->
     case erlymud_sup:start_link() of
       {ok, Pid} ->
+        ti_sup:start_child({erlymud, connect, []}),
         {ok, Pid};
       Other ->
         {error, Other}

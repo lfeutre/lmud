@@ -16,7 +16,6 @@ start(_StartType, _StartArgs) ->
                                       {reuseaddr, true}]),
   case ti_sup:start_link(LSock) of
     {ok, Pid} ->
-      ti_sup:start_child(),
       {ok, Pid};
     Other ->
       {error, Other}

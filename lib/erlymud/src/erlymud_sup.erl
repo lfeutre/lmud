@@ -26,7 +26,8 @@ start_link() ->
 
 init([]) ->
   UserServer = ?CHILD(erlymud_users, worker),
-  Children = [UserServer],
+  RoomServer = ?CHILD(erlymud_room_mgr, worker),
+  Children = [UserServer, RoomServer],
   RestartStrategy = {one_for_one, 5, 10},
   {ok, {RestartStrategy, Children}}.
 
