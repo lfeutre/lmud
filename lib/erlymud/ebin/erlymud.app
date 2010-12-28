@@ -5,6 +5,6 @@
               {applications,[kernel,stdlib,tcp_interface]},
               {mod,{erlymud_app,[]}},
               {env,[]},
-              {modules,[erlymud,erlymud_app,erlymud_cmd,erlymud_room,
-                        erlymud_room_mgr,erlymud_sup,erlymud_text,
-                        erlymud_users]}]}.
+              {modules,[em_grammar,em_object,erlymud,erlymud_app,erlymud_cmd,
+                        erlymud_room,erlymud_room_mgr,erlymud_sup,
+                        erlymud_text,erlymud_user_sup,erlymud_users]}]}.
