@@ -24,7 +24,7 @@ lookup(Name) ->
 %% Gen_server callbacks
 
 init([]) ->
-  Room = erlymud_room:new("A small room", "This is a fairly small, non-descript room."),
+  Room = erlymud_room:create("A small room", "This is a fairly small, non-descript room."),
   R1 = dict:new(),
   R2 = dict:store("room1", Room, R1),
   {ok, #state{rooms = R2}}.
