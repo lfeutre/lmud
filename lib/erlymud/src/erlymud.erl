@@ -18,7 +18,8 @@ connect(Socket) ->
 
 login(Socket, Data, got_user) ->
   UserName = erlymud_text:capitalize(Data),
-  case erlymud_users:add(UserName, Socket) of
+  User = em_user:new(UserName, Socket),
+  case erlymud_users:add(UserName, User) of
     ok -> 
       gen_tcp:send(Socket, "Logging in..\n\n"),
       gen_tcp:send(Socket, "You're in the Void. Type 'quit' to leave.\n"),

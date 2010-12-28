@@ -15,6 +15,10 @@ parse(Socket, Data, State) ->
     "" ->
       gen_tcp:send(Socket, "> "),
       {ok, State};
+    "look" ->
+      display_room(Socket, State#state.userid),
+      gen_tcp:send(Socket, "> "),
+      {ok, State};
     "who" ->
       display_users(Socket),
       gen_tcp:send(Socket, "> "),
@@ -57,18 +61,28 @@ try_parse_tell(Socket, [Token | []], _State) ->
 try_parse_tell(Socket, [Token | What], State) ->
   Who = erlymud_text:capitalize(Token),
   case erlymud_users:get(Who) of
-    {ok, Socket} -> 
-      gen_tcp:send(Socket, "Talking to yourself, huh?\n");
-    {ok, OtherUser} ->
-      MyText = io_lib:format("You tell ~s, \"~s\"~n",
-        [Who, string:join(What, " ")]),
-      gen_tcp:send(Socket, MyText),
-      OtherText = io_lib:format("~s tells you, \"~s\"~n",
-        [State#state.userid, string:join(What, " ")]),
-      gen_tcp:send(OtherUser, OtherText);
+    {ok, User} ->
+      case em_user:socket(User) of
+        Socket -> 
+          gen_tcp:send(Socket, "Talking to yourself, huh?\n");
+        OtherUser ->
+          MyText = io_lib:format("You tell ~s, \"~s\"~n",
+            [Who, string:join(What, " ")]),
+          gen_tcp:send(Socket, MyText),
+          OtherText = io_lib:format("~s tells you, \"~s\"~n",
+            [State#state.userid, string:join(What, " ")]),
+          gen_tcp:send(OtherUser, OtherText)
+      end;
     {error, not_found} ->
       gen_tcp:send(Socket, "No such user found.\n")
   end.
+
+display_room(Socket, UserId) ->
+  {ok, User} = erlymud_users:get(UserId),
+  RName = em_user:room(User),
+  {ok, Room} = erlymud_room_mgr:lookup(RName),
+  Text = erlymud_room:describe(Room),
+  gen_tcp:send(Socket, Text).
 
 display_users(Socket) ->
   {ok, List} = erlymud_users:get(),
