@@ -9,8 +9,9 @@
 -export([add_article/1, number_of/2, number_word/1, pluralize/1, punctuate/1]).
 
 %% --------------------------------------------------------------------------
+%% @spec add_article(Str::string()) -> string()
 %% @doc Add 'a', 'an' to a string as appropriate
-%% @spec add_article(Str:string()) -> string()
+%% @end
 %% --------------------------------------------------------------------------
 add_article(["a"|Str]) ->
   ["an ", "a"|Str];
@@ -26,9 +27,10 @@ add_article(Str) ->
   ["a "|Str].
 
 %% --------------------------------------------------------------------------
+%% @spec number_of(Num::integer(), What::string()) -> string()
 %% @doc Handle proper pluralization in expressions like "0 bottles",
 %%      "1 bottle", "2 bottles", "3 bottles"
-%% @spec add_article(Str:string()) -> string()
+%% @end
 %% --------------------------------------------------------------------------
 number_of(1, What) ->
   "1 " ++ What;
@@ -36,9 +38,10 @@ number_of(Num, What) ->
   integer_to_list(Num) ++ " " ++ pluralize(What).
 
 %% --------------------------------------------------------------------------
+%% @spec number_word(Num::integer()) -> string()
 %% @doc Convert a number to the correct word as appropriate for use in
 %%      in-game descriptions etc
-%% @spec number_word(Num:integer()) -> string()
+%% @end
 %% --------------------------------------------------------------------------
 number_word(Num) ->
   case Num of
@@ -55,8 +58,9 @@ number_word(Num) ->
   end.
 
 %% --------------------------------------------------------------------------
+%% @spec pluralize(Str::string()) -> string()
 %% @doc Return the plural version of a given word
-%% @spec pluralize(Str:string()) -> string()
+%% @end
 %% --------------------------------------------------------------------------
 pluralize([Str|"ff"]) ->
   Str ++ "s";
@@ -68,8 +72,9 @@ pluralize(Str) ->
   Str ++ "s".
 
 %% --------------------------------------------------------------------------
+%% @spec punctuate(Str::string()) -> string()
 %% @doc Punctuate a string if it ends with a-z or A-Z
-%% @spec punctuate(Str:string()) -> string()
+%% @end
 %% --------------------------------------------------------------------------
 punctuate(Str) ->
   NewStr = string:strip(Str, right),

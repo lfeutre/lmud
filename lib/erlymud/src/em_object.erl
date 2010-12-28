@@ -17,15 +17,6 @@
 %         long/1,
         ]).
 
-%% @type object() = {object, Ids, Adjs, PId, PAdj, Short, Long, IsPlural}
-%%          Ids = [string()],
-%%          Adjs = [string()],
-%%          P_Id = string(),
-%%          P_Adj = string(),
-%%          Short = string(),
-%%          Long = String(),
-%%          IsPlural = bool().
-%%   A basic in-game object.
 -record(object, {ids=[], plurals=[], adjs=[], 
                  primary_id="", primary_adj="",
                  short="nondescript thing", long="", 
@@ -44,13 +35,15 @@
 %%      Example: 
 %%        "small wooden table" -> adjs=["small", "wooden"], ids=["table"]
 %% @spec create(Name::string()) -> object()
+%% @end
 %%---------------------------------------------------------------------------
 create(Name) ->
   set_name(#object{}, Name).
 
 %%---------------------------------------------------------------------------
 %% @doc New object with list of ids and adjs
-%% @spec create(Ids::list(), Adjs::list() -> object()
+%% @spec create(Ids::list(), Adjs::list()) -> object()
+%% @end
 %%---------------------------------------------------------------------------
 create(Ids, Adjs) ->
   resync_names(#object{ids=Ids, adjs=Adjs}).
@@ -58,6 +51,7 @@ create(Ids, Adjs) ->
 %%---------------------------------------------------------------------------
 %% @doc Add an id to the specified object
 %% @spec add_id(Ob::object(), Id::object()) -> object()
+%% @end
 %%---------------------------------------------------------------------------
 add_id(#object{ids=Ids} = Ob, Id) ->
   Ob#object{ids = Ids ++ [Id]}.
@@ -75,6 +69,7 @@ add_primary_adj(#object{adjs=Adjs} = Ob, Adj) ->
 %% @doc Set name of an object given a plain "short desc" string, will
 %%      replace any previous ids / adjs
 %% @spec set_name(Ob::object(), Name::string()) -> object()
+%% @end
 %%---------------------------------------------------------------------------
 set_name(Ob, Name) ->
   Toks = string:tokens(Name, " "),

@@ -1,8 +1,12 @@
 syntax: glob
 
-*.script
-*.boot
+edoc-info
 *.beam
+*.boot
+*.css
+*.html
+*.png
+*.script
 *.swp
 *.tar.gz
 *~
