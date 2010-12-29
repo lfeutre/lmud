@@ -3,38 +3,38 @@
 %% API
 -export([parse/3]).
 
--record(state, {userid}).
+-record(state, {userid, user}).
 
 
 %% ===================================================================
 %% Application Interface
 %% ===================================================================
 
-parse(Socket, Data, State) ->
+parse(Socket, Data, #state{userid=UserId, user=User} = State) ->
   case Data of
     "" ->
-      gen_tcp:send(Socket, "> "),
+      em_user:write(User, "> "),
       {ok, State};
     "look" ->
-      display_room(Socket, State#state.userid),
-      gen_tcp:send(Socket, "> "),
+      display_room(Socket, UserId),
+      em_user:write(User, "> "),
       {ok, State};
     "who" ->
-      display_users(Socket),
-      gen_tcp:send(Socket, "> "),
+      display_users(User),
+      em_user:write(User, "> "),
       {ok, State};
     "quit" ->
-      gen_tcp:send(Socket, "Goodbye!\n"),
-      erlymud_users:remove(State#state.userid),
+      em_user:write(User, "Goodbye!\n"),
+      erlymud_users:remove(UserId),
       done;
     Text ->
       case try_parse(Socket, Text, State) of
         ok ->
-          gen_tcp:send(Socket, "> "),
+          em_user:write(User, "> "),
           {ok, State};
         {error, no_parse_match} ->
-          gen_tcp:send(Socket, "From within the Void, you hear an echo.. '" ++ Text ++ "'\n"),
-          gen_tcp:send(Socket, "> "),
+          em_user:write(User, "From within the Void, you hear an echo.. '" ++ Text ++ "'\n"),
+          em_user:write(User, "> "),
           {ok, State}
       end
   end.
@@ -53,28 +53,25 @@ try_parse(Socket, Text, State) ->
       {error, no_parse_match}
   end.
 
-try_parse_tell(Socket, [], _State) ->
-  gen_tcp:send(Socket, "Syntax: tell <who> <what>\n");
-try_parse_tell(Socket, [Token | []], _State) ->
+try_parse_tell(Socket, [], #state{user=User} = State) ->
+  em_user:write(User, "Syntax: tell <who> <what>\n");
+try_parse_tell(Socket, [Token | []], #state{user=User} = State) ->
   Who = erlymud_text:capitalize(Token),
-  gen_tcp:send(Socket, "Tell " ++ Who ++ " what?\n");
-try_parse_tell(Socket, [Token | What], State) ->
+  em_user:write(User, "Tell " ++ Who ++ " what?\n");
+try_parse_tell(Socket, [Token | What], #state{userid=UserId, user=User} = State) ->
   Who = erlymud_text:capitalize(Token),
   case erlymud_users:get(Who) of
-    {ok, User} ->
-      case em_user:socket(User) of
-        Socket -> 
-          gen_tcp:send(Socket, "Talking to yourself, huh?\n");
-        OtherUser ->
-          MyText = io_lib:format("You tell ~s, \"~s\"~n",
-            [Who, string:join(What, " ")]),
-          gen_tcp:send(Socket, MyText),
-          OtherText = io_lib:format("~s tells you, \"~s\"~n",
-            [State#state.userid, string:join(What, " ")]),
-          gen_tcp:send(OtherUser, OtherText)
-      end;
     {error, not_found} ->
-      gen_tcp:send(Socket, "No such user found.\n")
+      em_user:write(User, "No such user found.\n");
+    {ok, User} -> 
+      em_user:write(User, "Talking to yourself, huh?\n");
+    {ok, OtherUser} ->
+      MyText = io_lib:format("You tell ~s, \"~s\"~n",
+        [Who, string:join(What, " ")]),
+      em_user:write(User, MyText),
+      OtherText = io_lib:format("~s tells you, \"~s\"~n",
+        [UserId, string:join(What, " ")]),
+      em_user:write(OtherUser, OtherText)
   end.
 
 display_room(Socket, UserId) ->
@@ -82,14 +79,14 @@ display_room(Socket, UserId) ->
   RName = em_user:room(User),
   {ok, Room} = erlymud_room_mgr:lookup(RName),
   Text = erlymud_room:describe(Room),
-  gen_tcp:send(Socket, Text).
+  em_user:write(User, Text).
 
-display_users(Socket) ->
+display_users(User) ->
   {ok, List} = erlymud_users:get(),
-  Users = [User || {User, _Pid} <- List],
-  gen_tcp:send(Socket, "Users:\n"),
+  Users = [U || {U, _Pid} <- List],
+  em_user:write(User, "Users:\n"),
   lists:foreach(
-    fun(User) -> 
-      gen_tcp:send(Socket, " " ++ User ++ "\n") 
+    fun(U) -> 
+      em_user:write(User, " " ++ U ++ "\n") 
     end,
     Users).

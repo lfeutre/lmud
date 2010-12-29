@@ -3,7 +3,7 @@
 %% API
 -export([connect/1, login/3]).
 
--record(state, {userid}).
+-record(state, {userid, user}).
 
 
 %% ===================================================================
@@ -11,27 +11,28 @@
 %% ===================================================================
 
 connect(Socket) ->
-  gen_tcp:send(Socket, "\n\nWelcome to ErlyMUD!\n\n"),
-  gen_tcp:send(Socket, "User: "),
-  {?MODULE, login, got_user}.
+  User = em_user:new("Unknown", Socket),
+  em_user:write(User, "\n\nWelcome to ErlyMUD!\n\n"),
+  em_user:write(User, "User: "),
+  {?MODULE, login, {got_user, User}}.
 
 
-login(Socket, Data, got_user) ->
+login(Socket, Data, {got_user, AnonUser}) ->
   UserName = erlymud_text:capitalize(Data),
-  User = em_user:new(UserName, Socket),
+  User = em_user:set_name(AnonUser, UserName),
   case erlymud_users:add(UserName, User) of
     ok -> 
-      gen_tcp:send(Socket, "Logging in..\n\n"),
-      gen_tcp:send(Socket, "You're in the Void. Type 'quit' to leave.\n"),
-      gen_tcp:send(Socket, " (hint: you can try 'who' and 'tell' as well..)\n"),
-      gen_tcp:send(Socket, "> "),
-      {next, {erlymud_cmd, parse, #state{userid = UserName}}};
+      em_user:write(User, "Logging in..\n\n"),
+      em_user:write(User, "You're in the Void. Type 'quit' to leave.\n"),
+      em_user:write(User, " (hint: you can try 'who' and 'tell' as well..)\n"),
+      em_user:write(User, "> "),
+      {next, {erlymud_cmd, parse, #state{userid = UserName, user = User}}};
     {error, user_exists} ->
-      gen_tcp:send(Socket, "User already logged in, pick another.\n\n"),
-      gen_tcp:send(Socket, "User: "),
+      em_user:write(User, "User already logged in, pick another.\n\n"),
+      em_user:write(User, "User: "),
       {ok, got_user};
     _Other ->
-      gen_tcp:send(Socket, "Unknown error, please reconnect.\n"),
+      em_user:write(User, "Unknown error, please reconnect.\n"),
       done
   end.
 
