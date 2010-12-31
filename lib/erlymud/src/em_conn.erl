@@ -50,11 +50,15 @@ handle_info({tcp, Socket, RawData}, State) ->
 handle_info({tcp_closed, _Socket}, State) ->
   {stop, normal, State};
 handle_info(timeout, #state{lsock=LSock}=State) ->
-  {ok, Socket} = gen_tcp:accept(LSock),
-  em_conn_sup:start_child(),
-  welcome(Socket),
-  Handlers=[{?MODULE, login, [got_user]}],
-  {noreply, State#state{socket=Socket, handlers=Handlers}}.
+  case gen_tcp:accept(LSock) of
+    {ok, Socket} ->
+      em_conn_sup:start_child(),
+      welcome(Socket),
+      Handlers=[{?MODULE, login, [got_user]}],
+      {noreply, State#state{socket=Socket, handlers=Handlers}};
+    {error, closed} ->
+      {stop, normal, State}
+  end.
 
 terminate(_Reason, _State) ->
   ok.

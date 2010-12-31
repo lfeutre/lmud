@@ -5,4 +5,3 @@ ErlyMUD TODO
   separately? Would be useful in 'tell' etc.
 * Add more specific print_except() function to em_room? Will take a list
   of livings to exclude.. This one's often used.
-* Check where we get {error, closed} but try to match something else
