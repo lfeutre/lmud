@@ -40,7 +40,7 @@ leave(Room, Who) ->
   gen_server:call(Room, {leave, Who}).
 
 print_while(Room, Pred, Format, Args) ->
-  gen_server:cast(Room, {print_while, Pred, Format, Args}).
+  gen_server:call(Room, {print_while, Pred, Format, Args}).
 
 % --
 
@@ -64,12 +64,14 @@ handle_call({describe_except, User}, _From, State) ->
 handle_call({enter, Who}, _From, #state{people=People} = State) ->
   {reply, ok, State#state{people=[Who|People]}};
 handle_call({leave, Who}, _From, #state{people=People} = State) ->
-  {reply, ok, State#state{people=People -- [Who]}}.
-
-handle_cast({print_while, Pred, Format, Args}, State) ->
+  {reply, ok, State#state{people=People -- [Who]}};
+handle_call({print_while, Pred, Format, Args}, _From, State) ->
   People = lists:filter(Pred, State#state.people),
   PrintFun = fun(Liv) -> em_living:print(Liv, Format, Args) end,
   lists:map(PrintFun, People),
+  {reply, ok, State}.
+
+handle_cast(_Msg, State) ->
   {noreply, State}.
 
 handle_info(_Info, State) ->
