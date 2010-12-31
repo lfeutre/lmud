@@ -105,7 +105,11 @@ login(got_user, Name) ->
   UserName = em_text:capitalize(Name),
   case em_game:login(UserName, self()) of
     {ok, User} ->
-      print(self(), "> "),
+      NotMe = fun(Liv) -> Liv =/= User end,
+      em_game:print_while(NotMe, "[Notice] ~s has logged in.~n", [UserName]),
+      print(self(), "\n"),
+      em_living:cmd(User, "look"),
+      print(self(), "\n> "),
       {next, {?MODULE, parse, [User]}};
     {error, user_exists} ->
       print(self(), "User already logged in, try again.\n\n"),

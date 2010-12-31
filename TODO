@@ -10,4 +10,4 @@ ErlyMUD TODO
   logs in to the game.
 * Add more specific print_except() function to em_room? Will take a list
   of livings to exclude.. This one's often used.
-
+* Make all print functions calls, not casts

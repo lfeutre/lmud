@@ -4,7 +4,7 @@
 
 %% API
 -export([start_link/0, start/0, get_rooms/0, get_users/0, login/2, logout/1,
-         lookup_user/1]).
+         lookup_user/1, lookup_user_pid/1, print_while/3]).
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, 
          terminate/2, code_change/3]).
@@ -37,6 +37,12 @@ logout(User) ->
 lookup_user(Name) ->
   gen_server:call(?SERVER, {lookup_user, Name}).
 
+lookup_user_pid(Pid) ->
+  gen_server:call(?SERVER, {lookup_user_pid, Pid}).
+
+print_while(Pred, Format, Args) ->
+  gen_server:call(?SERVER, {print_while, Pred, Format, Args}).
+
 %% gen_server callbacks
 
 init([]) ->
@@ -60,12 +66,26 @@ handle_call({login, Name, Client}, _From, State) ->
 handle_call({logout, User}, _From, State) ->
   {Result, NewState} = do_logout(User, State),
   {reply, Result, NewState};
-handle_call({lookup_user, Name}, _From, #state{users=Users}=State) ->
+handle_call({lookup_user, Name}, _From, #state{users=Users}=State) 
+    when is_list(Name) ->
   Result = case lists:keyfind(em_text:capitalize(Name), 1, Users) of
              false -> {error, not_found};
              UserTuple -> {ok, UserTuple}
            end,
-  {reply, Result, State}.
+  {reply, Result, State};
+handle_call({lookup_user_pid, Pid}, _From, #state{users=Users}=State) 
+    when is_pid(Pid) ->
+  Result = case lists:keyfind(Pid, 2, Users) of
+             false -> {error, not_found};
+             UserTuple -> {ok, UserTuple}
+           end,
+  {reply, Result, State};
+handle_call({print_while, Pred, Format, Args}, _From, State) ->
+  Pids = [Pid || {_User, Pid} <- State#state.users],
+  ToPids = lists:filter(Pred, Pids),
+  PrintFun = fun(Pid) -> em_living:print(Pid, Format, Args) end,
+  lists:map(PrintFun, ToPids),
+  {reply, ok, State}.
 
 handle_cast(_Msg, State) ->
   {noreply, State}.

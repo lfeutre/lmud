@@ -11,7 +11,7 @@
 
 %% game commands
 -export([cmd_look/2, cmd_north/2, cmd_east/2, cmd_south/2, cmd_west/2,
-         cmd_quit/2, cmd_say/2, cmd_tell/2, cmd_who/2]).
+         cmd_go/2, cmd_quit/2, cmd_say/2, cmd_tell/2, cmd_who/2]).
 
 -record(state, {name, room, client}).
 
@@ -103,10 +103,8 @@ cmd_quit(_Args, State) ->
   {stop, State}.
 
 cmd_look(_Args, #state{room=Room}=State) ->
-  Desc = em_room:describe(Room),
-  Exits = em_room:get_exits(Room),
-  ExitLine = lists:foldl(fun({Dir,_}, Str) -> [Str, Dir, " "] end, "", Exits), 
-  print(self(), [Desc, "Exits: ", ExitLine, "\n"]),
+  Desc = em_room:describe_except(Room, self()),
+  print(self(), Desc),
   {ok, State}.
 
 cmd_north(_Args, State) ->
@@ -124,10 +122,14 @@ cmd_go([Dir|_Args], #state{room=Room}=State) ->
 do_go({error, not_found}, State) ->
   print(self(), "You can't go in that direction.\n"),
   State;
-do_go({ok, {Dir, Dest}}, #state{room=Room}=State) ->
-  print(self(), "You leave " ++ Dir ++ ".\n"),
+do_go({ok, {Dir, Dest}}, #state{name=Name, room=Room}=State) ->
+  print(self(), "You leave " ++ Dir ++ ".\n\n"),
+  Me = self(),
+  NotMe = fun(Liv) -> Liv =/= Me end,
+  em_room:print_while(Room, NotMe, "~s leaves ~s.~n", [Name, Dir]),
   em_room:leave(Room, self()),
   em_room:enter(Dest, self()),
+  em_room:print_while(Dest, NotMe, "~s arrives.~n", [Name]),
   {ok, NewState} = cmd_look([], State#state{room=Dest}),
   NewState.
 

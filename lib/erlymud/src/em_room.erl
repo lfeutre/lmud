@@ -3,7 +3,7 @@
 -behaviour(gen_server).
 
 -export([start_link/2, start/2, add_exit/3, get_exit/2, get_exits/1, 
-         describe/1, enter/2, leave/2, print_while/4]).
+         describe/1, describe_except/2, enter/2, leave/2, print_while/4]).
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, 
          terminate/2, code_change/3]).
@@ -30,6 +30,9 @@ get_exits(Room) ->
 describe(Room) ->
   gen_server:call(Room, describe).
 
+describe_except(Room, User) ->
+  gen_server:call(Room, {describe_except, User}).
+
 enter(Room, Who) ->
   gen_server:call(Room, {enter, Who}).
 
@@ -54,9 +57,10 @@ handle_call({get_exit, Dir}, _From, #state{exits=Exits} = State) ->
   {reply, Response, State};
 handle_call(get_exits, _From, #state{exits=Exits} = State) ->
   {reply, Exits, State};
-handle_call(describe, _From, #state{title=Title, desc=Desc} = State) ->
-  Response = [Title, "\n", Desc, "\n"],
-  {reply, Response, State};
+handle_call(describe, _From, State) ->
+  {reply, do_describe(State), State};
+handle_call({describe_except, User}, _From, State) ->
+  {reply, do_describe_except(User, State), State};
 handle_call({enter, Who}, _From, #state{people=People} = State) ->
   {reply, ok, State#state{people=[Who|People]}};
 handle_call({leave, Who}, _From, #state{people=People} = State) ->
@@ -77,3 +81,20 @@ terminate(_Reason, _State) ->
 code_change(_OldVsn, State, _Extra) ->
   {ok, State}.
 
+%% Internal functions
+
+do_describe(#state{title=Title, desc=Desc, people=People, exits=Exits}) ->
+  [Title, "\n", Desc, "\n", 
+   "Exits: ", [Dir || {Dir, _Dest} <- Exits], "\n",
+    list_people(People)].
+
+do_describe_except(User, #state{people=People}=State) ->
+  do_describe(State#state{people = People -- [User]}).
+
+list_people([]) ->
+  "";
+list_people(People) ->
+  GetName = fun(Pid) -> {ok, {Name, _Pid}} = em_game:lookup_user_pid(Pid), Name end,
+  Names = lists:map(GetName, People),
+  ["\n", [[N, " is here.\n"] || N <- Names]].
+  
