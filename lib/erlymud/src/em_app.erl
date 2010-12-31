@@ -1,4 +1,4 @@
--module(erlymud_app).
+-module(em_app).
 
 -behaviour(application).
 
@@ -10,9 +10,10 @@
 %% ===================================================================
 
 start(_StartType, _StartArgs) ->
-    case erlymud_sup:start_link() of
+    case em_sup:start_link() of
       {ok, Pid} ->
-        ti_sup:start_child({erlymud, connect, []}),
+        % Allow connections
+        em_conn_sup:start_child(),
         {ok, Pid};
       Other ->
         {error, Other}

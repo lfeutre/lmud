@@ -1,4 +1,4 @@
--module(erlymud_text).
+-module(em_text).
 
 -export([capitalize/1]).
 

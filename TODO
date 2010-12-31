@@ -1,0 +1,13 @@
+ErlyMUD TODO
+============
+
+* Fix TCP input handling so that original case of input line is preserved
+  separately? Would be useful in 'tell' etc.
+* Modify 'look' so you see other people in the same room.
+* Modify movement commands (north/east/south/west) so they display
+  a message to the room as well when someone leaves or enters.
+* Modify em_game:login() to display a message to the room when someone
+  logs in to the game.
+* Add more specific print_except() function to em_room? Will take a list
+  of livings to exclude.. This one's often used.
+
