@@ -63,7 +63,10 @@ handle_cast(stop, #state{client=Client}=State) ->
 handle_info(_Info, State) ->
   {noreply, State}.
 
-terminate(_Reason, _State) ->
+terminate(_Reason, #state{room=Room}) ->
+  % cleanup, in case we crashed..
+  em_game:logout(self()),
+  em_room:leave(Room, self()),
   ok.
 
 code_change(_OldVsn, State, _Extra) ->
