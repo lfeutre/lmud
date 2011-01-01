@@ -1,0 +1,11 @@
+{"0.2.1",
+ [{"0.2.0",[],
+   [{load_object_code,{erlymud,"0.2.1",[em_conn,em_living]}},
+    point_of_no_return,
+    {load,{em_conn,brutal_purge,brutal_purge}},
+    {load,{em_living,brutal_purge,brutal_purge}}]}],
+ [{"0.2.0",[],
+   [{load_object_code,{erlymud,"0.2.0",[em_conn,em_living]}},
+    point_of_no_return,
+    {load,{em_conn,brutal_purge,brutal_purge}},
+    {load,{em_living,brutal_purge,brutal_purge}}]}]}.

@@ -1,6 +1,6 @@
 {application,erlymud,
              [{description,"ErlyMUD Game Server"},
-              {vsn,"0.2.2"},
+              {vsn,"0.2.1"},
               {registered,[em_sup]},
               {applications,[kernel,stdlib]},
               {mod,{em_app,[]}},
