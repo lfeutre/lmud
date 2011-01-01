@@ -5,3 +5,7 @@ ErlyMUD TODO
   separately? Would be useful in 'tell' etc.
 * Add more specific print_except() function to em_room? Will take a list
   of livings to exclude.. This one's often used.
+* Separate process for output? To be able to use call for print, but avoid
+  locks due to being in input processing phase..
+* Implement passwords and savefiles?
+* Make the em_conn be the "user"?
