@@ -40,6 +40,8 @@ stop(Pid) ->
 % gen_server callbacks
 
 init([Name, Room, Client]) ->
+  % Needed so that we can do cleanup in terminate() when shutting down
+  process_flag(trap_exit, true),
   {ok, #state{name=Name, room=Room, client=Client}}.
 
 handle_call({cmd, Line}, _From, State) ->

@@ -17,8 +17,10 @@ start_child(Name, Room, Client) ->
   supervisor:start_child(?SERVER, [Name, Room, Client]).
 
 init([]) ->
+  % Allow 2000ms for em_living to clean up; removing itself
+  % from the game world..
   Living = {em_living, {em_living, start_link, []},
-            temporary, brutal_kill, worker, [em_living]},
+            temporary, 2000, worker, [em_living]},
   Children = [Living],
   RestartStrategy = {simple_one_for_one, 0, 1},
   {ok, {RestartStrategy, Children}}.
