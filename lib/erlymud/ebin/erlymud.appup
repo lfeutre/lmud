@@ -1,0 +1,6 @@
+{"0.2.1",
+  [{"0.2.0", [{load_module, em_conn},
+              {load_module, em_living}]}],
+  [{"0.2.0", [{load_module, em_conn},
+              {load_module, em_living}]}]
+}.

@@ -102,7 +102,7 @@ reset_connection(Socket, _Data) ->
 %% Input handling on a higher level; "shell" stuff etc
 
 welcome(Socket) ->
-  gen_tcp:send(Socket, "\nWelcome to ErlyMUD 0.2.0\n\n"),
+  gen_tcp:send(Socket, "\nWelcome to ErlyMUD 0.2.1\n\n"),
   gen_tcp:send(Socket, "Login: ").
 
 login(got_user, Name) ->
