@@ -31,10 +31,10 @@ handle_call(Msg, _From, State) ->
   {reply, {ok, Msg}, State}.
 
 handle_cast({print, Format}, #state{socket=Socket}=State) ->
-  gen_tcp:send(Socket, io_lib:format(Format, [])),
+  write(Socket, Format),
   {noreply, State};
 handle_cast({print, Format, Args}, #state{socket=Socket}=State) ->
-  gen_tcp:send(Socket, io_lib:format(Format, Args)),
+  write(Socket, Format, Args),
   {noreply, State};
 handle_cast(stop, State) ->
   {stop, normal, State}.
@@ -70,6 +70,13 @@ code_change(_Vsn, #state{socket=Socket}=State, _Extra) ->
 
 %% Internal functions
 
+write(Socket, Format) ->
+  write(Socket, Format, []).
+
+write(Socket, Format, Args) ->
+  Output = em_text:colorize(Format),
+  gen_tcp:send(Socket, io_lib:format(Output, Args)).
+
 input_cleanup(RawData) ->
   string:to_lower(string:strip(strip_linefeed(RawData), both)).
 
@@ -94,7 +101,7 @@ handle_data(_Socket, RawData, State) ->
   end.
 
 reset_connection(Socket, _Data) ->
-  gen_tcp:send(Socket, "Your connection has been upgraded; sorry for any inconvenience..\n\n"),
+  write(Socket, "Your connection has been upgraded; sorry for any inconvenience..\n\n"),
   welcome(Socket),
   Handler = {?MODULE, login, [got_user]},
   {next, Handler}.
@@ -102,8 +109,8 @@ reset_connection(Socket, _Data) ->
 %% Input handling on a higher level; "shell" stuff etc
 
 welcome(Socket) ->
-  gen_tcp:send(Socket, "\nWelcome to ErlyMUD 0.2.2\n\n"),
-  gen_tcp:send(Socket, "Login: ").
+  write(Socket, "\nWelcome to ErlyMUD 0.2.2\n\n"),
+  write(Socket, "Login: ").
 
 login(got_user, Name) ->
   UserName = em_text:capitalize(Name),

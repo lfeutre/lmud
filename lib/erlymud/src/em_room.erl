@@ -86,12 +86,22 @@ code_change(_OldVsn, State, _Extra) ->
 %% Internal functions
 
 do_describe(#state{title=Title, desc=Desc, people=People, exits=Exits}) ->
-  [Title, "\n", Desc, "\n", 
-   "Exits: ", [Dir || {Dir, _Dest} <- Exits], "\n",
+  ["%^ROOM_TITLE%^", Title, "%^RESET%^\n", Desc, "\n", 
+   "%^ROOM_EXITS%^[Exits: ", list_exits(Exits), "]%^RESET%^\n",
     list_people(People)].
 
 do_describe_except(User, #state{people=People}=State) ->
   do_describe(State#state{people = People -- [User]}).
+
+list_exits(Exits) ->
+  list_exits([Dir || {Dir, _Dest} <- Exits], []).
+
+list_exits([], ExitList) ->
+  ExitList;
+list_exits([Exit], ExitList) ->
+  ExitList ++ Exit;
+list_exits([Exit|Exits], ExitList) ->
+  list_exits(Exits, ExitList ++ [Exit,", "]).
 
 list_people([]) ->
   "";

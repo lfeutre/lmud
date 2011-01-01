@@ -10,6 +10,7 @@
 -define(INVERSE_OFF,"\e[27m").
 -define(STRIKETRU_OFF,"\e[29m").
 -define(F_BLACK,"\e[30m").
+-define(F_GREY,?BOLD_ON++?F_BLACK).
 -define(F_RED,"\e[31m").
 -define(F_GREEN,"\e[32m").
 -define(F_YELLOW,"\e[33m").
@@ -29,7 +30,7 @@
 -define(B_DEFAULT,"\e[49m").
 -define(bold(X),?BOLD_ON++X++?BOLD_OFF).
 -define(italic(X),?ITALIC_ON++X++?ITALIC_OFF).
--define(with_reset(X),X++?F_DEFAULT++?B_DEFAULT).
+-define(with_reset(X),X++?RESET).
 -define(red(X),?with_reset(?F_RED++X)).
 -define(blue(X),?with_reset(?F_BLUE++X)).
 -define(green(X),?with_reset(?F_GREEN++X)).

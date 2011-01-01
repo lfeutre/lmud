@@ -54,7 +54,12 @@ init([]) ->
       "This dark, damp corridor continues to the north and south."),
   em_room:add_exit(R1, "east", R2),
   em_room:add_exit(R2, "west", R1),
-  {ok, #state{rooms=[R1, R2]}}.
+  {ok, R3} = em_room_sup:start_child(
+      "A long, dark corridor", 
+      "This dark, damp corridor continues to the north and south."),
+  em_room:add_exit(R2, "north", R3),
+  em_room:add_exit(R3, "south", R2),
+  {ok, #state{rooms=[R1, R2, R3]}}.
 
 handle_call(get_rooms, _From, #state{rooms=Rooms}=State) ->
   {reply, Rooms, State};
