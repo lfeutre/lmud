@@ -18,7 +18,7 @@ start_child() ->
   supervisor:start_child(?SERVER, []).
 
 init([]) ->
-  Port = case application:get_env(tcp_interface, port) of
+  Port = case application:get_env(port) of
            {ok, P} -> P;
            undefined -> ?DEFAULT_PORT
          end,
