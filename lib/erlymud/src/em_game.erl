@@ -3,8 +3,11 @@
 -behaviour(gen_server).
 
 %% API
--export([start_link/0, start/0, get_rooms/0, get_users/0, login/2, logout/1,
-         lookup_user/1, lookup_user_pid/1, print_while/3]).
+-export([start_link/0, start/0, 
+         add_rooms/1, get_rooms/0, 
+         get_users/0, lookup_user/1, lookup_user_pid/1,
+         login/2, logout/1,
+         print_while/3]).
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, 
          terminate/2, code_change/3]).
@@ -21,6 +24,9 @@ start_link() ->
 
 start() ->
   gen_server:start({local, ?SERVER}, ?MODULE, [], []).
+
+add_rooms(Rooms) ->
+  gen_server:call(?SERVER, {add_rooms, Rooms}).
 
 get_rooms() ->
   gen_server:call(?SERVER, get_rooms).
@@ -46,21 +52,10 @@ print_while(Pred, Format, Args) ->
 %% gen_server callbacks
 
 init([]) ->
-  {ok, R1} = em_room_sup:start_child(
-      "A small room", 
-      "This is a small, rather non-descript room. To the east is a corridor."),
-  {ok, R2} = em_room_sup:start_child(
-      "A long, dark corridor", 
-      "This dark, damp corridor continues to the north and south."),
-  em_room:add_exit(R1, "east", R2),
-  em_room:add_exit(R2, "west", R1),
-  {ok, R3} = em_room_sup:start_child(
-      "A long, dark corridor", 
-      "This dark, damp corridor continues to the north and south."),
-  em_room:add_exit(R2, "north", R3),
-  em_room:add_exit(R3, "south", R2),
-  {ok, #state{rooms=[R1, R2, R3]}}.
+  {ok, #state{}}.
 
+handle_call({add_rooms, NewRooms}, _From, #state{rooms=Rooms}=State) ->
+  {reply, ok, State#state{rooms = Rooms ++ NewRooms}};
 handle_call(get_rooms, _From, #state{rooms=Rooms}=State) ->
   {reply, Rooms, State};
 handle_call(get_users, _From, #state{users=Users}=State) ->
