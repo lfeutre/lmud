@@ -104,8 +104,10 @@ parse(Line, #state{client={_,Out}}=State) ->
 
 %% Game commands
 
-cmd_quit(_Args, #state{client={_,Out}}=State) ->
+cmd_quit(_Args, #state{name=Name, client={_,Out}, room=Room}=State) ->
   em_output:print(Out, "Goodbye!\n"),
+  em_game:print_except(self(), "[Notice] ~s has logged out.~n", [Name]),
+  em_room:print_except(Room, self(), "~s has left.~n", [Name]),
   ok = em_game:logout(self()),
   {stop, State}.
 

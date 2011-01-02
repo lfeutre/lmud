@@ -3,7 +3,8 @@
 -behaviour(gen_server).
 
 -export([start_link/2, start/2, add_exit/3, get_exit/2, get_exits/1, 
-         describe/1, describe_except/2, enter/2, leave/2, print_while/4]).
+         describe/1, describe_except/2, enter/2, leave/2, 
+         print_except/4, print_while/4]).
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, 
          terminate/2, code_change/3]).
@@ -38,6 +39,10 @@ enter(Room, Who) ->
 
 leave(Room, Who) ->
   gen_server:call(Room, {leave, Who}).
+
+print_except(Room, User, Format, Args) ->
+  Pred = fun(L) -> User =/= L end,
+  print_while(Room, Pred, Format, Args).
 
 print_while(Room, Pred, Format, Args) ->
   gen_server:call(Room, {print_while, Pred, Format, Args}).

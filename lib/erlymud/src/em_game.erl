@@ -7,7 +7,7 @@
          add_rooms/1, get_rooms/0, 
          get_users/0, lookup_user/1, lookup_user_pid/1,
          login/2, logout/1,
-         print_while/3]).
+         print_except/3, print_while/3]).
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, 
          terminate/2, code_change/3]).
@@ -45,6 +45,10 @@ lookup_user(Name) ->
 
 lookup_user_pid(Pid) ->
   gen_server:call(?SERVER, {lookup_user_pid, Pid}).
+
+print_except(User, Format, Args) ->
+  Pred = fun(U) -> U =/= User end,
+  print_while(Pred, Format, Args).
 
 print_while(Pred, Format, Args) ->
   gen_server:call(?SERVER, {print_while, Pred, Format, Args}).
@@ -112,6 +116,7 @@ do_login(Name, Client, #state{users=Users,rooms=[Room|_Rooms]}=State) ->
       case em_living_sup:start_child(Name, Room, Client) of
         {ok, User} ->
           em_room:enter(Room, User),
+          em_room:print_except(Room, User, "~s has arrived.~n", [Name]),
           {{ok, User}, State#state{users=[{Name, User}|Users]}};
         Error ->
           {Error, State}

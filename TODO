@@ -6,8 +6,6 @@ ErlyMUD TODO
 * Hide password input during login
 * Fix TCP input handling so that original case of input line is preserved
   separately, useful in 'tell' etc.
-* Make entering / leaving the game show in the room
-* Make leaving the game announce to everyone as a notice
 
 Future
 ------
