@@ -107,6 +107,11 @@ welcome(Out) ->
   em_output:print(Out, "\nWelcome to ErlyMUD 0.2.2\n\n"),
   em_output:print(Out, "Login: ").
 
+%% Got a username, do something with it
+login(got_user, "", #state{output=Out}) ->
+  em_output:print(Out, "Invalid username.\n\n"),
+  em_output:print(Out, "Login: "),
+  {ok, [got_user]};
 login(got_user, Name, #state{output=Out}) ->
   UserName = em_text:capitalize(Name),
   UserFile = filename:join([code:priv_dir(erlymud), "users",
@@ -116,29 +121,50 @@ login(got_user, Name, #state{output=Out}) ->
       em_output:print(Out, "Password: "),
       {ok, [{got_password, Settings, UserName}]};
     {error, _Reason} ->
-      em_output:print(Out, "New user account.\n\n"),
-      em_output:print(Out, "Pick a password: "),
-      {ok, [{new_user_pw, UserName}]}
+      em_output:print(Out, "New user account \"~s\".\n", [UserName]),
+      em_output:print(Out, "Are you sure (Y/N)? "),
+      {ok, [{new_user_confirm, UserName}]}
   end;
+%% It's a new user, confirm if name is correct
+login({new_user_confirm, Name}, "y", #state{output=Out}) ->
+  em_output:print(Out, "\nPick a password: "),
+  {ok, [{new_user_pw, Name}]};
+login({new_user_confirm, Name}, "yes", #state{output=Out}) ->
+  em_output:print(Out, "\nPick a password: "),
+  {ok, [{new_user_pw, Name}]};
+login({new_user_confirm, _Name}, _Other, #state{output=Out}) ->
+  em_output:print(Out, "\nLogin: "),
+  {ok, [got_user]};
+%% Pick a password for new user account
+login({new_user_pw, Name}, "", #state{output=Out}) ->
+  em_output:print(Out, "Invalid password.\n\n"),
+  em_output:print(Out, "Pick a password: "),
+  {ok, [{new_user_pw, Name}]};
 login({new_user_pw, Name}, Password, #state{output=Out}) ->
   em_output:print(Out, "Repeat the password: "),
   {ok, [{new_user_pw_confirm, Name, Password}]};
+%% Confirm the password
 login({new_user_pw_confirm, Name, Password}, Password, #state{output=Out}) ->
   UserFile = filename:join([code:priv_dir(erlymud), "users", [Name, ".dat"]]),
-  file:write_file(UserFile, lists:flatten(["{password, \"", Password, "\"}.\n"])),
+  CryptPw = base64:encode_to_string(crypto:sha(Password)),
+  file:write_file(UserFile, lists:flatten([
+    "{version, 1}.\n",
+    "{password, \"", CryptPw, "\"}.\n"])),
   em_output:print(Out, ["\nWelcome, ", Name, "!\n\n"]),
   do_login(Name, Out);
 login({new_user_pw_confirm, Name, _Password}, _WrongPassword, #state{output=Out}) ->
   em_output:print(Out, "Passwords don't match, please try again.\n\n"),
   em_output:print(Out, "Pick a password: "),
   {ok, [{new_user_pw, Name}]};
+%% Existing user; load file and compare passwords, log in if correct
 login({got_password, Settings, Name}, Password, #state{output=Out}) ->
+  CryptPw = base64:encode_to_string(crypto:sha(Password)),
   case lists:keyfind(password, 1, Settings) of
     false ->
       em_output:print(Out, "Error: Invalid user file.\n\n"),
       em_output:print(Out, "Login: "),
       {ok, [got_user]};
-    {password, Password} ->
+    {password, CryptPw} ->
       do_login(Name, Out);
     {password, _Other} ->
       em_output:print(Out, "Invalid password.\n\n"),

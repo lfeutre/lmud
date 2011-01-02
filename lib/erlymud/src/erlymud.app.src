@@ -7,7 +7,8 @@
   {applications, [
                   kernel,
                   stdlib,
-                  sasl
+                  sasl,
+                  crypto
                  ]},
   {mod, {em_app, []}},
   {env, []}
