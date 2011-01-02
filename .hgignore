@@ -4,6 +4,7 @@ edoc-info
 *.beam
 *.boot
 *.css
+*.dat
 *.html
 *.png
 *.script

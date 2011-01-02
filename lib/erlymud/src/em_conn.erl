@@ -109,10 +109,48 @@ welcome(Out) ->
 
 login(got_user, Name, #state{output=Out}) ->
   UserName = em_text:capitalize(Name),
-  case em_game:login(UserName, {self(), Out}) of
+  UserFile = filename:join([code:priv_dir(erlymud), "users",
+                            [UserName, ".dat"]]),
+  case file:consult(UserFile) of
+    {ok, Settings} ->
+      em_output:print(Out, "Password: "),
+      {ok, [{got_password, Settings, UserName}]};
+    {error, _Reason} ->
+      em_output:print(Out, "New user account.\n\n"),
+      em_output:print(Out, "Pick a password: "),
+      {ok, [{new_user_pw, UserName}]}
+  end;
+login({new_user_pw, Name}, Password, #state{output=Out}) ->
+  em_output:print(Out, "Repeat the password: "),
+  {ok, [{new_user_pw_confirm, Name, Password}]};
+login({new_user_pw_confirm, Name, Password}, Password, #state{output=Out}) ->
+  UserFile = filename:join([code:priv_dir(erlymud), "users", [Name, ".dat"]]),
+  file:write_file(UserFile, lists:flatten(["{password, \"", Password, "\"}.\n"])),
+  em_output:print(Out, ["\nWelcome, ", Name, "!\n\n"]),
+  do_login(Name, Out);
+login({new_user_pw_confirm, Name, _Password}, _WrongPassword, #state{output=Out}) ->
+  em_output:print(Out, "Passwords don't match, please try again.\n\n"),
+  em_output:print(Out, "Pick a password: "),
+  {ok, [{new_user_pw, Name}]};
+login({got_password, Settings, Name}, Password, #state{output=Out}) ->
+  case lists:keyfind(password, 1, Settings) of
+    false ->
+      em_output:print(Out, "Error: Invalid user file.\n\n"),
+      em_output:print(Out, "Login: "),
+      {ok, [got_user]};
+    {password, Password} ->
+      do_login(Name, Out);
+    {password, _Other} ->
+      em_output:print(Out, "Invalid password.\n\n"),
+      em_output:print(Out, "Login: "),
+      {ok, [got_user]}
+  end.
+
+do_login(Name, Out) ->
+  case em_game:login(Name, {self(), Out}) of
     {ok, User} ->
       NotMe = fun(Liv) -> Liv =/= User end,
-      em_game:print_while(NotMe, "[Notice] ~s has logged in.~n", [UserName]),
+      em_game:print_while(NotMe, "[Notice] ~s has logged in.~n", [Name]),
       em_output:print(Out, "\n"),
       em_living:cmd(User, "look"),
       em_output:print(Out, "\n> "),
