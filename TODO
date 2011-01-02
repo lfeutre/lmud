@@ -8,3 +8,6 @@ ErlyMUD TODO
 * Implement passwords and savefiles?
 * Make the em_conn be the "user"?
 * Put the {In, Out} "client" Pid pair into a record definition for clarity?
+* Make release of 0.2.2 with the new input/output handling
+  - don't forget appup for em_conn, em_living, em_game which all had 
+    state changes
