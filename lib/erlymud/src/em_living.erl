@@ -11,7 +11,8 @@
 
 %% game commands
 -export([cmd_look/2, cmd_north/2, cmd_east/2, cmd_south/2, cmd_west/2,
-         cmd_go/2, cmd_quit/2, cmd_say/2, cmd_tell/2, cmd_who/2]).
+         cmd_go/2, cmd_quit/2, cmd_emote/2, cmd_say/2, cmd_tell/2, 
+         cmd_who/2]).
 
 -record(state, {name, room, client}).
 
@@ -138,6 +139,14 @@ do_go({ok, {Dir, Dest}}, #state{name=Name, client={_,Out}, room=Room}=State) ->
   em_room:print_while(Dest, NotMe, "~s arrives.~n", [Name]),
   {ok, NewState} = cmd_look([], State#state{room=Dest}),
   NewState.
+
+cmd_emote(Args, #state{name=Name,client={_,Out}, room=Room}=State) ->
+  Text = string:join(Args, " "),
+  Me = self(),
+  Pred = fun(Liv) -> Liv =/= Me end, 
+  em_room:print_while(Room, Pred, "~s ~s~n", [Name, Text]),
+  em_output:print(Out, "~s ~s~n", [Name, Text]),
+  {ok, State}.
 
 cmd_say([FirstWord|Rest], #state{name=Name,client={_,Out}, room=Room}=State) ->
   Text = string:join([em_text:capitalize(FirstWord)|Rest], " "),

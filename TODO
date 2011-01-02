@@ -4,7 +4,6 @@ ErlyMUD TODO
 0.2.2
 -----
 * Hide password input during login
-* Add emote command
 * Fix TCP input handling so that original case of input line is preserved
   separately, useful in 'tell' etc.
 * Make entering / leaving the game show in the room
