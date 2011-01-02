@@ -3,12 +3,12 @@
 -behaviour(gen_server).
 
 -export([start_link/1, print/2, print/3, reset_connection/2, welcome/1, 
-         login/2, parse/2]).
+         login/3, parse/3]).
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
--record(state, {lsock, socket, handlers}).
+-record(state, {lsock, socket, output, handlers}).
 
 
 %% API
@@ -17,25 +17,23 @@ start_link(LSock) ->
   gen_server:start_link(?MODULE, [LSock], []).
 
 print(Conn, Format) ->
-  gen_server:cast(Conn, {print, Format}).
+  gen_server:call(Conn, {print, Format}).
 
 print(Conn, Format, Args) ->
-  gen_server:cast(Conn, {print, Format, Args}).
+  gen_server:call(Conn, {print, Format, Args}).
 
 %% gen_server callbacks
 
 init([LSock]) ->
   {ok, #state{lsock = LSock}, 0}.
 
-handle_call(Msg, _From, State) ->
-  {reply, {ok, Msg}, State}.
+handle_call({print, Format}, _From, #state{output=Out}=State) ->
+  em_output:print(Out, Format),
+  {reply, ok, State};
+handle_call({print, Format, Args}, _From, #state{output=Out}=State) ->
+  em_output:print(Out, Format, Args),
+  {reply, ok, State}.
 
-handle_cast({print, Format}, #state{socket=Socket}=State) ->
-  write(Socket, Format),
-  {noreply, State};
-handle_cast({print, Format, Args}, #state{socket=Socket}=State) ->
-  write(Socket, Format, Args),
-  {noreply, State};
 handle_cast(stop, State) ->
   {stop, normal, State}.
 
@@ -53,9 +51,13 @@ handle_info(timeout, #state{lsock=LSock}=State) ->
   case gen_tcp:accept(LSock) of
     {ok, Socket} ->
       em_conn_sup:start_child(),
-      welcome(Socket),
+      % Start an output process and link to it, so we're
+      % always mutually destroyed if either dies..
+      {ok, OutPid} = em_output_sup:start_child(Socket),
+      link(OutPid),
+      welcome(OutPid),
       Handlers=[{?MODULE, login, [got_user]}],
-      {noreply, State#state{socket=Socket, handlers=Handlers}};
+      {noreply, State#state{socket=Socket, output=OutPid, handlers=Handlers}};
     {error, closed} ->
       {stop, normal, State}
   end.
@@ -63,19 +65,12 @@ handle_info(timeout, #state{lsock=LSock}=State) ->
 terminate(_Reason, _State) ->
   ok.
 
-code_change(_Vsn, #state{socket=Socket}=State, _Extra) ->
-  Handlers = [{?MODULE, reset_connection, [Socket]}],
+code_change(_Vsn, State, _Extra) ->
+  Handlers = [{?MODULE, reset_connection, []}],
   {ok, State#state{handlers = Handlers}}.
 
 
 %% Internal functions
-
-write(Socket, Format) ->
-  write(Socket, Format, []).
-
-write(Socket, Format, Args) ->
-  Output = em_text:colorize(Format),
-  gen_tcp:send(Socket, io_lib:format(Output, Args)).
 
 input_cleanup(RawData) ->
   string:to_lower(string:strip(strip_linefeed(RawData), both)).
@@ -87,7 +82,7 @@ handle_data(_Socket, RawData, State) ->
   Data = input_cleanup(RawData),
   [Handler | Rest] = State#state.handlers,
   {M, F, A} = Handler,
-  case apply(M, F, A ++ [Data]) of
+  case apply(M, F, A ++ [Data, State]) of
     done -> 
       {ok, State#state{handlers = Rest}};
     {ok, NewArgs} -> 
@@ -100,46 +95,46 @@ handle_data(_Socket, RawData, State) ->
       {error, Other}
   end.
 
-reset_connection(Socket, _Data) ->
-  write(Socket, "Your connection has been upgraded; sorry for any inconvenience..\n\n"),
-  welcome(Socket),
+reset_connection(_Data, #state{output=Out}) ->
+  em_output:print(Out, "Your connection has been upgraded; sorry for any inconvenience..\n\n"),
+  welcome(Out),
   Handler = {?MODULE, login, [got_user]},
   {next, Handler}.
 
 %% Input handling on a higher level; "shell" stuff etc
 
-welcome(Socket) ->
-  write(Socket, "\nWelcome to ErlyMUD 0.2.2\n\n"),
-  write(Socket, "Login: ").
+welcome(Out) ->
+  em_output:print(Out, "\nWelcome to ErlyMUD 0.2.2\n\n"),
+  em_output:print(Out, "Login: ").
 
-login(got_user, Name) ->
+login(got_user, Name, #state{output=Out}) ->
   UserName = em_text:capitalize(Name),
-  case em_game:login(UserName, self()) of
+  case em_game:login(UserName, {self(), Out}) of
     {ok, User} ->
       NotMe = fun(Liv) -> Liv =/= User end,
       em_game:print_while(NotMe, "[Notice] ~s has logged in.~n", [UserName]),
-      print(self(), "\n"),
+      em_output:print(Out, "\n"),
       em_living:cmd(User, "look"),
-      print(self(), "\n> "),
+      em_output:print(Out, "\n> "),
       {next, {?MODULE, parse, [User]}};
     {error, user_exists} ->
-      print(self(), "User already logged in, try again.\n\n"),
-      print(self(), "Login: "),
+      em_output:print(Out, "User already logged in, try again.\n\n"),
+      em_output:print(Out, "Login: "),
       {ok, [got_user]}
   end.
 
-parse(User, Line) ->
+parse(User, Line, #state{output=Out}) ->
   case Line of
     "" ->
-      print(self(), "> "),
+      em_output:print(Out, "> "),
       {ok, [User]};
     "quit" ->
       em_living:cmd(User, "quit"),
-      print(self(), "Quitting..\n"),
+      em_output:print(Out, "Quitting..\n"),
       done;
     Cmd ->
       em_living:cmd(User, Cmd),
-      print(self(), "\n> "),
+      em_output:print(Out, "\n> "),
       {ok, [User]}
   end.
 
