@@ -1,13 +1,20 @@
 ErlyMUD TODO
 ============
 
+0.2.2
+-----
+* Hide password input during login
+* Add emote command
 * Fix TCP input handling so that original case of input line is preserved
-  separately? Would be useful in 'tell' etc.
+  separately, useful in 'tell' etc.
+* Make entering / leaving the game show in the room
+* Make leaving the game announce to everyone as a notice
+
+Future
+------
 * Add more specific print_except() function to em_room? Will take a list
   of livings to exclude.. This one's often used.
-* Implement passwords and savefiles?
-* Make the em_conn be the "user"?
 * Put the {In, Out} "client" Pid pair into a record definition for clarity?
-* Make release of 0.2.2 with the new input/output handling
-  - don't forget appup for em_conn, em_living, em_game which all had 
-    state changes
+* Move login stuff etc into separate em_user module
+* Implement items/objects
+* Put new parser in place
