@@ -18,3 +18,8 @@ Future
 * Move login stuff etc into separate em_user module
 * Implement items/objects
 * Put new parser in place
+* Make "action server" that performs stuff on behalf of living, where we
+  can implement delays and print back to living without deadlock worries
+  - but how does this work together with, for example, calling cmd_look()
+    during login? sequencing and all that..
+* Better support for the telnet protocol
