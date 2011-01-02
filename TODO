@@ -1,7 +1,7 @@
 ErlyMUD TODO
 ============
 
-0.2.2
+0.2.3
 -----
 * Hide password input during login
 * Fix TCP input handling so that original case of input line is preserved
