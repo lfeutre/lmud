@@ -1,0 +1,7 @@
+ErlyMUD Change Log
+==================
+
+0.2.3
+-----
+* Will now hide password during entry, as long as client complies to IAC WILL/WONT ECHO
+

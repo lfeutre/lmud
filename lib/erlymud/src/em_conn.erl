@@ -1,4 +1,5 @@
 -module(em_conn).
+-include("telnet.hrl").
 
 -behaviour(gen_server).
 
@@ -38,7 +39,7 @@ handle_cast(stop, State) ->
   {stop, normal, State}.
 
 handle_info({tcp, Socket, RawData}, State) ->
-  {ok, NewState} = handle_data(Socket, RawData, State),
+  {ok, NewState} = handle_telnet(Socket, RawData, State),
   % Make sure we stop if there are no handlers on the stack!
   case NewState#state.handlers of
     [] ->
@@ -78,6 +79,12 @@ input_cleanup(RawData) ->
 strip_linefeed(RawData) ->
   re:replace(RawData, "\r\n$", "", [{return, list}]).
 
+handle_telnet(Socket, RawData, State) ->
+  case process_telnet(RawData) of
+    "" -> {ok, State};
+    Data -> handle_data(Socket, Data, State)
+  end.
+
 handle_data(_Socket, RawData, State) ->
   Data = input_cleanup(RawData),
   [Handler | Rest] = State#state.handlers,
@@ -101,11 +108,41 @@ reset_connection(_Data, #state{output=Out}) ->
   Handler = {?MODULE, login, [got_user]},
   {next, Handler}.
 
+%%
+
+process_telnet(RawData) ->
+  process_telnet(RawData, []).
+
+process_telnet([], Output) ->
+  lists:reverse(Output);
+process_telnet([?IAC|RawData], Output) ->
+  process_cmd(RawData, Output);
+process_telnet([Ch|RawData], Output) ->
+  process_telnet(RawData, [Ch|Output]).
+
+process_cmd([], Output) ->
+  Output;
+process_cmd([?WILL,_Opt|RawData], Output) ->
+  process_telnet(RawData, Output);
+process_cmd([?WONT,_Opt|RawData], Output) ->
+  process_telnet(RawData, Output);
+process_cmd([?DO,_Opt|RawData], Output) ->
+  process_telnet(RawData, Output);
+process_cmd([?DONT,_Opt|RawData], Output) ->
+  process_telnet(RawData, Output);
+process_cmd([_|RawData], Output) ->
+  process_telnet(RawData, Output).
+
 %% Input handling on a higher level; "shell" stuff etc
 
 welcome(Out) ->
   em_output:print(Out, "\nWelcome to ErlyMUD 0.2.2\n\n"),
   em_output:print(Out, "Login: ").
+
+telnet_echo_off(Out) ->
+  em_output:send(Out, [?IAC,?WILL,?ECHO]).
+telnet_echo_on(Out) ->
+  em_output:send(Out, [?IAC,?WONT,?ECHO]).
 
 %% Got a username, do something with it
 login(got_user, "", #state{output=Out}) ->
@@ -119,6 +156,7 @@ login(got_user, Name, #state{output=Out}) ->
   case file:consult(UserFile) of
     {ok, Settings} ->
       em_output:print(Out, "Password: "),
+      telnet_echo_off(Out),
       {ok, [{got_password, Settings, UserName}]};
     {error, _Reason} ->
       em_output:print(Out, "New user account \"~s\".\n", [UserName]),
@@ -128,9 +166,11 @@ login(got_user, Name, #state{output=Out}) ->
 %% It's a new user, confirm if name is correct
 login({new_user_confirm, Name}, "y", #state{output=Out}) ->
   em_output:print(Out, "\nPick a password: "),
+  telnet_echo_off(Out),
   {ok, [{new_user_pw, Name}]};
 login({new_user_confirm, Name}, "yes", #state{output=Out}) ->
   em_output:print(Out, "\nPick a password: "),
+  telnet_echo_off(Out),
   {ok, [{new_user_pw, Name}]};
 login({new_user_confirm, _Name}, _Other, #state{output=Out}) ->
   em_output:print(Out, "\nLogin: "),
@@ -145,6 +185,7 @@ login({new_user_pw, Name}, Password, #state{output=Out}) ->
   {ok, [{new_user_pw_confirm, Name, Password}]};
 %% Confirm the password
 login({new_user_pw_confirm, Name, Password}, Password, #state{output=Out}) ->
+  telnet_echo_on(Out),
   UserFile = filename:join([code:priv_dir(erlymud), "users", [Name, ".dat"]]),
   CryptPw = base64:encode_to_string(crypto:sha(Password)),
   file:write_file(UserFile, lists:flatten([
@@ -158,6 +199,7 @@ login({new_user_pw_confirm, Name, _Password}, _WrongPassword, #state{output=Out}
   {ok, [{new_user_pw, Name}]};
 %% Existing user; load file and compare passwords, log in if correct
 login({got_password, Settings, Name}, Password, #state{output=Out}) ->
+  telnet_echo_on(Out),
   CryptPw = base64:encode_to_string(crypto:sha(Password)),
   case lists:keyfind(password, 1, Settings) of
     false ->

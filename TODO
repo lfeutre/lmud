@@ -3,12 +3,12 @@ ErlyMUD TODO
 
 0.2.3
 -----
-* Hide password input during login
 * Fix TCP input handling so that original case of input line is preserved
   separately, useful in 'tell' etc.
 
 Future
 ------
+* Idle timer in 'who' list
 * Add more specific print_except() function to em_room? Will take a list
   of livings to exclude.. This one's often used.
 * Put the {In, Out} "client" Pid pair into a record definition for clarity?

@@ -2,7 +2,7 @@
 
 -behaviour(gen_server).
 
--export([start_link/1, print/2, print/3]).
+-export([start_link/1, print/2, print/3, send/2]).
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
@@ -25,6 +25,10 @@ print({_In, Out}, Format, Args) ->
 print(Pid, Format, Args) ->
   gen_server:call(Pid, {print, Format, Args}).
 
+send({_In, Out}, Data) ->
+  send(Out, Data);
+send(Pid, Data) ->
+  gen_server:call(Pid, {send, Data}).
 
 %% gen_server callbacks
 
@@ -36,6 +40,9 @@ handle_call({print, Format}, _From, #state{socket=Socket}=State) ->
   {reply, ok, State};
 handle_call({print, Format, Args}, _From, #state{socket=Socket}=State) ->
   write(Socket, Format, Args),
+  {reply, ok, State};
+handle_call({send, Data}, _From, #state{socket=Socket}=State) ->
+  gen_tcp:send(Socket, Data),
   {reply, ok, State}.
 
 handle_cast(_Msg, State) ->
