@@ -75,14 +75,11 @@ process_queue(#state{queue=[{input, RawData}|Queue]}=State) ->
       process_queue(NewState#state{queue=Queue})
   end.
 
-input_cleanup(RawData) ->
-  string:to_lower(string:strip(strip_linefeed(RawData), both)).
-
 strip_linefeed(RawData) ->
   re:replace(RawData, "\r\n$", "", [{return, list}]).
 
 handle_data(RawData, State) ->
-  Data = input_cleanup(RawData),
+  Data = strip_linefeed(RawData),
   [Handler | Rest] = State#state.handlers,
   {M, F, A} = Handler,
   case apply(M, F, A ++ [Data, State]) of

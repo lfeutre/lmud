@@ -80,7 +80,7 @@ code_change(_OldVsn, State, _Extra) ->
 
 parse(Line, #state{client={_,Out}}=State) ->
   [Cmd|Args] = string:tokens(Line, " "),
-  try list_to_existing_atom("cmd_" ++ Cmd) of
+  try list_to_existing_atom("cmd_" ++ string:to_lower(Cmd)) of
     Fun ->
       case apply(?MODULE, Fun, [Args, State]) of
         {ok, NewState} ->
@@ -97,7 +97,7 @@ parse(Line, #state{client={_,Out}}=State) ->
       end
   catch
     error:badarg ->
-      em_conn:print(Out, "I don't understand what you mean by:~n  ~s~n", [Line]),
+      em_conn:print(Out, "I don't understand what you mean by '~s'~n", [Line]),
       {ok, State}
   end.
 
