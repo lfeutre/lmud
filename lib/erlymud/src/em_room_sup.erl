@@ -1,4 +1,4 @@
--module(em_sup).
+-module(em_room_sup).
 
 -behaviour(supervisor).
 
@@ -24,12 +24,8 @@ start_link() ->
 %% ===================================================================
 
 init([]) ->
-  GameServer = ?CHILD(em_game, worker),
-  RoomSup = ?CHILD(em_room_sup, worker),
-  LivingSup = ?CHILD(em_living_sup, worker),
-  UserSup = ?CHILD(em_user_sup, worker),
-  ConnSup = ?CHILD(em_conn_sup, worker),
-  Children = [GameServer, RoomSup, LivingSup, UserSup, ConnSup],
+  RoomPoolSup = ?CHILD(em_room_pool_sup, worker),
+  Children = [RoomPoolSup],
   RestartStrategy = {one_for_one, 5, 10},
   {ok, {RestartStrategy, Children}}.
 
