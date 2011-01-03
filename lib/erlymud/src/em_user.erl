@@ -180,7 +180,6 @@ do_login(Name, Conn) ->
   case em_game:login(Name, {self(), Conn}) of
     {ok, Living} ->
       link(Living),
-      em_game:print_except(Living, "[Notice] ~s has logged in.~n", [Name]),
       em_conn:print(Conn, "\n"),
       em_living:cmd(Living, "look"),
       em_conn:print(Conn, "\n> "),
@@ -198,7 +197,6 @@ parse(User, Line, #state{conn=Conn}) ->
       {ok, [User]};
     "quit" ->
       em_living:cmd(User, "quit"),
-      em_conn:print(Conn, "Quitting..\n"),
       done;
     Cmd ->
       em_living:cmd(User, Cmd),

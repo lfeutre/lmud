@@ -47,8 +47,7 @@ lookup_user_pid(Pid) ->
   gen_server:call(?SERVER, {lookup_user_pid, Pid}).
 
 print_except(User, Format, Args) ->
-  Pred = fun(U) -> U =/= User end,
-  print_while(Pred, Format, Args).
+  gen_server:call(?SERVER, {print_except, User, Format, Args}).
 
 print_while(Pred, Format, Args) ->
   gen_server:call(?SERVER, {print_while, Pred, Format, Args}).
@@ -56,6 +55,7 @@ print_while(Pred, Format, Args) ->
 %% gen_server callbacks
 
 init([]) ->
+  process_flag(trap_exit, true),
   {ok, #state{}}.
 
 handle_call({add_rooms, NewRooms}, _From, #state{rooms=Rooms}=State) ->
@@ -81,11 +81,11 @@ handle_call({lookup_user_pid, Pid}, _From, #state{users=Users}=State)
     when is_pid(Pid) ->
   Result = do_lookup_user_pid(Pid, Users),
   {reply, Result, State};
+handle_call({print_except, User, Format, Args}, _From, State) ->
+  do_print_except(State#state.users, User, Format, Args),
+  {reply, ok, State};
 handle_call({print_while, Pred, Format, Args}, _From, State) ->
-  Pids = [Pid || {_User, Pid} <- State#state.users],
-  ToPids = lists:filter(Pred, Pids),
-  PrintFun = fun(Pid) -> em_living:print(Pid, Format, Args) end,
-  lists:map(PrintFun, ToPids),
+  do_print_while(State#state.users, Pred, Format, Args),
   {reply, ok, State}.
 
 handle_cast(_Msg, State) ->
@@ -95,7 +95,7 @@ handle_cast(_Msg, State) ->
 handle_info({'EXIT', From, Reason}, #state{users=Users}=State) ->
   case do_lookup_user_pid(From, Users) of
     {ok, {_Name, User}} ->
-      NewState = do_logout(User, State),
+      {ok, NewState} = do_logout(User, State),
       {noreply, NewState};
     {error, not_found} ->
       {stop, Reason, State}
@@ -118,21 +118,25 @@ do_login(Name, Client, #state{users=Users,rooms=[Room|_Rooms]}=State) ->
       {{error, user_exists}, State};
     false ->
       case em_living_sup:start_child(Name, Room, Client) of
-        {ok, User} ->
-          link(User),
-          em_room:enter(Room, User),
-          em_room:print_except(Room, User, "~s has arrived.~n", [Name]),
-          {{ok, User}, State#state{users=[{Name, User}|Users]}};
+        {ok, Living} ->
+          link(Living),
+          do_print_except(Users, Living, "[Notice] ~s has logged in.~n", [Name]),
+          em_room:enter(Room, Living),
+          em_room:print_except(Room, Living, "~s has arrived.~n", [Name]),
+          {{ok, Living}, State#state{users=[{Name, Living}|Users]}};
         Error ->
           {Error, State}
       end
   end.
 
-do_logout(User, #state{users=Users}=State) ->
-  case lists:keyfind(User, 2, Users) of
-    {_Name, User} ->
-      unlink(User),
-      {ok, State#state{users=lists:keydelete(User, 2, Users)}};
+% Do NOT actually touch the Living process here, it might have crashed
+% when we call do_logout()
+do_logout(Living, #state{users=Users}=State) ->
+  case lists:keyfind(Living, 2, Users) of
+    {Name, Living} ->
+      unlink(Living),
+      do_print_except(Users, Living, "[Notice] ~s has logged out.~n", [Name]),
+      {ok, State#state{users=lists:keydelete(Living, 2, Users)}};
     false ->
       {{error, not_found}, State}
   end.
@@ -142,3 +146,13 @@ do_lookup_user_pid(Pid, Users) ->
     false -> {error, not_found};
     UserTuple -> {ok, UserTuple}
   end.
+
+do_print_except(Users, User, Format, Args) ->
+  Pred = fun(U) -> U =/= User end,
+  do_print_while(Users, Pred, Format, Args).
+
+do_print_while(Users, Pred, Format, Args) ->
+  Pids = [Pid || {_User, Pid} <- Users],
+  ToPids = lists:filter(Pred, Pids),
+  PrintFun = fun(Pid) -> em_living:print(Pid, Format, Args) end,
+  lists:map(PrintFun, ToPids).
