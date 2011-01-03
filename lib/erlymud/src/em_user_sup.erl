@@ -1,4 +1,4 @@
--module(em_output_sup).
+-module(em_user_sup).
 
 -behaviour(supervisor).
 
@@ -13,13 +13,13 @@
 start_link() ->
   supervisor:start_link({local, ?SERVER}, ?MODULE, []).
 
-start_child(Socket) ->
-  supervisor:start_child(?SERVER, [Socket]).
+start_child(Conn) ->
+  supervisor:start_child(?SERVER, [Conn]).
 
 init([]) ->
-  OutputHandler = {em_output, {em_output, start_link, []},
-                   temporary, brutal_kill, worker, [em_output]},
-  Children = [OutputHandler],
+  User = {em_user, {em_user, start_link, []},
+          temporary, brutal_kill, worker, [em_user]},
+  Children = [User],
   RestartStrategy = {simple_one_for_one, 0, 1},
   {ok, {RestartStrategy, Children}}.
 

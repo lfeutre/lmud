@@ -52,15 +52,15 @@ handle_call({cmd, Line}, _From, State) ->
     {stop, NewState} ->
       {stop, normal, NewState}
   end;
-handle_call({print, Format}, _From, State) ->
-  em_output:print(State#state.client, Format),
+handle_call({print, Format}, _From, #state{client={_,Out}}=State) ->
+  em_conn:print(Out, Format),
   {reply, ok, State};
-handle_call({print, Format, Args}, _From, State) ->
-  em_output:print(State#state.client, Format, Args),
+handle_call({print, Format, Args}, _From, #state{client={_,Out}}=State) ->
+  em_conn:print(Out, Format, Args),
   {reply, ok, State}.
 
-handle_cast(stop, #state{client=Client}=State) ->
-  em_output:print(Client, "living(): stopping.~n"),
+handle_cast(stop, #state{client={_,Out}}=State) ->
+  em_conn:print(Out, "living(): stopping.~n"),
   {stop, normal, ok, State}.
 
 handle_info(_Info, State) ->
@@ -88,16 +88,16 @@ parse(Line, #state{client={_,Out}}=State) ->
         {stop, NewState} ->
           {stop, NewState};
         {error, Reason} ->
-          em_output:print(Out, Reason),
+          em_conn:print(Out, Reason),
           {ok, State};
         Other ->
-          em_output:print(Out, "Error occurred while processing '~s':~n~p~n", 
+          em_conn:print(Out, "Error occurred while processing '~s':~n~p~n", 
             [Line, Other]),
           {ok, State}
       end
   catch
     error:badarg ->
-      em_output:print(Out, "I don't understand what you mean by:~n  ~s~n", [Line]),
+      em_conn:print(Out, "I don't understand what you mean by:~n  ~s~n", [Line]),
       {ok, State}
   end.
 
@@ -105,7 +105,7 @@ parse(Line, #state{client={_,Out}}=State) ->
 %% Game commands
 
 cmd_quit(_Args, #state{name=Name, client={_,Out}, room=Room}=State) ->
-  em_output:print(Out, "Goodbye!\n"),
+  em_conn:print(Out, "Goodbye!\n"),
   em_game:print_except(self(), "[Notice] ~s has logged out.~n", [Name]),
   em_room:print_except(Room, self(), "~s has left.~n", [Name]),
   ok = em_game:logout(self()),
@@ -113,7 +113,7 @@ cmd_quit(_Args, #state{name=Name, client={_,Out}, room=Room}=State) ->
 
 cmd_look(_Args, #state{client={_,Out},room=Room}=State) ->
   Desc = em_room:describe_except(Room, self()),
-  em_output:print(Out, Desc),
+  em_conn:print(Out, Desc),
   {ok, State}.
 
 cmd_north(_Args, State) ->
@@ -129,10 +129,10 @@ cmd_go([Dir|_Args], #state{room=Room}=State) ->
   {ok, do_go(em_room:get_exit(Room, Dir), State)}.
 
 do_go({error, not_found}, #state{client={_,Out}}=State) ->
-  em_output:print(Out, "You can't go in that direction.\n"),
+  em_conn:print(Out, "You can't go in that direction.\n"),
   State;
 do_go({ok, {Dir, Dest}}, #state{name=Name, client={_,Out}, room=Room}=State) ->
-  em_output:print(Out, "You leave " ++ Dir ++ ".\n\n"),
+  em_conn:print(Out, "You leave " ++ Dir ++ ".\n\n"),
   Me = self(),
   NotMe = fun(Liv) -> Liv =/= Me end,
   em_room:print_while(Room, NotMe, "~s leaves ~s.~n", [Name, Dir]),
@@ -147,7 +147,7 @@ cmd_emote(Args, #state{name=Name,client={_,Out}, room=Room}=State) ->
   Me = self(),
   Pred = fun(Liv) -> Liv =/= Me end, 
   em_room:print_while(Room, Pred, "~s ~s~n", [Name, Text]),
-  em_output:print(Out, "~s ~s~n", [Name, Text]),
+  em_conn:print(Out, "~s ~s~n", [Name, Text]),
   {ok, State}.
 
 cmd_say([FirstWord|Rest], #state{name=Name,client={_,Out}, room=Room}=State) ->
@@ -155,24 +155,24 @@ cmd_say([FirstWord|Rest], #state{name=Name,client={_,Out}, room=Room}=State) ->
   Me = self(),
   Pred = fun(Liv) -> Liv =/= Me end, 
   em_room:print_while(Room, Pred, "~s says, \"~s\"~n", [Name, Text]),
-  em_output:print(Out, "You say, \"~s\"~n", [Text]),
+  em_conn:print(Out, "You say, \"~s\"~n", [Text]),
   {ok, State}.
 
 cmd_tell([Who,FirstWord|Rest], #state{name=Name,client={_,Out}}=State) ->
   case em_game:lookup_user(Who) of
     {error, not_found} ->
-      em_output:print(Out, "There's no such user.\n");
+      em_conn:print(Out, "There's no such user.\n");
     {ok, {Name, _}} ->
-      em_output:print(Out, "Talking to yourself, huh?\n");
+      em_conn:print(Out, "Talking to yourself, huh?\n");
     {ok, {OtherName, OtherUser}} ->
       Text = string:join([em_text:capitalize(FirstWord)|Rest], " "),
       print(OtherUser, "~s tells you, \"~s\"~n", [Name, Text]),
-      em_output:print(Out, "You tell ~s, \"~s\"~n", [OtherName, Text])
+      em_conn:print(Out, "You tell ~s, \"~s\"~n", [OtherName, Text])
   end,
   {ok, State}.
 
 cmd_who(_Args, #state{client={_,Out}}=State) ->
-  em_output:print(Out, ["Users:\n",
+  em_conn:print(Out, ["Users:\n",
     [[" ", Name, "\n"] || {Name, _Pid} <- em_game:get_users()]]),
   {ok, State}.
 

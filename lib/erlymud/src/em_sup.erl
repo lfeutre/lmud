@@ -27,9 +27,9 @@ init([]) ->
   GameServer = ?CHILD(em_game, worker),
   RoomSup = ?CHILD(em_room_sup, worker),
   LivingSup = ?CHILD(em_living_sup, worker),
-  OutputSup = ?CHILD(em_output_sup, worker),
+  UserSup = ?CHILD(em_user_sup, worker),
   ConnSup = ?CHILD(em_conn_sup, worker),
-  Children = [RoomSup, LivingSup, GameServer, OutputSup, ConnSup],
+  Children = [GameServer, RoomSup, LivingSup, UserSup, ConnSup],
   RestartStrategy = {one_for_one, 5, 10},
   {ok, {RestartStrategy, Children}}.
 
