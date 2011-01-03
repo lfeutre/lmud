@@ -178,12 +178,13 @@ login({got_password, Settings, Name}, Password, #state{conn=Conn}) ->
 
 do_login(Name, Conn) ->
   case em_game:login(Name, {self(), Conn}) of
-    {ok, User} ->
-      em_game:print_except(User, "[Notice] ~s has logged in.~n", [Name]),
+    {ok, Living} ->
+      link(Living),
+      em_game:print_except(Living, "[Notice] ~s has logged in.~n", [Name]),
       em_conn:print(Conn, "\n"),
-      em_living:cmd(User, "look"),
+      em_living:cmd(Living, "look"),
       em_conn:print(Conn, "\n> "),
-      {next, {?MODULE, parse, [User]}};
+      {next, {?MODULE, parse, [Living]}};
     {error, user_exists} ->
       em_conn:print(Conn, "User already logged in, try again.\n\n"),
       em_conn:print(Conn, "Login: "),
