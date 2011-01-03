@@ -1,18 +1,17 @@
 ErlyMUD TODO
 ============
 
-0.2.3
+0.2.4
 -----
-* Fix TCP input handling so that original case of input line is preserved
-  separately, useful in 'tell' etc.
+* Clean up the code
+* Make use of print_except() instead of print_while()
+* Move save file handling to em_game and put files in a better location,
+  so they won't be tied to the specific version of the erlymud app
 
 Future
 ------
 * Idle timer in 'who' list
-* Add more specific print_except() function to em_room? Will take a list
-  of livings to exclude.. This one's often used.
 * Put the {In, Out} "client" Pid pair into a record definition for clarity?
-* Move login stuff etc into separate em_user module
 * Implement items/objects
 * Put new parser in place
 * Make "action server" that performs stuff on behalf of living, where we

@@ -7,6 +7,5 @@
               {mod,{em_app,[]}},
               {env,[]},
               {modules,[em_app,em_client,em_conn,em_conn_sup,em_game,
-                        em_grammar,em_living,em_living_sup,em_object,
-                        em_output,em_output_sup,em_room,em_room_sup,em_sup,
-                        em_text,em_user,em_user_sup]}]}.
+                        em_grammar,em_living,em_living_sup,em_object,em_room,
+                        em_room_sup,em_sup,em_text,em_user,em_user_sup]}]}.
