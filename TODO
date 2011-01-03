@@ -3,12 +3,38 @@ ErlyMUD TODO
 
 0.2.4
 -----
-* Clean up the code
+* Clean up the code;
+  - When either of (em_conn, em_user, em_living) dies, it should take the
+    others with it.. so make sure they're linked
+  - When em_user dies, em_game should catch this and remove the user, so
+    link em_game with users and catch the EXIT message
+  - When em_living dies, em_room should catch this and remove the living, so
+    link em_room with livings in that room and catch the EXIT message
+  This makes cleanup the concern of the containing process, instead of having
+  terminate/2 of the user / living do the cleanup.. because they can't know
+  where they're being used!
+  - Move room setup from em_app to em_game; otherwise, if em_game is
+    restarted, from a game world point of view the rooms will be done
+    even though em_room_sup has been ok the entire time
+  - But how to handle this? Then em_game will create the rooms AGAIN..
 * Move save file handling to em_game and put files in a better location,
   so they won't be tied to the specific version of the erlymud app
 
 Future
 ------
+* Improve connection lifecycle;
+  - If an em_living dies;
+    * Then em_user can inform about it, then run a do_login() again to get
+      a new living
+    * Also the em_room must clean out the original living id
+    * Not to mention em_game, same there?
+  - If an em_user dies;
+    * Then em_conn can create a new one and put it into login phase, just
+      like when someone connects
+    * The em_game should clean up also
+    * The em_living should get a timer, say 60 seconds, and if not reconnected
+      after that time it should stop
+    * When user logs in again, reconnect it to the em_living and the game
 * Idle timer in 'who' list
 * Put the {In, Out} "client" Pid pair into a record definition for clarity?
 * Implement items/objects
