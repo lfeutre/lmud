@@ -41,8 +41,6 @@ stop(Pid) ->
 % gen_server callbacks
 
 init([Name, Room, Client]) ->
-  % Needed so that we can do cleanup in terminate() when shutting down
-  process_flag(trap_exit, true),
   {ok, #state{name=Name, room=Room, client=Client}}.
 
 handle_call({cmd, Line}, _From, State) ->
@@ -66,10 +64,7 @@ handle_cast(stop, #state{client={_,Out}}=State) ->
 handle_info(_Info, State) ->
   {noreply, State}.
 
-terminate(_Reason, #state{name=Name, room=Room}) ->
-  % cleanup, in case we crashed..
-  em_game:logout({Name, self()}),
-  em_room:leave(Room, self()),
+terminate(_Reason, _State) ->
   ok.
 
 code_change(_OldVsn, State, _Extra) ->

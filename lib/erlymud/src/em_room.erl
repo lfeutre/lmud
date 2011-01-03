@@ -50,6 +50,7 @@ print_while(Room, Pred, Format, Args) ->
 % --
 
 init([Title, Desc]) ->
+  process_flag(trap_exit, true),
   {ok, #state{title=Title, desc=Desc}}.
 
 handle_call({add_exit, Dir, Dest}, _From, #state{exits=Exits} = State) ->
@@ -67,8 +68,10 @@ handle_call(describe, _From, State) ->
 handle_call({describe_except, User}, _From, State) ->
   {reply, do_describe_except(User, State), State};
 handle_call({enter, Who}, _From, #state{people=People} = State) ->
+  link(Who),
   {reply, ok, State#state{people=[Who|People]}};
 handle_call({leave, Who}, _From, #state{people=People} = State) ->
+  unlink(Who),
   {reply, ok, State#state{people=People -- [Who]}};
 handle_call({print_while, Pred, Format, Args}, _From, State) ->
   People = lists:filter(Pred, State#state.people),
@@ -79,8 +82,13 @@ handle_call({print_while, Pred, Format, Args}, _From, State) ->
 handle_cast(_Msg, State) ->
   {noreply, State}.
 
-handle_info(_Info, State) ->
-  {noreply, State}.
+handle_info({'EXIT', From, Reason}, #state{people=People}=State) ->
+  case lists:member(From, People) of
+    true ->
+      {noreply, State#state{people=lists:delete(From, People)}};
+    false ->
+      {stop, Reason, State}
+  end.
 
 terminate(_Reason, _State) ->
   ok.

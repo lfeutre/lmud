@@ -79,10 +79,7 @@ handle_call({lookup_user, Name}, _From, #state{users=Users}=State)
   {reply, Result, State};
 handle_call({lookup_user_pid, Pid}, _From, #state{users=Users}=State) 
     when is_pid(Pid) ->
-  Result = case lists:keyfind(Pid, 2, Users) of
-             false -> {error, not_found};
-             UserTuple -> {ok, UserTuple}
-           end,
+  Result = do_lookup_user_pid(Pid, Users),
   {reply, Result, State};
 handle_call({print_while, Pred, Format, Args}, _From, State) ->
   Pids = [Pid || {_User, Pid} <- State#state.users],
@@ -94,8 +91,15 @@ handle_call({print_while, Pred, Format, Args}, _From, State) ->
 handle_cast(_Msg, State) ->
   {noreply, State}.
 
-handle_info(_Info, State) ->
-  {noreply, State}.
+% If user dies, remove from state; die on other EXIT signals
+handle_info({'EXIT', From, Reason}, #state{users=Users}=State) ->
+  case do_lookup_user_pid(From, Users) of
+    {ok, {_Name, User}} ->
+      NewState = do_logout(User, State),
+      {noreply, NewState};
+    {error, not_found} ->
+      {stop, Reason, State}
+  end.
 
 terminate(_Reason, _State) ->
   ok.
@@ -115,6 +119,7 @@ do_login(Name, Client, #state{users=Users,rooms=[Room|_Rooms]}=State) ->
     false ->
       case em_living_sup:start_child(Name, Room, Client) of
         {ok, User} ->
+          link(User),
           em_room:enter(Room, User),
           em_room:print_except(Room, User, "~s has arrived.~n", [Name]),
           {{ok, User}, State#state{users=[{Name, User}|Users]}};
@@ -126,7 +131,14 @@ do_login(Name, Client, #state{users=Users,rooms=[Room|_Rooms]}=State) ->
 do_logout(User, #state{users=Users}=State) ->
   case lists:keyfind(User, 2, Users) of
     {_Name, User} ->
+      unlink(User),
       {ok, State#state{users=lists:keydelete(User, 2, Users)}};
     false ->
       {{error, not_found}, State}
+  end.
+
+do_lookup_user_pid(Pid, Users) ->
+  case lists:keyfind(Pid, 2, Users) of
+    false -> {error, not_found};
+    UserTuple -> {ok, UserTuple}
   end.
