@@ -25,7 +25,7 @@ start_link() ->
 
 init([]) ->
   GameServer = ?CHILD(em_game, worker),
-  RoomSup = ?CHILD(em_room_sup, worker),
+  RoomSup = ?CHILD(em_room_pool_sup, worker),
   LivingSup = ?CHILD(em_living_sup, worker),
   UserSup = ?CHILD(em_user_sup, worker),
   ConnSup = ?CHILD(em_conn_sup, worker),

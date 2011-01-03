@@ -27,15 +27,15 @@ stop(_State) ->
 %% Internal functions
 
 build_world() ->
-  {ok, R1} = em_room_sup:start_child(
+  {ok, R1} = em_room_pool_sup:start_child(
       "A small room",
       "This is a small, rather non-descript room. To the east is a corridor."),
-  {ok, R2} = em_room_sup:start_child(
+  {ok, R2} = em_room_pool_sup:start_child(
       "A long, dark corridor",
       "This dark, damp corridor continues to the north and south."),
   em_room:add_exit(R1, "east", R2),
   em_room:add_exit(R2, "west", R1),
-  {ok, R3} = em_room_sup:start_child(
+  {ok, R3} = em_room_pool_sup:start_child(
       "A long, dark corridor",
       "This dark, damp corridor continues to the north and south."),
   em_room:add_exit(R2, "north", R3),

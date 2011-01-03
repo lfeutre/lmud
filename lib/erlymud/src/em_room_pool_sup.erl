@@ -1,4 +1,4 @@
--module(em_room_sup).
+-module(em_room_pool_sup).
 
 -behaviour(supervisor).
 

@@ -4,7 +4,7 @@
 
 %% API
 -export([start_link/0, start/0, 
-         add_rooms/1, get_rooms/0, 
+         add_rooms/1, 
          get_users/0, lookup_user/1, lookup_user_pid/1,
          login/2, logout/1,
          print_except/3, print_while/3]).
@@ -27,9 +27,6 @@ start() ->
 
 add_rooms(Rooms) ->
   gen_server:call(?SERVER, {add_rooms, Rooms}).
-
-get_rooms() ->
-  gen_server:call(?SERVER, get_rooms).
 
 get_users() ->
   gen_server:call(?SERVER, get_users).
@@ -60,8 +57,6 @@ init([]) ->
 
 handle_call({add_rooms, NewRooms}, _From, #state{rooms=Rooms}=State) ->
   {reply, ok, State#state{rooms = Rooms ++ NewRooms}};
-handle_call(get_rooms, _From, #state{rooms=Rooms}=State) ->
-  {reply, Rooms, State};
 handle_call(get_users, _From, #state{users=Users}=State) ->
   {reply, Users, State};
 handle_call({login, Name, Client}, _From, State) ->
