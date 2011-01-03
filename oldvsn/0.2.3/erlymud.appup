@@ -1,0 +1,10 @@
+{"0.2.2",
+  % Up from
+  [{"0.2.1", []},
+   {"0.2.0", [{load_module, em_conn},
+              {load_module, em_living}]}],
+  % Down to
+  [{"0.2.1", []},
+   {"0.2.0", [{load_module, em_conn},
+              {load_module, em_living}]}]
+}.
