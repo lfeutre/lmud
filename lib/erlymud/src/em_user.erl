@@ -113,7 +113,7 @@ login(got_user, "", #state{conn=Conn}) ->
   em_conn:print(Conn, "Login: "),
   {ok, [got_user]};
 login(got_user, Name, #state{conn=Conn}) ->
-  UserName = em_text:capitalize(Name),
+  UserName = em_text:capitalize(string:to_lower(Name)),
   UserFile = filename:join([code:priv_dir(erlymud), "users",
                             [UserName, ".dat"]]),
   case file:consult(UserFile) of
@@ -127,17 +127,16 @@ login(got_user, Name, #state{conn=Conn}) ->
       {ok, [{new_user_confirm, UserName}]}
   end;
 %% It's a new user, confirm if name is correct
-login({new_user_confirm, Name}, "y", #state{conn=Conn}) ->
-  em_conn:print(Conn, "\nPick a password: "),
-  em_conn:echo_off(Conn),
-  {ok, [{new_user_pw, Name}]};
-login({new_user_confirm, Name}, "yes", #state{conn=Conn}) ->
-  em_conn:print(Conn, "\nPick a password: "),
-  em_conn:echo_off(Conn),
-  {ok, [{new_user_pw, Name}]};
-login({new_user_confirm, _Name}, _Other, #state{conn=Conn}) ->
-  em_conn:print(Conn, "\nLogin: "),
-  {ok, [got_user]};
+login({new_user_confirm, Name}, YesNo, #state{conn=Conn}) ->
+  case string:to_lower(YesNo) of
+    [$y|_Rest] ->
+      em_conn:print(Conn, "\nPick a password: "),
+      em_conn:echo_off(Conn),
+      {ok, [{new_user_pw, Name}]};
+    _Other ->
+      em_conn:print(Conn, "\nLogin: "),
+      {ok, [got_user]}
+  end;
 %% Pick a password for new user account
 login({new_user_pw, Name}, "", #state{conn=Conn}) ->
   em_conn:print(Conn, "Invalid password.\n\n"),
