@@ -4,7 +4,6 @@ ErlyMUD TODO
 0.2.4
 -----
 * Clean up the code
-* Make use of print_except() instead of print_while()
 * Move save file handling to em_game and put files in a better location,
   so they won't be tied to the specific version of the erlymud app
 

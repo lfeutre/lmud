@@ -179,8 +179,7 @@ login({got_password, Settings, Name}, Password, #state{conn=Conn}) ->
 do_login(Name, Conn) ->
   case em_game:login(Name, {self(), Conn}) of
     {ok, User} ->
-      NotMe = fun(Liv) -> Liv =/= User end,
-      em_game:print_while(NotMe, "[Notice] ~s has logged in.~n", [Name]),
+      em_game:print_except(User, "[Notice] ~s has logged in.~n", [Name]),
       em_conn:print(Conn, "\n"),
       em_living:cmd(User, "look"),
       em_conn:print(Conn, "\n> "),

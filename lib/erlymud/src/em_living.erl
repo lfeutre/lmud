@@ -133,28 +133,22 @@ do_go({error, not_found}, #state{client={_,Out}}=State) ->
   State;
 do_go({ok, {Dir, Dest}}, #state{name=Name, client={_,Out}, room=Room}=State) ->
   em_conn:print(Out, "You leave " ++ Dir ++ ".\n\n"),
-  Me = self(),
-  NotMe = fun(Liv) -> Liv =/= Me end,
-  em_room:print_while(Room, NotMe, "~s leaves ~s.~n", [Name, Dir]),
+  em_room:print_except(Room, self(), "~s leaves ~s.~n", [Name, Dir]),
   em_room:leave(Room, self()),
   em_room:enter(Dest, self()),
-  em_room:print_while(Dest, NotMe, "~s arrives.~n", [Name]),
+  em_room:print_except(Dest, self(), "~s arrives.~n", [Name]),
   {ok, NewState} = cmd_look([], State#state{room=Dest}),
   NewState.
 
 cmd_emote(Args, #state{name=Name,client={_,Out}, room=Room}=State) ->
   Text = string:join(Args, " "),
-  Me = self(),
-  Pred = fun(Liv) -> Liv =/= Me end, 
-  em_room:print_while(Room, Pred, "~s ~s~n", [Name, Text]),
+  em_room:print_except(Room, self(), "~s ~s~n", [Name, Text]),
   em_conn:print(Out, "~s ~s~n", [Name, Text]),
   {ok, State}.
 
 cmd_say([FirstWord|Rest], #state{name=Name,client={_,Out}, room=Room}=State) ->
   Text = string:join([em_text:capitalize(FirstWord)|Rest], " "),
-  Me = self(),
-  Pred = fun(Liv) -> Liv =/= Me end, 
-  em_room:print_while(Room, Pred, "~s says, \"~s\"~n", [Name, Text]),
+  em_room:print_except(Room, self(), "~s says, \"~s\"~n", [Name, Text]),
   em_conn:print(Out, "You say, \"~s\"~n", [Text]),
   {ok, State}.
 
