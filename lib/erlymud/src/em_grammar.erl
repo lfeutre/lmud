@@ -62,14 +62,11 @@ number_word(Num) ->
 %% @doc Return the plural version of a given word
 %% @end
 %% --------------------------------------------------------------------------
-pluralize([Str|"ff"]) ->
-  Str ++ "s";
-pluralize([Str|"f"]) ->
-  Str ++ "ves";
-pluralize([Str|"s"]) ->
-  Str ++ "es";
-pluralize(Str) ->
-  Str ++ "s".
+pluralize([Str|"ff"]) ->  Str ++ "s";
+pluralize([Str|"f"]) ->   Str ++ "ves";
+pluralize([Str|"s"]) ->   Str ++ "es";
+pluralize([Str|"x"]) ->   Str ++ "es";
+pluralize(Str) ->         Str ++ "s".
 
 %% --------------------------------------------------------------------------
 %% @spec punctuate(Str::string()) -> string()

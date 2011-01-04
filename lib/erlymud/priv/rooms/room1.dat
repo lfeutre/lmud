@@ -2,4 +2,5 @@
 {title, "A small room"}.
 {desc, "This is a small, rather non-descript room. To the east is a corridor."}.
 {exits, [{"east", "room2"}]}.
+{objects, ["sword"]}.
 

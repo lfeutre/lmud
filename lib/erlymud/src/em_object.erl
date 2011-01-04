@@ -8,13 +8,14 @@
 %%% =========================================================================
 -module(em_object).
 
--export([create/1, create/2,
+-export([new/1, new/2, load/1,
 %         has_id/2, has_plural_id/2,
          add_id/2, add_primary_id/2, %add_plural/2,
          add_adj/2, add_primary_adj/2,
-         set_name/2 %, set_proper_name/2, set_plural/1, set_unique/1,
+         set_name/2, % set_proper_name/2, set_plural/1, set_unique/1,
 %         short/1, the_short/1, a_short/1, plural_short/1,
 %         long/1,
+         show_in_room/1
         ]).
 
 -record(object, {ids=[], plurals=[], adjs=[], 
@@ -34,19 +35,46 @@
 %%      id from there.
 %%      Example: 
 %%        "small wooden table" -> adjs=["small", "wooden"], ids=["table"]
-%% @spec create(Name::string()) -> object()
+%% @spec new(Name::string()) -> object()
 %% @end
 %%---------------------------------------------------------------------------
-create(Name) ->
+new(Name) ->
   set_name(#object{}, Name).
 
 %%---------------------------------------------------------------------------
 %% @doc New object with list of ids and adjs
-%% @spec create(Ids::list(), Adjs::list()) -> object()
+%% @spec new(Ids::list(), Adjs::list()) -> object()
 %% @end
 %%---------------------------------------------------------------------------
-create(Ids, Adjs) ->
+new(Ids, Adjs) ->
   resync_names(#object{ids=Ids, adjs=Adjs}).
+
+load(Name) ->
+  File = filename:join([code:priv_dir(erlymud), "objects",
+                        Name ++ ".dat"]),
+  load_object(File).
+
+load_object(Filename) ->
+  io:format("loading object: ~s~n", [Filename]),
+  case file:consult(Filename) of
+    {ok, Data} ->
+      Ob = make_object(Data),
+      {ok, Ob};
+    {error, _Reason} ->
+      {error, not_found}
+  end.
+
+make_object(Data) ->
+  make_object(Data, #object{}).
+
+make_object([], Ob) ->
+  Ob;
+make_object([{primary_id, Id}|Data], Ob) ->
+  make_object(Data, add_primary_id(Ob, Id));
+make_object([{primary_adj, Adj}|Data], Ob) ->
+  make_object(Data, add_primary_adj(Ob, Adj));
+make_object([_Other|Data], Ob) ->
+  make_object(Data, Ob).
 
 %%---------------------------------------------------------------------------
 %% @doc Add an id to the specified object
@@ -57,13 +85,13 @@ add_id(#object{ids=Ids} = Ob, Id) ->
   Ob#object{ids = Ids ++ [Id]}.
 
 add_primary_id(#object{ids=Ids} = Ob, Id) ->
-  Ob#object{ids = [Id|Ids]}.
+  resync_names(Ob#object{ids = [Id|Ids]}).
 
 add_adj(#object{adjs=Adjs} = Ob, Adj) ->
   Ob#object{adjs = Adjs ++ [Adj]}.
 
 add_primary_adj(#object{adjs=Adjs} = Ob, Adj) ->
-  Ob#object{adjs = Adjs ++ [Adj]}.
+  resync_names(Ob#object{adjs = Adjs ++ [Adj]}).
 
 %%---------------------------------------------------------------------------
 %% @doc Set name of an object given a plain "short desc" string, will
@@ -86,6 +114,9 @@ set_name(Ob, [LastToken], Ids, Adjs) ->
 set_name(Ob, [Token|Toks], Ids, Adjs) ->
   set_name(Ob, Toks, Ids, Adjs ++ [Token]).
 
+show_in_room(#object{short=Short}) ->
+  A_Short =em_grammar:add_article(Short),
+  [em_text:capitalize(A_Short), " lies here, discarded.\n"].
 
 %%===========================================================================
 %% Internal Functions

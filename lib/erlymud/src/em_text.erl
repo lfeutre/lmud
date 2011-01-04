@@ -1,8 +1,13 @@
 -module(em_text).
 -include("telnetcolors.hrl").
--export([capitalize/1, colorize/1]).
+-export([capitalize/1, colorize/1, title_caps/1]).
 
-capitalize(S) ->
+capitalize([]) ->
+  [];
+capitalize([H|T]) ->
+  [string:to_upper(H) | T].
+
+title_caps(S) ->
   F = fun([H|T]) -> [string:to_upper(H) | string:to_lower(T)] end,
   string:join(lists:map(F, string:tokens(S, " ")), " ").
 

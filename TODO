@@ -3,9 +3,7 @@ ErlyMUD TODO
 
 0.2.5
 -----
-* Make em_room_mgr use ETS table instead of dict for the rooms, so that
-  we can allow concurrent read access instead of gen_server:call for
-  get_room()
+* Implement items/objects
 * Move save file handling to em_game and put files in a better location,
   so they won't be tied to the specific version of the erlymud app
 
@@ -26,7 +24,6 @@ Future
     * When user logs in again, reconnect it to the em_living and the game
 * Idle timer in 'who' list
 * Put the {In, Out} "client" Pid pair into a record definition for clarity?
-* Implement items/objects
 * Put new parser in place
 * Make "action server" that performs stuff on behalf of living, where we
   can implement delays and print back to living without deadlock worries
