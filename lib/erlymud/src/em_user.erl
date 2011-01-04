@@ -104,7 +104,7 @@ reset_connection(_Data, #state{conn=Conn}) ->
 %% Input handling on a higher level; "shell" stuff etc
 
 welcome(Conn) ->
-  em_conn:print(Conn, "\nWelcome to ErlyMUD 0.2.4\n\n"),
+  em_conn:print(Conn, "\nWelcome to ErlyMUD 0.2.5\n\n"),
   em_conn:print(Conn, "Login: ").
 
 %% Got a username, do something with it
