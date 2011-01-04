@@ -1,0 +1,10 @@
+%% erlymud.rel
+{release,
+ {"erlymud", "0.2.6"},
+ {erts, "5.8.2"},
+ [{kernel, "2.14.2"},
+  {stdlib, "1.17.2"},
+  {sasl, "2.1.9.2"},
+  {crypto, "2.0.2"},
+  {erlymud, "0.2.6"}
+]}.    
