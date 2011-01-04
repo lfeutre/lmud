@@ -3,7 +3,7 @@
 -behaviour(supervisor).
 
 %% API
--export([start_link/0, start_child/2]).
+-export([start_link/0, start_child/3, which_children/0]).
 
 %% Supervisor callbacks
 -export([init/1]).
@@ -13,8 +13,11 @@
 start_link() ->
   supervisor:start_link({local, ?SERVER}, ?MODULE, []).
 
-start_child(Title, Desc) ->
-  supervisor:start_child(?SERVER, [Title, Desc]).
+start_child(Name, Title, Desc) ->
+  supervisor:start_child(?SERVER, [Name, Title, Desc]).
+
+which_children() ->
+  supervisor:which_children(?SERVER).
 
 init([]) ->
   Room = {em_room, {em_room, start_link, []},

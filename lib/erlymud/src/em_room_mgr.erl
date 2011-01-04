@@ -17,11 +17,16 @@
 start_link() ->
   gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
 
-% Concurrent lookup if room is loaded; call to em_room_mgr otherwise
+% Concurrent lookup if room is loaded; call to em_room_mgr otherwise.
 get_room(Name) ->
   case ets:lookup(?TABLE_ID, Name) of
     [{Name, Room}] ->
-      {ok, Room};
+      case is_process_alive(Room) of
+        true ->
+          {ok, Room};
+        false ->
+          gen_server:call(?SERVER, {get_room, Name})
+      end;
     [] ->
       gen_server:call(?SERVER, {get_room, Name})
   end.
@@ -29,16 +34,13 @@ get_room(Name) ->
 %% gen_server callbacks
 
 init([]) ->
-  process_flag(trap_exit, true),
   ets:new(?TABLE_ID, [protected, named_table]),
+  refresh(em_room_pool_sup:which_children()),
   {ok, #state{}}.
 
 handle_call({get_room, Name}, _From, State) ->
   case try_load_room(Name) of
     {ok, Room} ->
-      % For now a link; we're lost if em_room_mgr dies and the Rooms
-      % dict disappears, so all rooms should be killed
-      link(Room),
       {reply, {ok, Room}, State};
     {error, not_found} ->
       {reply, {error, not_found}, State}
@@ -47,14 +49,8 @@ handle_call({get_room, Name}, _From, State) ->
 handle_cast(_Msg, State) ->
   {noreply, State}.
 
-handle_info({'EXIT', From, Reason}, State) ->
-  case ets:match(?TABLE_ID, {'$1', From}) of
-    [[Name]] ->
-      ets:delete(?TABLE_ID, Name),
-      {noreply, State};
-    [] ->
-      {stop, Reason, State}
-  end.
+handle_info(_Info, State) ->
+  {noreply, State}.
 
 terminate(_Reason, _State) ->
   ok.
@@ -63,6 +59,15 @@ code_change(_OldVsn, State, _Extra) ->
   {ok, State}.
 
 %% Internal functions
+
+refresh([]) ->
+  ok;
+refresh([{_, undefined, _, _}|Children]) ->
+  refresh(Children);
+refresh([{_, Room, worker, [em_room]}|Children]) ->
+  Name = em_room:get_name(Room),
+  ets:insert(?TABLE_ID, {Name, Room}),
+  refresh(Children).
 
 try_load_room(Name) ->
   RoomFile = filename:join([code:priv_dir(erlymud), "rooms", 
@@ -85,7 +90,7 @@ make_room(Filename, Data) ->
   {title, Title} = lists:keyfind(title, 1, Data),
   {desc, Desc} = lists:keyfind(desc, 1, Data),
   {exits, Exits} = lists:keyfind(exits, 1, Data),
-  {ok, Room} = em_room_pool_sup:start_child(Title, Desc),
+  {ok, Room} = em_room_pool_sup:start_child(Name, Title, Desc),
   add_exits(Room, Exits),
   {Name, Room}.
 

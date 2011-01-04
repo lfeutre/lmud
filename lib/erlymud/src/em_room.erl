@@ -2,22 +2,17 @@
 
 -behaviour(gen_server).
 
--export([start_link/2, start/2, add_exit/3, get_exit/2, get_exits/1, 
+-export([start_link/3, add_exit/3, get_exit/2, get_exits/1, get_name/1,
          describe/1, describe_except/2, enter/2, leave/2, 
          print_except/4, print_while/4]).
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, 
          terminate/2, code_change/3]).
 
--record(state, {title="A small room", 
-                desc="This is a small, non-descript room.", 
-                people=[], exits=[]}).
+-record(state, {name, title, desc, people=[], exits=[]}).
 
-start_link(Title, Desc) ->
-  gen_server:start_link(?MODULE, [Title, Desc], []).
-
-start(Title, Desc) ->
-  gen_server:start(?MODULE, [Title, Desc], []).
+start_link(Name, Title, Desc) ->
+  gen_server:start_link(?MODULE, [Name, Title, Desc], []).
 
 add_exit(Room, Dir, Dest) ->
   gen_server:call(Room, {add_exit, Dir, Dest}).
@@ -27,6 +22,9 @@ get_exit(Room, Dir) ->
 
 get_exits(Room) ->
   gen_server:call(Room, get_exits).
+
+get_name(Room) ->
+  gen_server:call(Room, get_name).
 
 describe(Room) ->
   gen_server:call(Room, describe).
@@ -49,9 +47,9 @@ print_while(Room, Pred, Format, Args) ->
 
 % --
 
-init([Title, Desc]) ->
+init([Name, Title, Desc]) ->
   process_flag(trap_exit, true),
-  {ok, #state{title=Title, desc=Desc}}.
+  {ok, #state{name=Name, title=Title, desc=Desc}}.
 
 handle_call({add_exit, Dir, Dest}, _From, #state{exits=Exits} = State) ->
   {reply, ok, State#state{exits=[{Dir, Dest}|Exits]}};
@@ -63,6 +61,8 @@ handle_call({get_exit, Dir}, _From, #state{exits=Exits} = State) ->
   {reply, Response, State};
 handle_call(get_exits, _From, #state{exits=Exits} = State) ->
   {reply, Exits, State};
+handle_call(get_name, _From, #state{name=Name} = State) ->
+  {reply, Name, State};
 handle_call(describe, _From, State) ->
   {reply, do_describe(State), State};
 handle_call({describe_except, User}, _From, State) ->
