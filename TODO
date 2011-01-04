@@ -1,12 +1,8 @@
 ErlyMUD TODO
 ============
 
-0.2.4
+0.2.5
 -----
-* Clean up the code;
-  - Fix issue with room setup; if em_game restarts, it loses state and
-    doesn't think there are any rooms.. but they are still active below
-    em_room_sup!
 * Move save file handling to em_game and put files in a better location,
   so they won't be tied to the specific version of the erlymud app
 
