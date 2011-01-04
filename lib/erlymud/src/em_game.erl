@@ -106,7 +106,7 @@ do_login(Name, Client, #state{users=Users}=State) ->
     {_Name, _User} ->
       {{error, user_exists}, State};
     false ->
-      Room = em_room_mgr:get_room("room1"),
+      {ok, Room} = em_room_mgr:get_room("room1"),
       case em_living_sup:start_child(Name, Room, Client) of
         {ok, Living} ->
           link(Living),

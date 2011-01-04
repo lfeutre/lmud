@@ -126,7 +126,7 @@ do_go({error, not_found}, #state{client={_,Out}}=State) ->
   em_conn:print(Out, "You can't go in that direction.\n"),
   State;
 do_go({ok, {Dir, Dest}}, #state{name=Name, client={_,Out}, room=Room}=State) ->
-  DestRoom = em_room_mgr:get_room(Dest),
+  {ok, DestRoom} = em_room_mgr:get_room(Dest),
   em_conn:print(Out, "You leave " ++ Dir ++ ".\n\n"),
   em_room:print_except(Room, self(), "~s leaves ~s.~n", [Name, Dir]),
   em_room:leave(Room, self()),
