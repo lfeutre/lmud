@@ -3,8 +3,9 @@
 -behaviour(gen_server).
 
 -export([start_link/3, 
-         add_exit/3, add_object/2,
-         get_exit/2, get_exits/1, get_name/1,
+         add_exit/3, add_object/2, 
+         get_exit/2, get_exits/1, get_name/1, get_objects/1,
+         remove_object/2,
          describe/1, describe_except/2, enter/2, leave/2, 
          print_except/4, print_while/4]).
 
@@ -30,6 +31,12 @@ get_exits(Room) ->
 
 get_name(Room) ->
   gen_server:call(Room, get_name).
+
+get_objects(Room) ->
+  gen_server:call(Room, get_objects).
+
+remove_object(Room, Ob) ->
+  gen_server:call(Room, {remove_object, Ob}).
 
 describe(Room) ->
   gen_server:call(Room, describe).
@@ -70,6 +77,10 @@ handle_call(get_exits, _From, #state{exits=Exits} = State) ->
   {reply, Exits, State};
 handle_call(get_name, _From, #state{name=Name} = State) ->
   {reply, Name, State};
+handle_call(get_objects, _From, #state{objects=Objects} = State) ->
+  {reply, Objects, State};
+handle_call({remove_object, Ob}, _From, #state{objects=Objects} = State) ->
+  {reply, ok, State#state{objects=lists:delete(Ob, Objects)}};
 handle_call(describe, _From, State) ->
   {reply, do_describe(State), State};
 handle_call({describe_except, User}, _From, State) ->

@@ -12,9 +12,9 @@
 %% game commands
 -export([cmd_look/2, cmd_north/2, cmd_east/2, cmd_south/2, cmd_west/2,
          cmd_go/2, cmd_quit/2, cmd_emote/2, cmd_say/2, cmd_tell/2, 
-         cmd_who/2]).
+         cmd_who/2, cmd_get/2, cmd_drop/2, cmd_inv/2]).
 
--record(state, {name, room, client}).
+-record(state, {name, room, client, objects=[]}).
 
 
 %% API functions
@@ -99,6 +99,71 @@ parse(Line, #state{client={_,Out}}=State) ->
 
 %% Game commands
 
+cmd_inv(_Args, #state{objects=Obs}=State) ->
+  {ok, do_inv(Obs, State)}.
+
+do_inv([], State) ->
+  do_print("You're not carrying anything.\n", State),
+  State;
+do_inv(Obs, State) ->
+  do_print("You're carrying:\n", State),
+  do_print(desc_inv(Obs, []), State),
+  State.
+
+desc_inv([], Result) ->
+  Result;
+desc_inv([Ob|Obs], Result) ->
+  Line = [" ", em_object:a_short(Ob)],
+  desc_inv(Obs, [Result, Line]).
+
+cmd_drop([], State) ->
+  do_print("Drop what?\n", State),
+  {ok, State};
+cmd_drop([Id|_Args], #state{objects=Obs}=State) ->
+  {ok, do_drop(Id, Obs, State)}.
+
+do_drop(_Id, [], State) ->
+  do_print("You don't have anything like that.\n", State),
+  State;
+do_drop(Id, [Ob|Obs], #state{name=Name, room=Room, objects=Objects}=State) ->
+  case em_object:has_id(Ob, Id) of
+    true ->
+      TheShort = em_object:the_short(Ob),
+      do_print("You drop ~s.\n", [TheShort], State),
+      em_room:add_object(Room, Ob),
+      em_room:print_except(Room, self(), "~s drops ~s.~n", [Name, TheShort]),
+      State#state{objects=lists:delete(Ob, Objects)};
+    false ->
+      do_drop(Name, Obs, State)
+  end.
+
+cmd_get([], State) ->
+  do_print("Get what?\n", State),
+  {ok, State};
+cmd_get([Id|_Args], #state{room=Room}=State) ->
+  Obs = em_room:get_objects(Room),
+  {ok, do_get(Id, Obs, State)}.
+
+do_get(_Id, [], State) ->
+  do_print("There's no such thing here.\n", State),
+  State;
+do_get(Id, [Ob|Obs], #state{name=Name, room=Room, objects=Objects}=State) ->
+  case em_object:has_id(Ob, Id) of
+    true ->
+      TheShort = em_object:the_short(Ob),
+      do_print("You take ~s.\n", [TheShort], State),
+      em_room:remove_object(Room, Ob),
+      em_room:print_except(Room, self(), "~s takes ~s.~n", [Name, TheShort]),
+      State#state{objects=[Ob|Objects]};
+    false ->
+      do_get(Name, Obs, State)
+  end.
+
+do_print(Format, State) ->
+  do_print(Format, [], State).
+do_print(Format, Args, #state{client={_,Out}}) ->
+  em_conn:print(Out, Format, Args).
+    
 cmd_quit(_Args, #state{name=Name, client={_,Out}, room=Room}=State) ->
   em_conn:print(Out, "Goodbye!\n"),
   em_room:print_except(Room, self(), "~s has left.~n", [Name]),

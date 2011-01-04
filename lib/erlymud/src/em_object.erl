@@ -9,7 +9,8 @@
 -module(em_object).
 
 -export([new/1, new/2, load/1,
-%         has_id/2, has_plural_id/2,
+         a_short/1, the_short/1,
+         has_id/2, has_plural_id/2,
          add_id/2, add_primary_id/2, %add_plural/2,
          add_adj/2, add_primary_adj/2,
          set_name/2, % set_proper_name/2, set_plural/1, set_unique/1,
@@ -75,6 +76,18 @@ make_object([{primary_adj, Adj}|Data], Ob) ->
   make_object(Data, add_primary_adj(Ob, Adj));
 make_object([_Other|Data], Ob) ->
   make_object(Data, Ob).
+
+a_short(#object{short=Short}) ->
+  em_grammar:add_article(Short).
+
+the_short(#object{short=Short}) ->
+  ["the ", Short].
+
+has_id(#object{ids=Ids}, Id) ->
+  lists:member(Id, Ids).
+
+has_plural_id(#object{plurals=Plurals}, Id) ->
+  lists:member(Id, Plurals).
 
 %%---------------------------------------------------------------------------
 %% @doc Add an id to the specified object
