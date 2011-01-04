@@ -1,5 +1,6 @@
 syntax: glob
 
+erl_crash.dump
 edoc-info
 *.beam
 *.boot
