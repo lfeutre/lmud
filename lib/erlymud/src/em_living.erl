@@ -127,12 +127,13 @@ do_go({error, not_found}, #state{client={_,Out}}=State) ->
   em_conn:print(Out, "You can't go in that direction.\n"),
   State;
 do_go({ok, {Dir, Dest}}, #state{name=Name, client={_,Out}, room=Room}=State) ->
+  DestRoom = em_room_mgr:get_room(Dest),
   em_conn:print(Out, "You leave " ++ Dir ++ ".\n\n"),
   em_room:print_except(Room, self(), "~s leaves ~s.~n", [Name, Dir]),
   em_room:leave(Room, self()),
-  em_room:enter(Dest, self()),
-  em_room:print_except(Dest, self(), "~s arrives.~n", [Name]),
-  {ok, NewState} = cmd_look([], State#state{room=Dest}),
+  em_room:enter(DestRoom, self()),
+  em_room:print_except(DestRoom, self(), "~s arrives.~n", [Name]),
+  {ok, NewState} = cmd_look([], State#state{room=DestRoom}),
   NewState.
 
 cmd_emote(Args, #state{name=Name,client={_,Out}, room=Room}=State) ->

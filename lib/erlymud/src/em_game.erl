@@ -4,7 +4,6 @@
 
 %% API
 -export([start_link/0, start/0, 
-         add_rooms/1, 
          get_users/0, lookup_user/1, lookup_user_pid/1,
          login/2, logout/1,
          print_except/3, print_while/3]).
@@ -12,7 +11,7 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, 
          terminate/2, code_change/3]).
 
--record(state, {users=[], rooms=[]}).
+-record(state, {users=[]}).
 
 -define(SERVER, ?MODULE).
 
@@ -24,9 +23,6 @@ start_link() ->
 
 start() ->
   gen_server:start({local, ?SERVER}, ?MODULE, [], []).
-
-add_rooms(Rooms) ->
-  gen_server:call(?SERVER, {add_rooms, Rooms}).
 
 get_users() ->
   gen_server:call(?SERVER, get_users).
@@ -55,8 +51,6 @@ init([]) ->
   process_flag(trap_exit, true),
   {ok, #state{}}.
 
-handle_call({add_rooms, NewRooms}, _From, #state{rooms=Rooms}=State) ->
-  {reply, ok, State#state{rooms = Rooms ++ NewRooms}};
 handle_call(get_users, _From, #state{users=Users}=State) ->
   {reply, Users, State};
 handle_call({login, Name, Client}, _From, State) ->
@@ -107,11 +101,12 @@ code_change(_OldVsn, State, _Extra) ->
 
 %% User Handling
 
-do_login(Name, Client, #state{users=Users,rooms=[Room|_Rooms]}=State) ->
+do_login(Name, Client, #state{users=Users}=State) ->
   case lists:keyfind(Name, 1, Users) of
     {_Name, _User} ->
       {{error, user_exists}, State};
     false ->
+      Room = em_room_mgr:get_room("room1"),
       case em_living_sup:start_child(Name, Room, Client) of
         {ok, Living} ->
           link(Living),

@@ -22,10 +22,18 @@ get_room(Name) ->
 %% gen_server callbacks
 
 init([]) ->
-  {ok, #state{}}.
+  % Rooms = build_world(),
+  Rooms = load_world(),
+  {ok, #state{rooms=Rooms}}.
 
-handle_call({get_room, _Name}, _From, State) ->
-  {reply, {error, not_found}, State}.
+handle_call({get_room, Name}, _From, #state{rooms=Rooms}=State) ->
+  Result = case dict:is_key(Name, Rooms) of
+             true ->
+               dict:fetch(Name, Rooms);
+             false ->
+               {error, not_found}
+            end,
+  {reply, Result, State}.
 
 handle_cast(_Msg, State) ->
   {noreply, State}.
@@ -40,3 +48,61 @@ code_change(_OldVsn, State, _Extra) ->
   {ok, State}.
 
 %% Internal functions
+
+-ifdef(false).
+build_world() ->
+  {ok, R1} = em_room_pool_sup:start_child(
+      "A small room",
+      "This is a small, rather non-descript room. To the east is a corridor."),
+  {ok, R2} = em_room_pool_sup:start_child(
+      "A long, dark corridor",
+      "This dark, damp corridor continues to the north and south."),
+  em_room:add_exit(R1, "east", "room2"),
+  em_room:add_exit(R2, "west", "room1"),
+  {ok, R3} = em_room_pool_sup:start_child(
+      "A long, dark corridor",
+      "This dark, damp corridor continues to the north and south."),
+  em_room:add_exit(R2, "north", "room3"),
+  em_room:add_exit(R3, "south", "room2"),
+  add_rooms([{"room1", R1}, {"room2", R2}, {"room3", R3}], dict:new()).
+
+add_rooms([], Dict) ->
+  Dict;
+add_rooms([{Name, Room}|Rooms], Dict) ->
+  NewDict = dict:store(Name, Room, Dict),
+  add_rooms(Rooms, NewDict).
+-endif.
+
+load_world() ->
+  RoomDir = filename:join([code:priv_dir(erlymud), "rooms"]),
+  filelib:fold_files(RoomDir, "\.dat$", false, fun load_room/2, dict:new()).
+
+load_room(Filename, Rooms) ->
+  io:format("loading: ~s~n", [Filename]),
+  case file:consult(Filename) of
+    {ok, Data} ->
+      {Name, Room} = make_room(Filename, Data),
+      dict:store(Name, Room, Rooms);
+    {error, _Reason} ->
+      Rooms
+  end.
+ 
+make_room(Filename, Data) ->
+  Name = extract_name(string:tokens(Filename, "/")),
+  {title, Title} = lists:keyfind(title, 1, Data),
+  {desc, Desc} = lists:keyfind(desc, 1, Data),
+  {exits, Exits} = lists:keyfind(exits, 1, Data),
+  {ok, Room} = em_room_pool_sup:start_child(Title, Desc),
+  add_exits(Room, Exits),
+  {Name, Room}.
+
+add_exits(Room, []) ->
+  Room;
+add_exits(Room, [{Dir, Dest}|Exits]) ->
+  em_room:add_exit(Room, Dir, Dest),
+  add_exits(Room, Exits).
+
+extract_name([Basename]) ->
+  re:replace(Basename, "\.dat$", "", [{return, list}]);
+extract_name([_|T]) ->
+  extract_name(T).
