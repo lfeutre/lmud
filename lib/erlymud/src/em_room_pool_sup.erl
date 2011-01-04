@@ -18,7 +18,7 @@ start_child(Title, Desc) ->
 
 init([]) ->
   Room = {em_room, {em_room, start_link, []},
-          transient, brutal_kill, worker, [em_room]},
+          temporary, brutal_kill, worker, [em_room]},
   Children = [Room],
   RestartStrategy = {simple_one_for_one, 0, 1},
   {ok, {RestartStrategy, Children}}.

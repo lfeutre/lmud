@@ -1,5 +1,6 @@
 {version, 1}.
 {title, "A long, dark corridor"}.
 {desc, "This dark, damp corridor continues to the north."}.
-{exits, [{"north", "room3"}]}.
+{exits, [{"north", "room3"},
+         {"west",  "room1"}]}.
 

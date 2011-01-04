@@ -23,17 +23,22 @@ get_room(Name) ->
 
 init([]) ->
   % Rooms = build_world(),
-  Rooms = load_world(),
+  % Rooms = load_world(),
+  Rooms = dict:new(),
   {ok, #state{rooms=Rooms}}.
 
 handle_call({get_room, Name}, _From, #state{rooms=Rooms}=State) ->
-  Result = case dict:is_key(Name, Rooms) of
-             true ->
-               dict:fetch(Name, Rooms);
-             false ->
-               {error, not_found}
-            end,
-  {reply, Result, State}.
+  case dict:is_key(Name, Rooms) of
+    true ->
+      {reply, dict:fetch(Name, Rooms), State};
+    false ->
+      case try_load_room(Name, Rooms) of
+        {ok, Room, NewRooms} ->
+          {reply, Room, State#state{rooms=NewRooms}};
+        {error, not_found} ->
+          {reply, {error, not_found}, State}
+      end
+  end.
 
 handle_cast(_Msg, State) ->
   {noreply, State}.
@@ -73,18 +78,23 @@ add_rooms([{Name, Room}|Rooms], Dict) ->
   add_rooms(Rooms, NewDict).
 -endif.
 
-load_world() ->
-  RoomDir = filename:join([code:priv_dir(erlymud), "rooms"]),
-  filelib:fold_files(RoomDir, "\.dat$", false, fun load_room/2, dict:new()).
+%load_world() ->
+%  RoomDir = filename:join([code:priv_dir(erlymud), "rooms"]),
+%  filelib:fold_files(RoomDir, "\.dat$", false, fun load_room/2, dict:new()).
+
+try_load_room(Name, Rooms) ->
+  RoomFile = filename:join([code:priv_dir(erlymud), "rooms", 
+                            Name ++ ".dat"]),
+  load_room(RoomFile, Rooms).
 
 load_room(Filename, Rooms) ->
   io:format("loading: ~s~n", [Filename]),
   case file:consult(Filename) of
     {ok, Data} ->
       {Name, Room} = make_room(Filename, Data),
-      dict:store(Name, Room, Rooms);
+      {ok, Room, dict:store(Name, Room, Rooms)};
     {error, _Reason} ->
-      Rooms
+      {error, not_found}
   end.
  
 make_room(Filename, Data) ->
