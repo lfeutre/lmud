@@ -16,7 +16,8 @@
 %% game commands
 -export([cmd_look/2, cmd_north/2, cmd_east/2, cmd_south/2, cmd_west/2,
          cmd_go/2, cmd_quit/2, cmd_emote/2, cmd_say/2, cmd_tell/2, 
-         cmd_who/2, cmd_get/2, cmd_drop/2, cmd_inv/2, cmd_glance/2]).
+         cmd_who/2, cmd_get/2, cmd_drop/2, cmd_inv/2, cmd_glance/2,
+         cmd_save/2, cmd_setlong/2]).
 
 -record(state, {name, room, client, long="", objects=[]}).
 
@@ -298,10 +299,18 @@ cmd_who(_Args, #state{client={_,Out}}=State) ->
     [[" ", Name, "\n"] || {Name, _Pid} <- em_game:get_users()]]),
   {ok, State}.
 
+cmd_save(_Args, #state{client={_,Out}}=State) ->
+  em_conn:print(Out, "Saving..\n"),
+  {ok, NewState} = do_save(State),
+  {ok, NewState}.
+
+cmd_setlong(Args, State) ->
+  {ok, State#state{long=string:join(Args, " ")}}.
+
 %% Load
 
 do_load(#state{name=Name}=State) ->
-  File = filename:join([code:priv_dir(erlymud), "users",
+  File = filename:join([code:priv_dir(erlymud), "livings",
                         Name ++ ".dat"]),
   load_living(File, State).
 
@@ -322,3 +331,15 @@ update_living([{long, Long}|Data], State) ->
 update_living([_Other|Data], State) ->
   update_living(Data, State).
 
+do_save(#state{name=Name}=State) ->
+  Data = save_living(State),
+  File = filename:join([code:priv_dir(erlymud), "livings",
+                        Name ++ ".dat"]),
+  file:write_file(File, Data),
+  {ok, State}.
+
+save_living(State) ->
+  lists:flatten([
+    "{version, 1}.\n",
+    "{long, \"", State#state.long, "\"}.\n"
+  ]).

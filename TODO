@@ -4,9 +4,6 @@ ErlyMUD TODO
 0.2.6
 -----
 * Descriptions;
-  - Separate 'walk-by' and 'look' descriptions for rooms
-  - Add 'look' description for livings
-  - Make 'look' work on objects and players
   - Optional 'show in room' desc for objects
 * Detail objects;
   - Are 'attached' to rooms, invisible except for mention in the

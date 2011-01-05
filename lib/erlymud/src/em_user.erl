@@ -153,6 +153,10 @@ login({new_user_pw_confirm, Name, Password}, Password, #state{conn=Conn}) ->
   file:write_file(UserFile, lists:flatten([
     "{version, 1}.\n",
     "{password, \"", CryptPw, "\"}.\n"])),
+  LivFile = filename:join([code:priv_dir(erlymud), "livings", [Name, ".dat"]]),
+  file:write_file(LivFile, lists:flatten([
+    "{version, 1}.\n",
+    "{long, \"", Name, " looks pretty ordinary.\"}.\n"])),
   em_conn:print(Conn, ["\nWelcome, ", Name, "!\n\n"]),
   do_login(Name, Conn);
 login({new_user_pw_confirm, Name, _Password}, _WrongPassword, #state{conn=Conn}) ->
