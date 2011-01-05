@@ -1,6 +1,9 @@
 {version, 1}.
 {title, "A long, dark corridor"}.
 {desc, "This dark, damp corridor continues to the north."}.
+{long, "This is the south end of a dark corridor. The smooth stones "
+       "of the walls and floor seem almost slick, more like a dank "
+       "cellar than anything else."}.
 {exits, [{"north", "room3"},
          {"west",  "room1"}]}.
 

@@ -12,7 +12,7 @@
 %% game commands
 -export([cmd_look/2, cmd_north/2, cmd_east/2, cmd_south/2, cmd_west/2,
          cmd_go/2, cmd_quit/2, cmd_emote/2, cmd_say/2, cmd_tell/2, 
-         cmd_who/2, cmd_get/2, cmd_drop/2, cmd_inv/2]).
+         cmd_who/2, cmd_get/2, cmd_drop/2, cmd_inv/2, cmd_glance/2]).
 
 -record(state, {name, room, client, objects=[]}).
 
@@ -170,8 +170,13 @@ cmd_quit(_Args, #state{name=Name, client={_,Out}, room=Room}=State) ->
   ok = em_game:logout(self()),
   {stop, State}.
 
-cmd_look(_Args, #state{client={_,Out},room=Room}=State) ->
+cmd_glance(_Args, #state{client={_,Out},room=Room}=State) ->
   Desc = em_room:describe_except(Room, self()),
+  em_conn:print(Out, Desc),
+  {ok, State}.
+
+cmd_look(_Args, #state{client={_,Out},room=Room}=State) ->
+  Desc = em_room:looking(Room, self()),
   em_conn:print(Out, Desc),
   {ok, State}.
 
@@ -197,7 +202,7 @@ do_go({ok, {Dir, Dest}}, #state{name=Name, client={_,Out}, room=Room}=State) ->
   em_room:leave(Room, self()),
   em_room:enter(DestRoom, self()),
   em_room:print_except(DestRoom, self(), "~s arrives.~n", [Name]),
-  {ok, NewState} = cmd_look([], State#state{room=DestRoom}),
+  {ok, NewState} = cmd_glance([], State#state{room=DestRoom}),
   NewState.
 
 cmd_emote(Args, #state{name=Name,client={_,Out}, room=Room}=State) ->

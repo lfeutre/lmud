@@ -5,14 +5,16 @@
 -export([start_link/3, 
          add_exit/3, add_object/2, 
          get_exit/2, get_exits/1, get_name/1, get_objects/1,
+         set_long/2,
          remove_object/2,
-         describe/1, describe_except/2, enter/2, leave/2, 
+         describe/1, describe_except/2, looking/2,
+         enter/2, leave/2, 
          print_except/4, print_while/4]).
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, 
          terminate/2, code_change/3]).
 
--record(state, {name, title, desc, people=[], exits=[], objects=[]}).
+-record(state, {name, title, desc, long, people=[], exits=[], objects=[]}).
 
 start_link(Name, Title, Desc) ->
   gen_server:start_link(?MODULE, [Name, Title, Desc], []).
@@ -44,6 +46,9 @@ describe(Room) ->
 describe_except(Room, User) ->
   gen_server:call(Room, {describe_except, User}).
 
+looking(Room, User) ->
+  gen_server:call(Room, {looking, User}).
+
 enter(Room, Who) ->
   gen_server:call(Room, {enter, Who}).
 
@@ -56,6 +61,9 @@ print_except(Room, User, Format, Args) ->
 
 print_while(Room, Pred, Format, Args) ->
   gen_server:call(Room, {print_while, Pred, Format, Args}).
+
+set_long(Room, Long) ->
+  gen_server:call(Room, {set_long, Long}).
 
 % --
 
@@ -85,6 +93,8 @@ handle_call(describe, _From, State) ->
   {reply, do_describe(State), State};
 handle_call({describe_except, User}, _From, State) ->
   {reply, do_describe_except(User, State), State};
+handle_call({looking, User}, _From, State) ->
+  {reply, do_looking(User, State), State};
 handle_call({enter, Who}, _From, #state{people=People} = State) ->
   link(Who),
   {reply, ok, State#state{people=[Who|People]}};
@@ -95,7 +105,9 @@ handle_call({print_while, Pred, Format, Args}, _From, State) ->
   People = lists:filter(Pred, State#state.people),
   PrintFun = fun(Liv) -> em_living:print(Liv, Format, Args) end,
   lists:map(PrintFun, People),
-  {reply, ok, State}.
+  {reply, ok, State};
+handle_call({set_long, Long}, _From, State) ->
+  {reply, ok, State#state{long=Long}}.
 
 handle_cast(_Msg, State) ->
   {noreply, State}.
@@ -117,13 +129,18 @@ code_change(_OldVsn, State, _Extra) ->
 %% Internal functions
 
 do_describe(#state{title=Title, desc=Desc, people=People, exits=Exits, objects=Objects}) ->
-  ["%^ROOM_TITLE%^", Title, "%^RESET%^\n", Desc, "\n", 
+  ["%^ROOM_TITLE%^", Title, "%^RESET%^\n", em_text:wrapline(Desc, 78), "\n", 
    "%^ROOM_EXITS%^[Exits: ", list_exits(Exits), "]%^RESET%^\n",
     list_objects(Objects),
     list_people(People)].
 
 do_describe_except(User, #state{people=People}=State) ->
   do_describe(State#state{people = People -- [User]}).
+
+do_looking(User, #state{long=undefined}=State) ->
+  do_describe_except(User, State);
+do_looking(User, #state{long=Long}=State) ->
+  do_describe_except(User, State#state{desc=Long}).
 
 list_exits(Exits) ->
   list_exits([Dir || {Dir, _Dest} <- Exits], []).

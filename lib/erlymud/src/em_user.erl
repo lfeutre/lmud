@@ -181,7 +181,7 @@ do_login(Name, Conn) ->
     {ok, Living} ->
       link(Living),
       em_conn:print(Conn, "\n"),
-      em_living:cmd(Living, "look"),
+      em_living:cmd(Living, "glance"),
       em_conn:print(Conn, "\n> "),
       {next, {?MODULE, parse, [Living]}};
     {error, user_exists} ->
