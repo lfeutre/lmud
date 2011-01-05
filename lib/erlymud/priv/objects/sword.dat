@@ -1,5 +1,6 @@
 {version, 1}.
 {primary_id, "sword"}.
 {primary_adj, "rusty"}.
+{show_in_room, "Someone left an old, rusty sword here."}.
 {long, "It's an old, rusty sword that probably isn't very useful anymore."}.
 

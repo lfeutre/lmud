@@ -3,21 +3,21 @@ ErlyMUD TODO
 
 0.2.6
 -----
-* Descriptions;
-  - Optional 'show in room' desc for objects
 * Detail objects;
   - Are 'attached' to rooms, invisible except for mention in the
     room description
   - Can have descriptions etc just like other objects
   - Maybe also attachable to objects?
-* Make location and inventory save, for players
 
 0.2.7
 -----
-* Use 'areas' for organizing rooms and objects
+* Add 'destroy' command for destroying objects in own inventory?
+* Add 'clone' command for instantiating object templates
+* Set up some help info, listing available commands etc
 
 Future
 ------
+* Use 'areas' for organizing rooms and objects
 * Move save file handling to em_game and put files in a better location,
   so they won't be tied to the specific version of the erlymud app
 * Improve connection lifecycle;

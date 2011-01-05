@@ -24,6 +24,7 @@
 -record(object, {ids=[], plurals=[], adjs=[], 
                  primary_id="", primary_adj="",
                  short="nondescript thing", long="", 
+                 show_in_room = "",
                  proper_name = "",
                  quantity = 0,
                  is_plural=false, is_unique=false,
@@ -74,6 +75,8 @@ make_object([{primary_id, Id}|Data], Ob) ->
   make_object(Data, add_primary_id(Ob, Id));
 make_object([{primary_adj, Adj}|Data], Ob) ->
   make_object(Data, add_primary_adj(Ob, Adj));
+make_object([{show_in_room, Desc}|Data], Ob) ->
+  make_object(Data, set_show_in_room(Ob, Desc));
 make_object([{long, Long}|Data], Ob) ->
   make_object(Data, set_long(Ob, Long));
 make_object([_Other|Data], Ob) ->
@@ -144,9 +147,14 @@ set_name(Ob, [Token|Toks], Ids, Adjs) ->
 set_long(Ob, Long) ->
   Ob#object{long=Long}.
 
-show_in_room(#object{short=Short}) ->
+set_show_in_room(Ob, Desc) ->
+  Ob#object{show_in_room=Desc}.
+
+show_in_room(#object{show_in_room="", short=Short}) ->
   A_Short =em_grammar:add_article(Short),
-  [em_text:capitalize(A_Short), " lies here, discarded.\n"].
+  [em_text:capitalize(A_Short), " lies here, discarded.\n"];
+show_in_room(#object{show_in_room=Desc}) ->
+  Desc.
 
 get_template(Ob) ->
   Ob#object.template.
