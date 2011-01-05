@@ -8,7 +8,7 @@
 %%% =========================================================================
 -module(em_object).
 
--export([new/1, new/2, load/1,
+-export([new/1, new/2, load/1, load_obs/1,
          has_id/2, has_plural_id/2,
          add_id/2, add_primary_id/2, %add_plural/2,
          add_adj/2, add_primary_adj/2,
@@ -17,7 +17,8 @@
          a_short/1, the_short/1,
 %         short/1, the_short/1, a_short/1, plural_short/1,
          long/1,
-         show_in_room/1
+         show_in_room/1,
+         get_template/1
         ]).
 
 -record(object, {ids=[], plurals=[], adjs=[], 
@@ -25,7 +26,8 @@
                  short="nondescript thing", long="", 
                  proper_name = "",
                  quantity = 0,
-                 is_plural=false, is_unique=false}).
+                 is_plural=false, is_unique=false,
+                 template}).
 
 
 %%===========================================================================
@@ -54,20 +56,17 @@ new(Ids, Adjs) ->
 load(Name) ->
   File = filename:join([code:priv_dir(erlymud), "objects",
                         Name ++ ".dat"]),
-  load_object(File).
+  load_object(Name, File).
 
-load_object(Filename) ->
+load_object(Name, Filename) ->
   io:format("loading object: ~s~n", [Filename]),
   case file:consult(Filename) of
     {ok, Data} ->
-      Ob = make_object(Data),
+      Ob = make_object(Data, #object{template=Name}),
       {ok, Ob};
     {error, _Reason} ->
       {error, not_found}
   end.
-
-make_object(Data) ->
-  make_object(Data, #object{}).
 
 make_object([], Ob) ->
   Ob;
@@ -79,6 +78,15 @@ make_object([{long, Long}|Data], Ob) ->
   make_object(Data, set_long(Ob, Long));
 make_object([_Other|Data], Ob) ->
   make_object(Data, Ob).
+
+load_obs(Names) ->
+  load_obs(Names, []).
+
+load_obs([], ObList) ->
+  ObList;
+load_obs([Name|Rest], ObList) ->
+  {ok, Ob} = load(Name),
+  load_obs(Rest, [ObList ++ Ob]).
 
 a_short(#object{short=Short}) ->
   em_grammar:add_article(Short).
@@ -139,6 +147,9 @@ set_long(Ob, Long) ->
 show_in_room(#object{short=Short}) ->
   A_Short =em_grammar:add_article(Short),
   [em_text:capitalize(A_Short), " lies here, discarded.\n"].
+
+get_template(Ob) ->
+  Ob#object.template.
 
 %%===========================================================================
 %% Internal Functions

@@ -95,7 +95,7 @@ make_room(Filename, Data) ->
            false -> undefined
          end,
   Obs = case lists:keyfind(objects, 1, Data) of
-          {objects, ObList} -> load_obs(ObList);
+          {objects, ObList} -> em_object:load_obs(ObList);
           false -> []
         end,
   {ok, Room} = em_room_pool_sup:start_child(Name, Title, Desc),
@@ -103,15 +103,6 @@ make_room(Filename, Data) ->
   add_exits(Room, Exits),
   add_objects(Room, Obs),
   {Name, Room}.
-
-load_obs(Names) ->
-  load_obs(Names, []).
-
-load_obs([], ObList) ->
-  ObList;
-load_obs([Name|Rest], ObList) ->
-  {ok, Ob} = em_object:load(Name),
-  load_obs(Rest, [ObList ++ Ob]).
 
 add_objects(Room, []) ->
   Room;

@@ -301,8 +301,13 @@ cmd_who(_Args, #state{client={_,Out}}=State) ->
 
 cmd_save(_Args, #state{client={_,Out}}=State) ->
   em_conn:print(Out, "Saving..\n"),
-  {ok, NewState} = do_save(State),
-  {ok, NewState}.
+  case do_save(State) of
+    {ok, NewState} ->
+      {ok, NewState};
+    {error, Reason} ->
+      em_conn:print(Out, "Error: ~s\n", [Reason]),
+      {ok, State}
+  end.
 
 cmd_setlong(Args, State) ->
   {ok, State#state{long=string:join(Args, " ")}}.
@@ -328,6 +333,8 @@ update_living([], State) ->
   State;
 update_living([{long, Long}|Data], State) ->
   update_living(Data, State#state{long=Long});
+update_living([{objects, ObList}|Data], State) ->
+  update_living(Data, State#state{objects=em_object:load_obs(ObList)});
 update_living([_Other|Data], State) ->
   update_living(Data, State).
 
@@ -335,11 +342,26 @@ do_save(#state{name=Name}=State) ->
   Data = save_living(State),
   File = filename:join([code:priv_dir(erlymud), "livings",
                         Name ++ ".dat"]),
-  file:write_file(File, Data),
-  {ok, State}.
+  case file:write_file(File, Data) of
+    ok ->
+      {ok, State};
+    {error, Reason} ->
+      {error, file:format_error(Reason)}
+  end.
 
 save_living(State) ->
   lists:flatten([
     "{version, 1}.\n",
-    "{long, \"", State#state.long, "\"}.\n"
+    "{long, \"", State#state.long, "\"}.\n",
+    "{room, \"", em_room:get_name(State#state.room), "\"}.\n",
+    "{objects, ", save_objects(State), "}.\n"
   ]).
+
+save_objects(State) ->
+  Obs = State#state.objects,
+  ObTemplates = [em_object:get_template(Ob)||Ob <- Obs],
+  save_stringlist(ObTemplates).
+
+save_stringlist(List) ->
+  ["[", string:join([["\"",Str,"\""]||Str <- List], ", "), "]"].
+  

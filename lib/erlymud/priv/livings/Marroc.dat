@@ -1,2 +1,4 @@
 {version, 1}.
 {long, "Testing, testing.."}.
+{room, "room1"}.
+{objects, ["sword", "sword"]}.
