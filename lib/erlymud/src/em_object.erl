@@ -86,7 +86,7 @@ load_obs([], ObList) ->
   ObList;
 load_obs([Name|Rest], ObList) ->
   {ok, Ob} = load(Name),
-  load_obs(Rest, [ObList ++ Ob]).
+  load_obs(Rest, [Ob|ObList]).
 
 a_short(#object{short=Short}) ->
   em_grammar:add_article(Short).
