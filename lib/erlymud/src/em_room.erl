@@ -4,7 +4,7 @@
 
 -export([start_link/3, 
          add_exit/3, add_object/2, 
-         get_exit/2, get_exits/1, get_name/1, get_objects/1,
+         get_exit/2, get_exits/1, get_name/1, get_objects/1, get_people/1,
          set_long/2,
          remove_object/2,
          describe/1, describe_except/2, looking/2,
@@ -36,6 +36,9 @@ get_name(Room) ->
 
 get_objects(Room) ->
   gen_server:call(Room, get_objects).
+
+get_people(Room) ->
+  gen_server:call(Room, get_people).
 
 remove_object(Room, Ob) ->
   gen_server:call(Room, {remove_object, Ob}).
@@ -87,6 +90,8 @@ handle_call(get_name, _From, #state{name=Name} = State) ->
   {reply, Name, State};
 handle_call(get_objects, _From, #state{objects=Objects} = State) ->
   {reply, Objects, State};
+handle_call(get_people, _From, #state{people=People} = State) ->
+  {reply, People, State};
 handle_call({remove_object, Ob}, _From, #state{objects=Objects} = State) ->
   {reply, ok, State#state{objects=lists:delete(Ob, Objects)}};
 handle_call(describe, _From, State) ->

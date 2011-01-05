@@ -3,7 +3,11 @@
 -behaviour(gen_server).
 
 %% API
--export([start_link/3, start/3, stop/1, cmd/2, print/2, print/3]).
+-export([start_link/3, start/3, stop/1, 
+         get_name/1, set_long/2,
+         long/1,
+         cmd/2, print/2, print/3,
+         load/1]).
 
 %% gen_server
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, 
@@ -14,7 +18,7 @@
          cmd_go/2, cmd_quit/2, cmd_emote/2, cmd_say/2, cmd_tell/2, 
          cmd_who/2, cmd_get/2, cmd_drop/2, cmd_inv/2, cmd_glance/2]).
 
--record(state, {name, room, client, objects=[]}).
+-record(state, {name, room, client, long="", objects=[]}).
 
 
 %% API functions
@@ -24,6 +28,15 @@ start_link(Name, Room, Client) ->
 
 start(Name, Room, Client) ->
   gen_server:start(?MODULE, [Name, Room, Client], []).
+
+get_name(Pid) ->
+  gen_server:call(Pid, get_name).
+
+set_long(Pid, Long) ->
+  gen_server:call(Pid, {set_long, Long}).
+
+long(Pid) ->
+  gen_server:call(Pid, long).
 
 cmd(Pid, Line) ->
   gen_server:call(Pid, {cmd, Line}).
@@ -37,12 +50,21 @@ print(Pid, Format, Args) ->
 stop(Pid) ->
   gen_server:cast(Pid, stop).
 
+load(Pid) ->
+  gen_server:call(Pid, load).
+
 
 % gen_server callbacks
 
 init([Name, Room, Client]) ->
   {ok, #state{name=Name, room=Room, client=Client}}.
 
+handle_call(get_name, _From, #state{name=Name}=State) ->
+  {reply, Name, State};
+handle_call({set_long, Long}, _From, State) ->
+  {reply, ok, State#state{long=Long}};
+handle_call(long, _From, #state{long=Long}=State) ->
+  {reply, Long, State};
 handle_call({cmd, Line}, _From, State) ->
   case parse(Line, State) of
     {ok, NewState} ->
@@ -55,7 +77,10 @@ handle_call({print, Format}, _From, #state{client={_,Out}}=State) ->
   {reply, ok, State};
 handle_call({print, Format, Args}, _From, #state{client={_,Out}}=State) ->
   em_conn:print(Out, Format, Args),
-  {reply, ok, State}.
+  {reply, ok, State};
+handle_call(load, _From, State) ->
+  {Result, NewState} = do_load(State),
+  {reply, Result, NewState}.
 
 handle_cast(stop, #state{client={_,Out}}=State) ->
   em_conn:print(Out, "living(): stopping.~n"),
@@ -156,7 +181,7 @@ do_get(Id, [Ob|Obs], #state{name=Name, room=Room, objects=Objects}=State) ->
       em_room:print_except(Room, self(), "~s takes ~s.~n", [Name, TheShort]),
       State#state{objects=[Ob|Objects]};
     false ->
-      do_get(Name, Obs, State)
+      do_get(Id, Obs, State)
   end.
 
 do_print(Format, State) ->
@@ -175,11 +200,49 @@ cmd_glance(_Args, #state{client={_,Out},room=Room}=State) ->
   em_conn:print(Out, Desc),
   {ok, State}.
 
-cmd_look(_Args, #state{client={_,Out},room=Room}=State) ->
+cmd_look([], #state{client={_,Out},room=Room}=State) ->
   Desc = em_room:looking(Room, self()),
   em_conn:print(Out, Desc),
-  {ok, State}.
+  {ok, State};
+cmd_look([Id|_Args], #state{room=Room}=State) ->
+  Obs = em_room:get_objects(Room),
+  case do_look_ob(string:to_lower(Id), Obs, State) of
+    {ok, State} -> {ok, State};
+    {error, not_found} -> 
+      People = lists:delete(self(), em_room:get_people(Room)),
+      case do_look_liv(string:to_lower(Id), People, State) of
+        {ok, State} -> {ok, State};
+        {error, not_found} ->
+          do_print("There's no such thing here.\n", State),
+          {ok, State}
+      end
+  end.
 
+do_look_ob(_Id, [], _State) ->
+  {error, not_found};
+do_look_ob(Id, [Ob|Obs], State) ->
+  case em_object:has_id(Ob, Id) of
+    true ->
+      Long = em_object:long(Ob),
+      do_print("~s\n", [em_text:wrapline(Long, 78)], State),
+      {ok, State};
+    false ->
+      do_look_ob(Id, Obs, State)
+  end.
+
+do_look_liv(_Id, [], _State) ->
+  {error, not_found};
+do_look_liv(Id, [Liv|People], State) ->
+  case string:to_lower(em_living:get_name(Liv)) of
+    Id ->
+      Long = em_living:long(Liv),
+      do_print("~s\n", [em_text:wrapline(Long, 78)], State),
+      {ok, State};
+    _Other ->
+      do_look_liv(Id, People, State)
+  end.
+
+  
 cmd_north(_Args, State) ->
   cmd_go(["north"], State).
 cmd_east(_Args, State) ->
@@ -234,4 +297,28 @@ cmd_who(_Args, #state{client={_,Out}}=State) ->
   em_conn:print(Out, ["Users:\n",
     [[" ", Name, "\n"] || {Name, _Pid} <- em_game:get_users()]]),
   {ok, State}.
+
+%% Load
+
+do_load(#state{name=Name}=State) ->
+  File = filename:join([code:priv_dir(erlymud), "users",
+                        Name ++ ".dat"]),
+  load_living(File, State).
+
+load_living(Filename, State) ->
+  io:format("loading living: ~s~n", [Filename]),
+  case file:consult(Filename) of
+    {ok, Data} ->
+      NewState = update_living(Data, State),
+      {ok, NewState};
+    {error, _Reason} ->
+      {error, not_found}
+  end.
+
+update_living([], State) ->
+  State;
+update_living([{long, Long}|Data], State) ->
+  update_living(Data, State#state{long=Long});
+update_living([_Other|Data], State) ->
+  update_living(Data, State).
 

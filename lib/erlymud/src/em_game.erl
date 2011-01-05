@@ -110,6 +110,7 @@ do_login(Name, Client, #state{users=Users}=State) ->
       case em_living_sup:start_child(Name, Room, Client) of
         {ok, Living} ->
           link(Living),
+          em_living:load(Living),
           do_print_except(Users, Living, "[Notice] ~s has logged in.~n", [Name]),
           em_room:enter(Room, Living),
           em_room:print_except(Room, Living, "~s has arrived.~n", [Name]),

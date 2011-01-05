@@ -9,13 +9,14 @@
 -module(em_object).
 
 -export([new/1, new/2, load/1,
-         a_short/1, the_short/1,
          has_id/2, has_plural_id/2,
          add_id/2, add_primary_id/2, %add_plural/2,
          add_adj/2, add_primary_adj/2,
          set_name/2, % set_proper_name/2, set_plural/1, set_unique/1,
+         set_long/2,
+         a_short/1, the_short/1,
 %         short/1, the_short/1, a_short/1, plural_short/1,
-%         long/1,
+         long/1,
          show_in_room/1
         ]).
 
@@ -74,6 +75,8 @@ make_object([{primary_id, Id}|Data], Ob) ->
   make_object(Data, add_primary_id(Ob, Id));
 make_object([{primary_adj, Adj}|Data], Ob) ->
   make_object(Data, add_primary_adj(Ob, Adj));
+make_object([{long, Long}|Data], Ob) ->
+  make_object(Data, set_long(Ob, Long));
 make_object([_Other|Data], Ob) ->
   make_object(Data, Ob).
 
@@ -82,6 +85,9 @@ a_short(#object{short=Short}) ->
 
 the_short(#object{short=Short}) ->
   ["the ", Short].
+
+long(#object{long=Long}) ->
+  Long.
 
 has_id(#object{ids=Ids}, Id) ->
   lists:member(Id, Ids).
@@ -126,6 +132,9 @@ set_name(Ob, [LastToken], Ids, Adjs) ->
   set_name(Ob, [], Ids ++ [LastToken], Adjs);
 set_name(Ob, [Token|Toks], Ids, Adjs) ->
   set_name(Ob, Toks, Ids, Adjs ++ [Token]).
+
+set_long(Ob, Long) ->
+  Ob#object{long=Long}.
 
 show_in_room(#object{short=Short}) ->
   A_Short =em_grammar:add_article(Short),
