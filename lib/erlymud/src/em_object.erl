@@ -16,8 +16,8 @@
          set_long/2,
          a_short/1, the_short/1,
 %         short/1, the_short/1, a_short/1, plural_short/1,
-         long/1,
-         show_in_room/1,
+         long/1, show_in_room/1,
+         is_attached/1, set_attached/2,
          get_template/1
         ]).
 
@@ -27,7 +27,7 @@
                  show_in_room = "",
                  proper_name = "",
                  quantity = 0,
-                 is_plural=false, is_unique=false,
+                 is_attached=false, is_plural=false, is_unique=false,
                  template}).
 
 
@@ -79,6 +79,8 @@ make_object([{show_in_room, Desc}|Data], Ob) ->
   make_object(Data, set_show_in_room(Ob, Desc));
 make_object([{long, Long}|Data], Ob) ->
   make_object(Data, set_long(Ob, Long));
+make_object([{is_attached, Flag}|Data], Ob) ->
+  make_object(Data, set_attached(Ob, Flag));
 make_object([_Other|Data], Ob) ->
   make_object(Data, Ob).
 
@@ -155,6 +157,12 @@ show_in_room(#object{show_in_room="", short=Short}) ->
   [em_text:capitalize(A_Short), " lies here, discarded.\n"];
 show_in_room(#object{show_in_room=Desc}) ->
   Desc.
+
+set_attached(Ob, Flag) ->
+  Ob#object{is_attached=Flag}.
+
+is_attached(Ob) ->
+  Ob#object.is_attached.
 
 get_template(Ob) ->
   Ob#object.template.

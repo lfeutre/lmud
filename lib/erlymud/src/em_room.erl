@@ -163,7 +163,11 @@ list_objects(Objects) ->
 list_objects([], ObDesc) ->
   ObDesc;
 list_objects([Ob|Obs], ObDesc) ->
-  list_objects(Obs, ObDesc ++ em_object:show_in_room(Ob)).
+  Desc = case em_object:is_attached(Ob) of
+           true -> ObDesc;
+           false -> ObDesc ++ em_object:show_in_room(Ob)
+         end,
+  list_objects(Obs, Desc).
 
 list_people([]) ->
   "";

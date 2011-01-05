@@ -187,7 +187,8 @@ cmd_get([], State) ->
   do_print("Get what?\n", State),
   {ok, State};
 cmd_get([Id|_Args], #state{room=Room}=State) ->
-  Obs = em_room:get_objects(Room),
+  Obs = lists:filter(fun(Ob) -> not em_object:is_attached(Ob) end,
+                     em_room:get_objects(Room)),
   {ok, do_get(Id, Obs, State)}.
 
 do_get(_Id, [], State) ->

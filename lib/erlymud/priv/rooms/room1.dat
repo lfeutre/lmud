@@ -1,6 +1,7 @@
 {version, 1}.
 {title, "A small room"}.
-{desc, "This is a small, rather non-descript room. To the east is a corridor."}.
+{desc, "This is a small, rather non-descript room with a painting "
+       "on the northern wall. To the east is a corridor."}.
 {exits, [{"east", "room2"}]}.
-{objects, ["sword"]}.
+{objects, ["painting", "sword"]}.
 

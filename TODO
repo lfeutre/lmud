@@ -1,14 +1,6 @@
 ErlyMUD TODO
 ============
 
-0.2.6
------
-* Detail objects;
-  - Are 'attached' to rooms, invisible except for mention in the
-    room description
-  - Can have descriptions etc just like other objects
-  - Maybe also attachable to objects?
-
 0.2.7
 -----
 * Add 'destroy' command for destroying objects in own inventory?
