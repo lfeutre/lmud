@@ -139,7 +139,7 @@ do_inv(Obs, State) ->
 desc_inv([], Result) ->
   Result;
 desc_inv([Ob|Obs], Result) ->
-  Line = [" ", em_object:a_short(Ob)],
+  Line = [" ", em_object:a_short(Ob), "\n"],
   desc_inv(Obs, [Result, Line]).
 
 cmd_drop([], State) ->
