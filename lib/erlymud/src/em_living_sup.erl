@@ -3,7 +3,7 @@
 -behaviour(supervisor).
 
 %% API
--export([start_link/0, start_child/3]).
+-export([start_link/0, start_child/2]).
 
 %% Supervisor callbacks
 -export([init/1]).
@@ -13,8 +13,8 @@
 start_link() ->
   supervisor:start_link({local, ?SERVER}, ?MODULE, []).
 
-start_child(Name, Room, Client) ->
-  supervisor:start_child(?SERVER, [Name, Room, Client]).
+start_child(Name, Client) ->
+  supervisor:start_child(?SERVER, [Name, Client]).
 
 init([]) ->
   % Allow 2000ms for em_living to clean up; removing itself

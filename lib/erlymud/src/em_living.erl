@@ -3,9 +3,10 @@
 -behaviour(gen_server).
 
 %% API
--export([start_link/3, start/3, stop/1, 
-         get_name/1, set_long/2,
-         long/1,
+-export([start_link/2, start/2, stop/1, 
+         get_name/1, 
+         get_room/1, set_room/2,
+         set_long/2, long/1,
          cmd/2, print/2, print/3,
          load/1]).
 
@@ -24,14 +25,22 @@
 
 %% API functions
 
-start_link(Name, Room, Client) ->
-  gen_server:start_link(?MODULE, [Name, Room, Client], []).
+start_link(Name, Client) ->
+  gen_server:start_link(?MODULE, [Name, Client], []).
 
-start(Name, Room, Client) ->
-  gen_server:start(?MODULE, [Name, Room, Client], []).
+start(Name, Client) ->
+  gen_server:start(?MODULE, [Name, Client], []).
 
 get_name(Pid) ->
   gen_server:call(Pid, get_name).
+
+get_room(Pid) ->
+  gen_server:call(Pid, get_room).
+
+set_room(Pid, Room) when is_pid(Room) ->
+  gen_server:call(Pid, {set_room_pid, Room});
+set_room(Pid, Room) when is_list(Room) ->
+  gen_server:call(Pid, {set_room_str, Room}).
 
 set_long(Pid, Long) ->
   gen_server:call(Pid, {set_long, Long}).
@@ -57,11 +66,18 @@ load(Pid) ->
 
 % gen_server callbacks
 
-init([Name, Room, Client]) ->
-  {ok, #state{name=Name, room=Room, client=Client}}.
+init([Name, Client]) ->
+  {ok, #state{name=Name, client=Client}}.
 
 handle_call(get_name, _From, #state{name=Name}=State) ->
   {reply, Name, State};
+handle_call(get_room, _From, #state{room=Room}=State) ->
+  {reply, Room, State};
+handle_call({set_room_pid, Room}, _From, State) ->
+  {reply, ok, State#state{room=Room}};
+handle_call({set_room_str, RoomStr}, _From, State) ->
+  {ok, Room} = em_room_mgr:get_room(RoomStr),
+  {reply, ok, State#state{room=Room}};
 handle_call({set_long, Long}, _From, State) ->
   {reply, ok, State#state{long=Long}};
 handle_call(long, _From, #state{long=Long}=State) ->
@@ -80,8 +96,12 @@ handle_call({print, Format, Args}, _From, #state{client={_,Out}}=State) ->
   em_conn:print(Out, Format, Args),
   {reply, ok, State};
 handle_call(load, _From, State) ->
-  {Result, NewState} = do_load(State),
-  {reply, Result, NewState}.
+  case do_load(State) of
+    {ok, NewState} ->
+      {reply, ok, NewState};
+    {error, Reason} ->
+      {reply, {error, Reason}, State}
+  end.
 
 handle_cast(stop, #state{client={_,Out}}=State) ->
   em_conn:print(Out, "living(): stopping.~n"),
@@ -333,6 +353,9 @@ update_living([], State) ->
   State;
 update_living([{long, Long}|Data], State) ->
   update_living(Data, State#state{long=Long});
+update_living([{room, Room}|Data], State) ->
+  {ok, RoomPid} = em_room_mgr:get_room(Room),
+  update_living(Data, State#state{room=RoomPid});
 update_living([{objects, ObList}|Data], State) ->
   update_living(Data, State#state{objects=em_object:load_obs(ObList)});
 update_living([_Other|Data], State) ->

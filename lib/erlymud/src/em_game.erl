@@ -5,7 +5,7 @@
 %% API
 -export([start_link/0, start/0, 
          get_users/0, lookup_user/1, lookup_user_pid/1,
-         login/2, logout/1,
+         login/1, logout/1,
          print_except/3, print_while/3]).
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, 
@@ -27,8 +27,8 @@ start() ->
 get_users() ->
   gen_server:call(?SERVER, get_users).
 
-login(Name, Client) ->
-  gen_server:call(?SERVER, {login, Name, Client}).
+login(User) ->
+  gen_server:call(?SERVER, {login, User}).
 
 logout(User) ->
   gen_server:call(?SERVER, {logout, User}).
@@ -53,8 +53,8 @@ init([]) ->
 
 handle_call(get_users, _From, #state{users=Users}=State) ->
   {reply, Users, State};
-handle_call({login, Name, Client}, _From, State) ->
-  {Result, NewState} = do_login(Name, Client, State),
+handle_call({login, Living}, _From, State) ->
+  {Result, NewState} = do_login(Living, State),
   {reply, Result, NewState};
 handle_call({logout, User}, _From, State) ->
   {Result, NewState} = do_logout(User, State),
@@ -101,23 +101,25 @@ code_change(_OldVsn, State, _Extra) ->
 
 %% User Handling
 
-do_login(Name, Client, #state{users=Users}=State) ->
+do_login(Living, #state{users=Users}=State) ->
+  Name = em_living:get_name(Living),
   case lists:keyfind(Name, 1, Users) of
     {_Name, _User} ->
       {{error, user_exists}, State};
     false ->
-      {ok, Room} = em_room_mgr:get_room("room1"),
-      case em_living_sup:start_child(Name, Room, Client) of
-        {ok, Living} ->
-          link(Living),
-          em_living:load(Living),
-          do_print_except(Users, Living, "[Notice] ~s has logged in.~n", [Name]),
-          em_room:enter(Room, Living),
-          em_room:print_except(Room, Living, "~s has arrived.~n", [Name]),
-          {{ok, Living}, State#state{users=[{Name, Living}|Users]}};
-        Error ->
-          {Error, State}
-      end
+      Room = case em_living:get_room(Living) of
+               undefined ->
+                 {ok, StartRoom} = em_room_mgr:get_room("room1"),
+                 em_living:set_room(Living, StartRoom),
+                 StartRoom;
+               LoadedRoom ->
+                 LoadedRoom
+             end,
+      link(Living),
+      do_print_except(Users, Living, "[Notice] ~s has logged in.~n", [Name]),
+      em_room:enter(Room, Living),
+      em_room:print_except(Room, Living, "~s has arrived.~n", [Name]),
+      {{ok, Living}, State#state{users=[{Name, Living}|Users]}}
   end.
 
 % Do NOT actually touch the Living process here, it might have crashed
