@@ -2,18 +2,21 @@
 
 -behaviour(gen_server).
 
--export([start_link/1, print/2, print/3]).
+-export([start_link/2, get_name/1, print/2, print/3]).
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
--record(state, {conn}).
+-record(state, {name, conn}).
 
 
 %% API
 
-start_link(Conn) ->
-  gen_server:start_link(?MODULE, [Conn], []).
+start_link(Name, Conn) ->
+  gen_server:start_link(?MODULE, [Name, Conn], []).
+
+get_name(Pid) ->
+  gen_server:call(Pid, get_name).
 
 print(Pid, Format) ->
   gen_server:call(Pid, {print, Format}).
@@ -24,9 +27,11 @@ print(Pid, Format, Args) ->
 
 %% gen_server callbacks
 
-init([Conn]) ->
-  {ok, #state{conn=Conn}}.
+init([Name, Conn]) ->
+  {ok, #state{name=Name, conn=Conn}}.
 
+handle_call(get_name, _From, #state{name=Name}=State) ->
+  {reply, Name, State};
 handle_call({print, Format}, _From, #state{conn=Conn}=State) ->
   em_conn:print(Conn, Format),
   {reply, ok, State};

@@ -91,11 +91,12 @@ login({got_password, Settings, Name}, Password, #state{conn=ReqConn}=Request) ->
   end.
 
 do_login(Name, #state{conn=ReqConn}=Request) ->
-  {ok, User} = em_user_sup:start_child(ReqConn),
+  {ok, User} = em_user_sup:start_child(Name, ReqConn),
   {ok, Living} = em_living_sup:start_child(Name, {User, ReqConn}),
   ok = em_living:load(Living),
-  case em_game:login(Living) of
-    {ok, Living} ->
+  case em_game:login(User) of
+    ok ->
+      ok = em_game:incarnate(Living),
       em_conn:print(ReqConn, "\n"),
       em_living:cmd(Living, "glance"),
       em_conn:print(ReqConn, "\n> "),

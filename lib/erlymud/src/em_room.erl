@@ -172,7 +172,6 @@ list_objects([Ob|Obs], ObDesc) ->
 list_people([]) ->
   "";
 list_people(People) ->
-  GetName = fun(Pid) -> {ok, {Name, _Pid}} = em_game:lookup_user_pid(Pid), Name end,
-  Names = lists:map(GetName, People),
+  Names = lists:map(fun em_living:get_name/1, People),
   ["\n", [[N, " is here.\n"] || N <- Names]].
   
