@@ -143,7 +143,7 @@ login({new_user_pw, Name}, "", #state{conn=Conn}) ->
   em_conn:print(Conn, "Pick a password: "),
   {ok, [{new_user_pw, Name}]};
 login({new_user_pw, Name}, Password, #state{conn=Conn}) ->
-  em_conn:print(Conn, "Repeat the password: "),
+  em_conn:print(Conn, "\r\nRepeat the password: "),
   {ok, [{new_user_pw_confirm, Name, Password}]};
 %% Confirm the password
 login({new_user_pw_confirm, Name, Password}, Password, #state{conn=Conn}) ->
