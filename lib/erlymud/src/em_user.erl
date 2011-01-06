@@ -182,10 +182,10 @@ login({got_password, Settings, Name}, Password, #state{conn=Conn}) ->
 
 do_login(Name, Conn) ->
   {ok, Living} = em_living_sup:start_child(Name, {self(), Conn}),
+  link(Living),
   ok = em_living:load(Living),
   case em_game:login(Living) of
     {ok, Living} ->
-      link(Living),
       em_conn:print(Conn, "\n"),
       em_living:cmd(Living, "glance"),
       em_conn:print(Conn, "\n> "),

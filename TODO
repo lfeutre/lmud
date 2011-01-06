@@ -3,6 +3,8 @@ ErlyMUD TODO
 
 0.2.7
 -----
+* How to make sure we always have a 'live' em_conn waiting for a connection?
+* Make em_game register em_users instead of em_livings
 
 Future
 ------
