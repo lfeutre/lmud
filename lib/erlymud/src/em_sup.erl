@@ -25,11 +25,14 @@ start_link() ->
 
 init([]) ->
   GameServer = ?CHILD(em_game, worker),
-  RoomSup = ?CHILD(em_room_sup, worker),
-  LivingSup = ?CHILD(em_living_sup, worker),
-  UserSup = ?CHILD(em_user_sup, worker),
-  ConnSup = ?CHILD(em_conn_sup, worker),
-  Children = [GameServer, RoomSup, LivingSup, UserSup, ConnSup],
+  RoomSup = ?CHILD(em_room_sup, supervisor),
+  LivingSup = ?CHILD(em_living_sup, supervisor),
+  UserSup = ?CHILD(em_user_sup, supervisor),
+  ReqHandlerSup = ?CHILD(em_req_handler_sup, supervisor),
+  ReqSup = ?CHILD(em_req_sup, supervisor),
+  ConnSup = ?CHILD(em_conn_sup, supervisor),
+  Children = [GameServer, RoomSup, LivingSup, UserSup,
+              ReqHandlerSup, ReqSup, ConnSup],
   RestartStrategy = {one_for_one, 5, 10},
   {ok, {RestartStrategy, Children}}.
 

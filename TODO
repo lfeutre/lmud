@@ -5,6 +5,7 @@ ErlyMUD TODO
 -----
 * How to make sure we always have a 'live' em_conn waiting for a connection?
 * Make em_game register em_users instead of em_livings
+* Fix issue when already logged in; will leak em_user + em_living processes!
 
 Future
 ------
