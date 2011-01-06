@@ -24,7 +24,7 @@ start_link() ->
 %% ===================================================================
 
 init([]) ->
-  RoomPoolSup = ?CHILD(em_room_pool_sup, worker),
+  RoomPoolSup = ?CHILD(em_room_pool_sup, supervisor),
   RoomMgr = ?CHILD(em_room_mgr, worker),
   Children = [RoomPoolSup, RoomMgr],
   RestartStrategy = {one_for_one, 5, 10},
