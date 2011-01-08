@@ -9,7 +9,7 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
--record(state, {conn, user, living, queue=[], handlers=[]}).
+-include("request.hrl").
 
 
 %% API
@@ -28,10 +28,10 @@ receive_line(Pid, Data) ->
 %% gen_server callbacks
 
 init([Conn]) ->
-  {ok, #state{conn=Conn, queue=[init]}, 0}.
+  {ok, #req{conn=Conn, queue=[init]}, 0}.
 
-handle_call({receive_line, Data}, _From, #state{queue=Queue}=State) ->
-  {reply, ok, State#state{queue=Queue ++ [{input, Data}]}, 0}.
+handle_call({receive_line, Data}, _From, #req{queue=Queue}=State) ->
+  {reply, ok, State#req{queue=Queue ++ [{input, Data}]}, 0}.
 
 handle_cast(_Msg, State) ->
   {noreply, State}.
@@ -48,20 +48,20 @@ code_change(_OldVsn, State, _Extra) ->
 
 %% Internal functions
 
-process_queue(#state{queue=[]}=State) ->
+process_queue(#req{queue=[]}=State) ->
   {noreply, State};
-process_queue(#state{queue=[init|Queue],conn=Conn}=State) ->
-  em_login:welcome(Conn),
-  Handlers=[{em_login, login, [got_user]}],
-  process_queue(State#state{queue=Queue, handlers=Handlers});
-process_queue(#state{queue=[{input, RawData}|Queue]}=State) ->
+process_queue(#req{queue=[init|Queue],conn=Conn}=State) ->
+  em_rh_login:welcome(Conn),
+  Handlers=[{em_rh_login, login, [got_user]}],
+  process_queue(State#req{queue=Queue, handlers=Handlers});
+process_queue(#req{queue=[{input, RawData}|Queue]}=State) ->
   {ok, NewState} = handle_data(RawData, State),
   % Make sure we stop if there are no handlers on the stack!
-  case NewState#state.handlers of
+  case NewState#req.handlers of
     [] ->
       {stop, normal, NewState};
     _Other ->
-      process_queue(NewState#state{queue=Queue})
+      process_queue(NewState#req{queue=Queue})
   end.
 
 strip_linefeed(RawData) ->
@@ -69,19 +69,19 @@ strip_linefeed(RawData) ->
 
 handle_data(RawData, State) ->
   Data = strip_linefeed(RawData),
-  [Handler | Rest] = State#state.handlers,
+  [Handler | Rest] = State#req.handlers,
   {M, F, A} = Handler,
   case em_req_sup:request({M, F, A ++ [Data, State]}) of
     {done, NewState} -> 
-      {ok, NewState#state{handlers = Rest}};
+      {ok, NewState#req{handlers = Rest}};
     {link, NewMFA, NewState} -> 
-      link(NewState#state.user),
-      link(NewState#state.living),
-      {ok, NewState#state{handlers = [NewMFA | Rest]}};
+      link(NewState#req.user),
+      link(NewState#req.living),
+      {ok, NewState#req{handlers = [NewMFA | Rest]}};
     {ok, NewMFA, NewState} -> 
-      {ok, NewState#state{handlers = [NewMFA | Rest]}};
+      {ok, NewState#req{handlers = [NewMFA | Rest]}};
     {push, NewMFA, NewState} -> 
-      {ok, NewState#state{handlers = [NewMFA, {M, F, A} | Rest]}};
+      {ok, NewState#req{handlers = [NewMFA, {M, F, A} | Rest]}};
     Other -> 
       {error, Other}
   end.
