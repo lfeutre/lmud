@@ -156,7 +156,11 @@ show_in_room(#object{show_in_room="", short=Short}) ->
   A_Short =em_grammar:add_article(Short),
   [em_text:capitalize(A_Short), " lies here, discarded.\n"];
 show_in_room(#object{show_in_room=Desc}) ->
-  Desc.
+  Len = string:len(Desc),
+  case string:rchr(Desc, $\n) of
+    Len -> Desc;
+    _Other -> string:concat(Desc, "\n")
+  end.
 
 set_attached(Ob, Flag) ->
   Ob#object{is_attached=Flag}.
