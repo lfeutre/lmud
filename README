@@ -86,13 +86,18 @@ Currently, things aren't really set up in a way so that's it's easy for an
 Erlang newbie to get things up and running. This will hopefully improve.
 
 However, try the following steps to start ErlyMUD directly from the
-development environment, on a Linux system:
+development environment; it's been tested on Ubuntu 10.04, 10.10 and
+Mac OS X 10.6.6:
 
   0. Make sure you have Erlang R14B01 installed, to avoid having to edit
      the ErlyMUD .rel file
   1. Download the latest snapshot from my [Bitbucket repository](https://bitbucket.org/jwarlander/erlymud/downloads),
      currently that means *erlymud-0.3.0.(zip|tar.gz|tar.bz2)*
   2. Unpack the source code somewhere, you'll get an "erlymud" directory
+  1. Take note of the version you got, by checking the actual name of the 
+     "erlymud/erlymud-X.Y.Z.rel" file; it should be 0.3.0 or above,
+     preferrably. Use the actual version instead of 0.3.0 in the
+     instructions below.
   3. Go to this directory and compile the source:
 
      > $ cd erlymud
@@ -113,7 +118,7 @@ development environment, on a Linux system:
 
   7. From another terminal, connect to the game and create a user:
 
-     > $ telnet localhost 1155
+     > $ telnet localhost 2155
 
   8. Have fun!
 
@@ -124,3 +129,16 @@ If you have any questions, send an e-mail to johan@snowflake.nu and I'll
 try to help you.
 
 Johan Warlander
+
+## Testing
+
+ErlyMUD has been at least occasionally tested in the following environments,
+please do report if you get it running in a different configuration:
+
+  * Ubuntu 10.04 (x86_64), Erlang/OTP R14B01
+    * Johan Warlander <johan@snowflake.nu>
+  * Ubuntu 10.10 (x86_64), Erlang/OTP R14B01
+    * Johan Warlander <johan@snowflake.nu>
+  * Mac OS X 10.6.6, Erlang/OTP R14B01
+    * Jeejo Pallayi <jeejo@pallayi.com>
+
