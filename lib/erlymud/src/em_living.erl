@@ -6,7 +6,7 @@
 -export([start_link/2, start/2, stop/1, 
          get_name/1, 
          get_room/1, set_room/2,
-         add_object/2, get_objects/1, remove_object/2,
+         add_object/2, move_object/3, get_objects/1, remove_object/2,
          set_long/2, long/1,
          cmd/2, print/2, print/3,
          load/1, save/1]).
@@ -34,6 +34,10 @@ get_room(Pid) ->
 
 add_object(Pid, Ob) ->
   gen_server:call(Pid, {add_object, Ob}).
+
+%% Dest = {to_room, <RoomPid>}
+move_object(Pid, Ob, Dest) ->
+  gen_server:call(Pid, {move_object, Ob, Dest}).
 
 get_objects(Pid) ->
   gen_server:call(Pid, get_objects).
@@ -82,6 +86,9 @@ handle_call(get_room, _From, #state{room=Room}=State) ->
   {reply, Room, State};
 handle_call({add_object, Ob}, _From, #state{objects=Obs}=State) ->
   {reply, ok, State#state{objects=[Ob|Obs]}};
+handle_call({move_object, Ob, Dest}, _From, State) ->
+  {Result, NewState} = do_move_object(Ob, Dest, State),
+  {reply, Result, NewState};
 handle_call(get_objects, _From, #state{objects=Obs}=State) ->
   {reply, Obs, State};
 handle_call({remove_object, Ob}, _From, State) ->
@@ -132,6 +139,15 @@ code_change(_OldVsn, State, _Extra) ->
 
 
 %% Internal functions
+
+do_move_object(Ob, {to_room, Room}, #state{objects=Obs}=State) ->
+  case lists:member(Ob, Obs) of
+    false -> throw(not_found);
+    true -> 
+      NewObs = lists:delete(Ob, Obs),
+      ok = em_room:add_object(Room, Ob),
+      {ok, State#state{objects = NewObs}}
+  end.
 
 do_remove_object(Ob, #state{objects=Obs}=State) ->
   do_remove_object(Ob, State, Obs, []).

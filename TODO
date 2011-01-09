@@ -1,12 +1,10 @@
 ErlyMUD TODO
 ============
 
-0.2.7
+0.3.1
 -----
 * How to make sure we always have a 'live' em_conn waiting for a connection?
-* Fix issue when already logged in; will leak em_user + em_living processes!
-* Issue exists when quitting currently; doesn't disconnect until after next input
-  - also seems to not kill all processes
+* Work on cmd_* implementations to improve error handling etc
 
 Future
 ------
@@ -34,8 +32,4 @@ Future
 * Idle timer in 'who' list
 * Put the {In, Out} "client" Pid pair into a record definition for clarity?
 * Put new parser in place
-* Make "action server" that performs stuff on behalf of living, where we
-  can implement delays and print back to living without deadlock worries
-  - but how does this work together with, for example, calling cmd_look()
-    during login? sequencing and all that..
 * Better support for the telnet protocol

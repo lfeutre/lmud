@@ -72,23 +72,31 @@ cmd_drop([], Req) ->
   {ok, Req};
 cmd_drop([Id|_Args], #req{living=Liv}=Req) ->
   Obs = em_living:get_objects(Liv),
-  do_drop(Id, Obs, Req),
+  try_drop(Id, Obs, Req),
   {ok, Req}.
 
-do_drop(_Id, [], Req) ->
+try_drop(_Id, [], Req) ->
   print("You don't have anything like that.\n", Req);
-do_drop(Id, [Ob|Obs], #req{living=Liv}=Req) ->
+try_drop(Id, [Ob|Obs], Req) ->
   case em_object:has_id(Ob, Id) of
     true ->
-      Name = em_living:get_name(Liv),
-      Room = em_living:get_room(Liv),
-      TheShort = em_object:the_short(Ob),
-      print("You drop ~s.\n", [TheShort], Req),
-      em_living:remove_object(Liv, Ob),
-      em_room:add_object(Room, Ob),
-      em_room:print_except(Room, Liv, "~s drops ~s.~n", [Name, TheShort]);
+      do_drop(Ob, Req);
     false ->
-      do_drop(Id, Obs, Req)
+      try_drop(Id, Obs, Req)
+  end.
+
+do_drop(Ob, #req{living=Liv}=Req) ->
+  Name = em_living:get_name(Liv),
+  Room = em_living:get_room(Liv),
+  AShort = em_object:a_short(Ob),
+  TheShort = em_object:the_short(Ob),
+  try 
+    ok = em_living:move_object(Liv, Ob, {to_room, Room}),
+    print("You drop ~s.\n", [TheShort], Req),
+    em_room:print_except(Room, Liv, "~s drops ~s.~n", [Name, AShort])
+  catch
+    throw:{em_living, not_found} ->
+      print("You don't have anything like that.\n", Req)
   end.
 
 %% Get
