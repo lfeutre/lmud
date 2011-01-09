@@ -1,3 +1,11 @@
+%%% =========================================================================
+%%% @author Johan Warlander <johan@snowflake.nu>
+%%% @copyright 2010-2011 Johan Warlander
+%%% @doc In-game request handler for user sessions.
+%%% When a request is spawned with an MFA during in-game play, it points
+%%% here, to the parse/2 function.
+%%% @end
+%%% =========================================================================
 -module(em_rh_game).
 
 -export([parse/2]).

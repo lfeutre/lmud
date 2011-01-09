@@ -1,3 +1,11 @@
+%%% =========================================================================
+%%% @author Johan Warlander <johan@snowflake.nu>
+%%% @copyright 2010-2011 Johan Warlander
+%%% @doc Login request handler.
+%%% Will handle user login / new user creation, before passing the user on
+%%% to the in-game request handler.
+%%% @end
+%%% =========================================================================
 -module(em_rh_login).
 
 -export([welcome/1, login/3]).

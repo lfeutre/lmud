@@ -1,3 +1,11 @@
+%%% =========================================================================
+%%% @author Johan Warlander <johan@snowflake.nu>
+%%% @copyright 2010-2011 Johan Warlander
+%%% @doc Top-level supervisor.
+%%% This is the top of the supervision tree, where all necessary game
+%%% components are started in the required order.
+%%% @end
+%%% =========================================================================
 -module(em_sup).
 
 -behaviour(supervisor).

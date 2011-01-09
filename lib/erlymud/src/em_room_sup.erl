@@ -1,3 +1,11 @@
+%%% =========================================================================
+%%% @author Johan Warlander <johan@snowflake.nu>
+%%% @copyright 2010-2011 Johan Warlander
+%%% @doc Main room supervisor.
+%%% Keeps track of the room manager (em_room_mgr) and room pool supervisor
+%%% (em_room_pool_sup), making sure they are restarted if they crash.
+%%% @end
+%%% =========================================================================
 -module(em_room_sup).
 
 -behaviour(supervisor).

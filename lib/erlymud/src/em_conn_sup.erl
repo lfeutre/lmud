@@ -1,3 +1,11 @@
+%%% =========================================================================
+%%% @author Johan Warlander <johan@snowflake.nu>
+%%% @copyright 2010-2011 Johan Warlander
+%%% @doc The connection supervisor.
+%%% Opens a listening socket, then hands it off to any new children so that
+%%% they can wait for incoming connections.
+%%% @end
+%%% =========================================================================
 -module(em_conn_sup).
 
 -behaviour(supervisor).

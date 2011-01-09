@@ -1,3 +1,12 @@
+%%% =========================================================================
+%%% @author Johan Warlander <johan@snowflake.nu>
+%%% @copyright 2010-2011 Johan Warlander
+%%% @doc Room pool supervisor.
+%%% Manages the pool of instantiated rooms in the game. Only used by the
+%%% em_room_mgr, where room instantiation happens. This is really just a
+%%% cache to avoid loading the room each time people walk into it.
+%%% @end
+%%% =========================================================================
 -module(em_room_pool_sup).
 
 -behaviour(supervisor).

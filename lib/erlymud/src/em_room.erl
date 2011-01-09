@@ -1,3 +1,11 @@
+%%% =========================================================================
+%%% @author Johan Warlander <johan@snowflake.nu>
+%%% @copyright 2010-2011 Johan Warlander
+%%% @doc In-game room representation.
+%%% This gen_server holds room state, and handles moving things in/out of
+%%% the room etc.
+%%% @end
+%%% =========================================================================
 -module(em_room).
 
 -behaviour(gen_server).

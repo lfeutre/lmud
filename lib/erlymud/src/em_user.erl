@@ -1,3 +1,10 @@
+%%% =========================================================================
+%%% @author Johan Warlander <johan@snowflake.nu>
+%%% @copyright 2010-2011 Johan Warlander
+%%% @doc User server.
+%%% Represents a single connected user, and hosts user-related state.
+%%% @end
+%%% =========================================================================
 -module(em_user).
 
 -behaviour(gen_server).

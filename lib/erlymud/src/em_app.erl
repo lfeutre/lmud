@@ -1,3 +1,9 @@
+%%% =========================================================================
+%%% @author Johan Warlander <johan@snowflake.nu>
+%%% @copyright 2010-2011 Johan Warlander
+%%% @doc Application module for ErlyMUD.
+%%% @end
+%%% =========================================================================
 -module(em_app).
 
 -behaviour(application).

@@ -1,3 +1,11 @@
+%%% =========================================================================
+%%% @author Johan Warlander <johan@snowflake.nu>
+%%% @copyright 2010-2011 Johan Warlander
+%%% @doc Game server.
+%%% Keeps track of some global state in the game, currently a list of the
+%%% logged-on users.
+%%% @end
+%%% =========================================================================
 -module(em_game).
 
 -behaviour(gen_server).

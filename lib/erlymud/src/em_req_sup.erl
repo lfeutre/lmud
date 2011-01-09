@@ -1,3 +1,9 @@
+%%% =========================================================================
+%%% @author Johan Warlander <johan@snowflake.nu>
+%%% @copyright 2010-2011 Johan Warlander
+%%% @doc Launch a request, collect the result, and kill it.
+%%% @end
+%%% =========================================================================
 -module(em_req_sup).
 
 -behaviour(supervisor).

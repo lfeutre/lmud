@@ -1,8 +1,11 @@
-%% ==========================================================================
-%% @author Johan Warlander <johan@snowflake.nu>
-%% @copyright 2010 Johan Warlander
-%% @doc Grammar support for output functions, object names etc.
-%% ==========================================================================
+%%% =========================================================================
+%%% @author Johan Warlander <johan@snowflake.nu>
+%%% @copyright 2010-2011 Johan Warlander
+%%% @doc Grammar support.
+%%% Handle common tasks like articles, pluralization etc for output 
+%%% functions, item name manipulation and so on.
+%%% @end
+%%% =========================================================================
 
 -module(em_grammar).
 

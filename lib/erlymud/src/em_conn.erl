@@ -1,3 +1,13 @@
+%%% =========================================================================
+%%% @author Johan Warlander <johan@snowflake.nu>
+%%% @copyright 2010-2011 Johan Warlander
+%%% @doc Accept and manage new TCP connections.
+%%% This gen_server will wait in a gen_tcp:accept() call until someone makes
+%%% a connection, then it will immediately spawn a new em_conn server to
+%%% handle the next incoming connection, and launch a new session for the
+%%% current connection.
+%%% @end
+%%% =========================================================================
 -module(em_conn).
 -include("telnet.hrl").
 

@@ -1,3 +1,10 @@
+%%% =========================================================================
+%%% @author Johan Warlander <johan@snowflake.nu>
+%%% @copyright 2010-2011 Johan Warlander
+%%% @doc Manage the room database.
+%%% Handle room lookups, loading/instantiation, deletion etc.
+%%% @end
+%%% =========================================================================
 -module(em_room_mgr).
 
 -behaviour(gen_server).

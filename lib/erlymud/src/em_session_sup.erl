@@ -1,3 +1,10 @@
+%%% =========================================================================
+%%% @author Johan Warlander <johan@snowflake.nu>
+%%% @copyright 2010-2011 Johan Warlander
+%%% @doc Session supervisor.
+%%% Basic simple_one_for_one supervisor that starts new sessions on request.
+%%% @end
+%%% =========================================================================
 -module(em_session_sup).
 
 -behaviour(supervisor).

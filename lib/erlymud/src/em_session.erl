@@ -1,3 +1,12 @@
+%%% =========================================================================
+%%% @author Johan Warlander <johan@snowflake.nu>
+%%% @copyright 2010-2011 Johan Warlander
+%%% @doc Session manager.
+%%% Will handle user input from the user's connection, passing it to the
+%%% request handler on top of its stack by launching a request with the
+%%% current handler function specified as an MFA.
+%%% @end
+%%% =========================================================================
 -module(em_session).
 
 -behaviour(gen_server).

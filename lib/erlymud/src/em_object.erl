@@ -1,9 +1,9 @@
 %%% =========================================================================
 %%% @author Johan Warlander <johan@snowflake.nu>
-%%% @copyright 2010 Johan Warlander
-%%% @doc Interface for dealing with objects in the game; here we define the
-%%%      things that are common for all things in the game - plain items,
-%%%      weapons, NPCs, PCs etc.
+%%% @copyright 2010-2011 Johan Warlander
+%%% @doc Interface for dealing with objects in the game.
+%%% Here we define the things that are common for all types of items in the 
+%%% game - plain items, weapons, NPCs, PCs etc.
 %%% @end
 %%% =========================================================================
 -module(em_object).

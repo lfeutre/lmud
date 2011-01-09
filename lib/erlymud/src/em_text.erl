@@ -1,3 +1,11 @@
+%%% =========================================================================
+%%% @author Johan Warlander <johan@snowflake.nu>
+%%% @copyright 2010-2011 Johan Warlander
+%%% @doc Text processing module.
+%%% Provide utility functions for basic text processing like capitalizing,
+%%% colorizing text, etc.
+%%% @end
+%%% =========================================================================
 -module(em_text).
 -include_lib("eunit/include/eunit.hrl").
 -include("telnetcolors.hrl").

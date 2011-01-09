@@ -1,3 +1,11 @@
+%%% =========================================================================
+%%% @author Johan Warlander <johan@snowflake.nu>
+%%% @copyright 2010-2011 Johan Warlander
+%%% @doc Supervisor for em_living servers.
+%%% A plain simple_one_for_one supervisor that allows em_living processes to
+%%% be started when a player logs in.
+%%% @end
+%%% =========================================================================
 -module(em_living_sup).
 
 -behaviour(supervisor).

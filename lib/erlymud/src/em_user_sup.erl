@@ -1,3 +1,10 @@
+%%% =========================================================================
+%%% @author Johan Warlander <johan@snowflake.nu>
+%%% @copyright 2010-2011 Johan Warlander
+%%% @doc User supervisor.
+%%% Instantiates user processes on demand.
+%%% @end
+%%% =========================================================================
 -module(em_user_sup).
 
 -behaviour(supervisor).
