@@ -5,17 +5,17 @@ ErlyMUD TODO
 -----
 * How to make sure we always have a 'live' em_conn waiting for a connection?
 * Work on cmd_* implementations to improve error handling etc
+* Use 'areas' for organizing rooms and objects
+* Move save file handling to em_game and put files in a better location,
+  so they won't be tied to the specific version of the erlymud app
+* Set up some help info, listing available commands etc
 
 Future
 ------
 * Add 'destroy' command for destroying objects in own inventory?
 * Add 'clone' command for instantiating object templates
-* Set up some help info, listing available commands etc
 * Shutdown / reboot command
 * Admin permissions to be able to shutdown / reboot, etc
-* Use 'areas' for organizing rooms and objects
-* Move save file handling to em_game and put files in a better location,
-  so they won't be tied to the specific version of the erlymud app
 * Improve connection lifecycle;
   - If an em_living dies;
     * Then em_user can inform about it, then run a do_login() again to get
