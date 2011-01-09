@@ -1,4 +1,4 @@
--module(em_req_handler_sup).
+-module(em_session_sup).
 
 -behaviour(supervisor).
 
@@ -17,9 +17,9 @@ start_child(Conn) ->
   supervisor:start_child(?SERVER, [Conn]).
 
 init([]) ->
-  RequestHandler = {em_req_handler, {em_req_handler, start_link, []},
-          temporary, brutal_kill, supervisor, [em_req_handler]},
-  Children = [RequestHandler],
+  Session = {em_session, {em_session, start_link, []},
+          temporary, brutal_kill, supervisor, [em_session]},
+  Children = [Session],
   RestartStrategy = {simple_one_for_one, 0, 1},
   {ok, {RestartStrategy, Children}}.
 

@@ -1,4 +1,4 @@
--module(em_req_handler).
+-module(em_session).
 
 -behaviour(gen_server).
 

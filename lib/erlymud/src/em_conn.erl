@@ -8,7 +8,7 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
--record(state, {lsock, socket, handler}).
+-record(state, {lsock, socket, session}).
 
 
 %% API
@@ -65,9 +65,9 @@ handle_info(timeout, #state{lsock=LSock}=State) ->
   case gen_tcp:accept(LSock) of
     {ok, Socket} ->
       em_conn_sup:start_child(),
-      {ok, ReqHandler} = em_req_handler_sup:start_child(self()),
-      link(ReqHandler),
-      {noreply, State#state{socket=Socket, handler=ReqHandler}};
+      {ok, Session} = em_session_sup:start_child(self()),
+      link(Session),
+      {noreply, State#state{socket=Socket, session=Session}};
     {error, closed} ->
       {stop, normal, State}
   end.
@@ -85,7 +85,7 @@ handle_telnet(_Socket, RawData, State) ->
   {process_telnet(RawData), State}.
 
 handle_data(_Socket, RawData, State) ->
-  em_req_handler:receive_line(State#state.handler, RawData).
+  em_session:receive_line(State#state.session, RawData).
 
 write(Socket, Format, Args) ->
   Data = em_text:colorize(io_lib:format(Format, Args)),

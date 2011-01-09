@@ -28,11 +28,11 @@ init([]) ->
   RoomSup = ?CHILD(em_room_sup, supervisor),
   LivingSup = ?CHILD(em_living_sup, supervisor),
   UserSup = ?CHILD(em_user_sup, supervisor),
-  ReqHandlerSup = ?CHILD(em_req_handler_sup, supervisor),
+  SessionSup = ?CHILD(em_session_sup, supervisor),
   ReqSup = ?CHILD(em_req_sup, supervisor),
   ConnSup = ?CHILD(em_conn_sup, supervisor),
   Children = [GameServer, RoomSup, LivingSup, UserSup,
-              ReqHandlerSup, ReqSup, ConnSup],
+              ReqSup, SessionSup, ConnSup],
   RestartStrategy = {one_for_one, 5, 10},
   {ok, {RestartStrategy, Children}}.
 
