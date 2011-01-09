@@ -60,7 +60,7 @@ handle_info({tcp, Socket, RawData}, State) ->
       {noreply, NewState}
   end;
 handle_info({tcp_closed, _Socket}, State) ->
-  {stop, normal, State};
+  {stop, tcp_closed, State};
 handle_info(timeout, #state{lsock=LSock}=State) ->
   case gen_tcp:accept(LSock) of
     {ok, Socket} ->

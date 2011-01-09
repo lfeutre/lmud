@@ -92,6 +92,7 @@ do_login(Name, #req{conn=Conn}=Req) ->
       {ok, NewReq} = do_incarnate(Req#req{user=User, living=Living}),
       ?req_next_and_link(em_rh_game, parse, [], NewReq);
     {error, user_exists} ->
+      exit(User, user_exists),
       em_conn:print(Conn, "User already logged in, try again.\n\n"),
       em_conn:print(Conn, "Login: "),
       ?req_next(login, [got_user])
