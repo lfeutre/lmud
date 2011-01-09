@@ -59,7 +59,7 @@ process_queue(#req{queue=[{input, RawData}|Queue]}=State) ->
   % Make sure we stop if there are no handlers on the stack!
   case NewState#req.handlers of
     [] ->
-      {stop, normal, NewState};
+      {stop, user_logout, NewState};
     _Other ->
       process_queue(NewState#req{queue=Queue})
   end.
