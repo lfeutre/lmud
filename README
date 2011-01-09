@@ -26,20 +26,20 @@ around between rooms, and handle items.
 
 ## Game Features
 
-   * Rooms have a title, and brief + long descriptions.
-      * The brief description is used when walking into / through a room, and is 
-        intended to only show the most obvious features of the room. 
-      * When using the "look" command, the long description will be shown instead.
-   * Items can be picked up, dropped and looked at;
-      * "get sword", "drop sword"
-      * If an item is 'attached', it can't be picked up. Instead it belongs to
-        the room, and is used to add detail descriptions so that you can for
-        example do "look painting" and see a more in-depth description of that
-        part of the room.
-   * You can see who is logged on, talk to other players, and use emotes.
-      * "who", "tell <who> <what>", "say <something>", "emote <something>"
-   * Navigation is currently restricted to the basics;
-      * "go west", "west", etc..
+  * Rooms have a title, and brief + long descriptions.
+    * The brief description is used when walking into / through a room, and is 
+      intended to only show the most obvious features of the room. 
+    * When using the "look" command, the long description will be shown instead.
+  * Items can be picked up, dropped and looked at;
+    * "get sword", "drop sword"
+    * If an item is 'attached', it can't be picked up. Instead it belongs to
+      the room, and is used to add detail descriptions so that you can for
+      example do "look painting" and see a more in-depth description of that
+      part of the room.
+  * You can see who is logged on, talk to other players, and use emotes.
+    * "who", "tell <who> <what>", "say <something>", "emote <something>"
+  * Navigation is currently restricted to the basics;
+    * "go west", "west", etc..
 
 ## Technical Stuff
 
@@ -88,24 +88,34 @@ Erlang newbie to get things up and running. This will hopefully improve.
 However, try the following steps to start ErlyMUD directly from the
 development environment, on a Linux system:
 
-   0. Make sure you have Erlang R14B01 installed, to avoid having to edit
-      the ErlyMUD .rel file
-   1. Download the latest snapshot from https://bitbucket.org/jwarlander/erlymud/downloads,
-      currently that means erlymud-0.3.0.(zip|tar.gz|tar.bz2)
-   2. Unpack the source code somewhere, you'll get an "erlymud" directory
-   3. Go to this directory and compile the source:
-       $ cd erlymud
-       $ ./rebar compile
-   4. Start an Erlang shell, with the ErlyMUD ebin path added:
-       $ erl -pa lib/erlymud/ebin/
-   5. Create a local boot script, then quit the Erlang shell:
+  0. Make sure you have Erlang R14B01 installed, to avoid having to edit
+     the ErlyMUD .rel file
+  1. Download the latest snapshot from https://bitbucket.org/jwarlander/erlymud/downloads,
+     currently that means erlymud-0.3.0.(zip|tar.gz|tar.bz2)
+  2. Unpack the source code somewhere, you'll get an "erlymud" directory
+  3. Go to this directory and compile the source:
+
+      $ cd erlymud
+      $ ./rebar compile
+
+  4. Start an Erlang shell, with the ErlyMUD ebin path added:
+
+      $ erl -pa lib/erlymud/ebin/
+
+  5. Create a local boot script, then quit the Erlang shell:
+
        1> systools:make_script("erlymud-0.3.0", [local]).
        2> q().
-   6. Start up ErlyMUD:
+
+  6. Start up ErlyMUD:
+
        $ erl -boot ./erlymud-0.3.0
-   7. From another terminal, connect to the game and create a user:
+
+  7. From another terminal, connect to the game and create a user:
+
        $ telnet localhost 1155
-   8. Have fun!
+
+  8. Have fun!
 
 That's all really. Better documentation might happen sooner or later,
 if this project doesn't die off ;)
