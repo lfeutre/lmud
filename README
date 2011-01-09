@@ -104,7 +104,7 @@ development environment, on a Linux system:
 
   5. Create a local boot script, then quit the Erlang shell:
 
-     > 1> systools:make_script("erlymud-0.3.0", [local]).
+     > 1> systools:make_script("erlymud-0.3.0", [local]).  
      > 2> q().
 
   6. Start up ErlyMUD:
