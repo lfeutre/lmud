@@ -90,30 +90,30 @@ development environment, on a Linux system:
 
   0. Make sure you have Erlang R14B01 installed, to avoid having to edit
      the ErlyMUD .rel file
-  1. Download the latest snapshot from https://bitbucket.org/jwarlander/erlymud/downloads,
-     currently that means erlymud-0.3.0.(zip|tar.gz|tar.bz2)
+  1. Download the latest snapshot from my [Bitbucket repository](https://bitbucket.org/jwarlander/erlymud/downloads),
+     currently that means *erlymud-0.3.0.(zip|tar.gz|tar.bz2)*
   2. Unpack the source code somewhere, you'll get an "erlymud" directory
   3. Go to this directory and compile the source:
 
-      $ cd erlymud
-      $ ./rebar compile
+     > $ cd erlymud
+     > $ ./rebar compile
 
   4. Start an Erlang shell, with the ErlyMUD ebin path added:
 
-      $ erl -pa lib/erlymud/ebin/
+     > $ erl -pa lib/erlymud/ebin/
 
   5. Create a local boot script, then quit the Erlang shell:
 
-       1> systools:make_script("erlymud-0.3.0", [local]).
-       2> q().
+     > 1> systools:make_script("erlymud-0.3.0", [local]).
+     > 2> q().
 
   6. Start up ErlyMUD:
 
-       $ erl -boot ./erlymud-0.3.0
+     > $ erl -boot ./erlymud-0.3.0
 
   7. From another terminal, connect to the game and create a user:
 
-       $ telnet localhost 1155
+     > $ telnet localhost 1155
 
   8. Have fun!
 
