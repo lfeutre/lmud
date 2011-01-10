@@ -108,7 +108,8 @@ do_login(Name, #req{conn=Conn}=Req) ->
 
 do_incarnate(#req{conn=Conn, living=Living}=Req) ->
   ok = em_game:incarnate(Living),
-  em_conn:print(Conn, "\n"),
+  em_conn:print(Conn, "\nType \"help\" to get some basic information about\n"
+                      "available commands, etc.\n\n"),
   em_rh_game:cmd_glance([], Req),
   em_conn:print(Conn, "\n> "),
   {ok, Req}.

@@ -14,7 +14,7 @@
 -export([cmd_look/2, cmd_north/2, cmd_east/2, cmd_south/2, cmd_west/2,
          cmd_go/2, cmd_quit/2, cmd_emote/2, cmd_say/2, cmd_tell/2,
          cmd_who/2, cmd_get/2, cmd_drop/2, cmd_inv/2, cmd_glance/2,
-         cmd_save/2, cmd_setlong/2]).
+         cmd_save/2, cmd_setlong/2, cmd_help/2]).
 
 -include("request.hrl").
 
@@ -224,7 +224,7 @@ do_go({ok, {Dir, Dest}}, #req{living=Liv}=Req) ->
 
 %% Emote
 cmd_emote(Args, #req{living=Liv}=Req) ->
-  Text = string:join(Args, " "),
+  Text = em_grammar:punctuate(string:join(Args, " ")),
   Name = em_living:get_name(Liv),
   Room = em_living:get_room(Liv),
   em_room:print_except(Room, Liv, "~s ~s~n", [Name, Text]),
@@ -277,6 +277,35 @@ cmd_setlong(Args, #req{living=Liv}=Req) ->
   em_living:set_long(Liv, string:join(Args, " ")),
   {ok, Req}.
 
+%% Help
+cmd_help(_Args, Req) ->
+  print(
+  "Welcome to ErlyMud!\n\n"
+  "The following commands, more or less, are available right now:\n"
+  "  look                    View the long description of the room.\n"
+  "  look [person|item]      View description of person/item.\n"
+  "  glance                  View the brief description of the room.\n"
+  "  go <dir>                Leave in the specified direction.\n"
+  "  north                     - shortcut for 'go north'\n"
+  "  east                      - shortcut for 'go east'\n"
+  "  south                     - shortcut for 'go south'\n"
+  "  west                      - shortcut for 'go west'\n"
+  "  say <what>              Say something, all in room will see it:\n"
+  "                            Jack says, \"Hello there!\"\n"
+  "  emote <what>            Emote, for roleplaying:\n"
+  "                            'emote grumpily kicks at a small rock'\n"
+  "                            -> Jack grumpily kicks at a small rock.\n"
+  "  tell <person> <what>    Send a private message to another user.\n"
+  "  get <item>              Pick up an item in the room.\n"
+  "  drop <item>             Drop an item from your inventory.\n"
+  "  inv                     Show your inventory.\n"
+  "  save                    Save your character, will remember your\n"
+  "                            location and inventory for next login.\n"
+  "  setlong <desc>          Set the description others see when they\n"
+  "                            look at you.\n"
+  "  who                     Display all logged in users.\n",
+  Req),
+  {ok, Req}.
 
 %% Utility functions
 
