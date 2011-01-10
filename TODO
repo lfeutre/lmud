@@ -1,17 +1,17 @@
 ErlyMUD TODO
 ============
 
-0.3.1
+0.3.2
 -----
-* How to make sure we always have a 'live' em_conn waiting for a connection?
+* Put new parser in place
 * Work on cmd_* implementations to improve error handling etc
-* Use 'areas' for organizing rooms and objects
-* Move save file handling to em_game and put files in a better location,
-  so they won't be tied to the specific version of the erlymud app
-* Set up some help info, listing available commands etc
 
 Future
 ------
+* Use 'areas' for organizing rooms and objects
+* Move save file handling to em_game and put files in a better location,
+  so they won't be tied to the specific version of the erlymud app
+* How to make sure we always have a 'live' em_conn waiting for a connection?
 * Add 'destroy' command for destroying objects in own inventory?
 * Add 'clone' command for instantiating object templates
 * Shutdown / reboot command
@@ -31,5 +31,4 @@ Future
     * When user logs in again, reconnect it to the em_living and the game
 * Idle timer in 'who' list
 * Put the {In, Out} "client" Pid pair into a record definition for clarity?
-* Put new parser in place
 * Better support for the telnet protocol
