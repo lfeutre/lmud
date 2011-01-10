@@ -24,11 +24,11 @@
 parse(Line, Req) ->
   case string:tokens(Line, " ") of
     [] ->
-      print("\r\n> ", Req),
+      print("\n> ", Req),
       ?req_next(parse);
     [Cmd|Args] ->
       Result = parse_cmd(Cmd, Args, Line, Req),
-      print("\r\n> ", Req),
+      print("\n> ", Req),
       Result
   end.
 

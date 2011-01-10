@@ -98,8 +98,12 @@ handle_data(_Socket, RawData, State) ->
   em_session:receive_line(State#state.session, RawData).
 
 write(Socket, Format, Args) ->
-  Data = em_text:colorize(io_lib:format(Format, Args)),
+  Data = process_output(Format, Args),
   gen_tcp:send(Socket, Data).
+
+process_output(Format, Args) ->
+  Data = em_text:colorize(io_lib:format(Format, Args)),
+  re:replace(Data, "\n", "\r\n", [global, {return, list}]).
 
 %% Telnet protocol handling
 

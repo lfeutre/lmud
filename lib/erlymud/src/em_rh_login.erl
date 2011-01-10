@@ -54,7 +54,7 @@ login({new_user_pw, Name}, "", #req{conn=Conn}=Req) ->
   em_conn:print(Conn, "Pick a password: "),
   ?req_next(login, [{new_user_pw, Name}]);
 login({new_user_pw, Name}, Password, #req{conn=Conn}=Req) ->
-  em_conn:print(Conn, "\r\nRepeat the password: "),
+  em_conn:print(Conn, "\nRepeat the password: "),
   ?req_next(login, [{new_user_pw_confirm, Name, Password}]);
 %% Confirm the password
 login({new_user_pw_confirm, Name, Password}, Password, #req{conn=Conn}=Req) ->
