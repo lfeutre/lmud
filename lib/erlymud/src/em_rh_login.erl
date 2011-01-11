@@ -15,7 +15,7 @@
 %% API
 
 welcome(Conn) ->
-  em_conn:print(Conn, "\nWelcome to ErlyMUD 0.3.1\n\n"),
+  em_conn:print(Conn, "\nWelcome to ErlyMUD 0.3.2\n\n"),
   em_conn:print(Conn, "Login: ").
 
 %% Got a username, do something with it
