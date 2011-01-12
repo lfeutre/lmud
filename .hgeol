@@ -1,0 +1,19 @@
+[patterns]
+**.app = native
+**.appup = native
+**.bat = CRLF
+**.config = native
+**.dat = native
+**.erl = native
+**.hrl = native
+**.rel = native
+**.sh = LF
+**.src = native
+**.txt = native
+CHANGES = native
+COPYING = native
+HOWTO = native
+IDEAS = native
+README = native
+TODO = native
+relup = native
