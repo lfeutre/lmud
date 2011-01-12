@@ -60,7 +60,7 @@ login({new_user_pw, Name}, Password, #req{conn=Conn}=Req) ->
 login({new_user_pw_confirm, Name, Password}, Password, #req{conn=Conn}=Req) ->
   em_conn:echo_on(Conn),
   UserFile = filename:join([code:priv_dir(erlymud), "users", [Name, ".dat"]]),
-  CryptPw = base64:encode_to_string(crypto:sha(Password)),
+  CryptPw = base64:encode_to_string(em_util_sha2:hexdigest256(Password)),
   file:write_file(UserFile, lists:flatten([
     "{version, 1}.\n",
     "{password, \"", CryptPw, "\"}.\n"])),
@@ -77,7 +77,7 @@ login({new_user_pw_confirm, Name, _Password}, _WrongPassword, #req{conn=Conn}=Re
 %% Existing user; load file and compare passwords, log in if correct
 login({got_password, Settings, Name}, Password, #req{conn=Conn}=Req) ->
   em_conn:echo_on(Conn),
-  CryptPw = base64:encode_to_string(crypto:sha(Password)),
+  CryptPw = base64:encode_to_string(em_util_sha2:hexdigest256(Password)),
   case lists:keyfind(password, 1, Settings) of
     false ->
       em_conn:print(Conn, "Error: Invalid user file.\n\n"),
