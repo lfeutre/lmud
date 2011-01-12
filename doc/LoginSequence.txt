@@ -1,0 +1,105 @@
+PC->Conn: connection
+Conn->SessionSup: start_child() 
+activate SessionSup
+SessionSup->Session: start_link()
+activate Session
+note right of Session: 
+  set queue=[init]
+  return with timeout 0
+end note
+Session-->SessionSup: SessionPid
+deactivate Session
+SessionSup-->Conn: SessionPid
+deactivate SessionSup
+
+Session->Session: timeout
+activate Session
+Session->Conn: print(welcome + login prompt)
+activate Conn
+Conn->PC: "welcome + login prompt"
+Conn-->Session: ok
+deactivate Conn
+Session-->Session: handlers=[LoginMfa]
+deactivate Session
+
+PC->Conn: username
+Conn->Session: receive_line(username)
+activate Session
+Session-->Conn: ok
+deactivate Session
+Session->ReqSup: request(LoginMFA, username)
+activate ReqSup
+ReqSup->Request: start_link(LoginMFA, username)
+activate Request
+Request-->ReqSup: {ok, Pid}
+deactivate Request
+ReqSup->Request: run()
+activate Request
+note right of Request: existing user, load file
+Request->Conn: print(password prompt)
+activate Conn
+Conn->PC: password prompt
+Conn-->Request: ok
+deactivate Conn
+Request-->ReqSup: {ok, PwCheckMFS}
+destroy Request
+ReqSup-->Session: {ok, PwCheckMFA}
+deactivate ReqSup
+
+PC->Conn: password
+Conn->Session: receive_line(password)
+activate Session
+Session-->Conn: ok
+deactivate Session
+Session->ReqSup: request(PwCheckMFA, password)
+activate ReqSup
+ReqSup->Request: start_link(PwCheckMFA, password)
+activate Request
+Request-->ReqSup: {ok, Pid}
+deactivate Request
+ReqSup->Request: run()
+activate Request
+note right of Request: password ok
+
+Request->UserSup: start_child()
+activate UserSup
+UserSup->User: start_link()
+activate User
+User-->UserSup: {ok, Pid}
+deactivate User
+UserSup->Request: {ok, Pid}
+deactivate UserSup
+
+Request->Game: login(User)
+activate Game
+Game-->Request: ok
+deactivate Game
+
+Request->LivingSup: start_child()
+activate LivingSup
+LivingSup->Living: start_link()
+activate Living
+Living-->LivingSup: {ok, Pid}
+deactivate Living
+LivingSup->Request: {ok, Pid}
+deactivate LivingSup
+
+Request->Game: incarnate(Living)
+activate Game
+Game-->Request: ok
+deactivate Game
+
+Request->Conn: print(game prompt)
+activate Conn
+Conn->PC: game prompt
+Conn-->Request: ok
+deactivate Conn
+Request-->ReqSup: {link, ParseMFA}
+destroy Request
+ReqSup-->Session: {link, ParseMFA}
+note over Session: 
+  links to User and 
+  Living processes
+end note
+deactivate ReqSup
+
