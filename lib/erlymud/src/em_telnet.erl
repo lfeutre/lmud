@@ -14,6 +14,7 @@
 -record(nvt, {enable, disable, opts}).
 -record(telopt, {current='NO', queue='EMPTY'}).
 
+-define(DEBUG_PRINT(Str), ok).
 -define(DEBUG_PRINT(Str, Args), ok).
 
 %% --------------------------------------------------------------------------
