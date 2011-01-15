@@ -18,7 +18,7 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
--record(state, {lsock, socket, session}).
+-record(state, {lsock, socket, session, telnet_session}).
 
 
 %% API
@@ -45,12 +45,12 @@ print(Conn, Format, Args) ->
 init([LSock]) ->
   {ok, #state{lsock = LSock}, 0}.
 
-handle_call(echo_off, _From, #state{socket=Socket}=State) ->
-  gen_tcp:send(Socket, [?IAC,?WILL,?ECHO]),
-  {reply, ok, State};
-handle_call(echo_on, _From, #state{socket=Socket}=State) ->
-  gen_tcp:send(Socket, [?IAC,?WONT,?ECHO]),
-  {reply, ok, State};
+handle_call(echo_off, _From, State) ->
+  {ok, TelSess} = em_telnet:will(?ECHO, State#state.telnet_session),
+  {reply, ok, State#state{telnet_session=TelSess}};
+handle_call(echo_on, _From, State) ->
+  {ok, TelSess} = em_telnet:wont(?ECHO, State#state.telnet_session),
+  {reply, ok, State#state{telnet_session=TelSess}};
 handle_call({print, Format}, _From, #state{socket=Socket}=State) ->
   write(Socket, Format, []),
   {reply, ok, State};
@@ -61,14 +61,9 @@ handle_call({print, Format, Args}, _From, #state{socket=Socket}=State) ->
 handle_cast(_Msg, State) ->
   {noreply, State}.
 
-handle_info({tcp, Socket, RawData}, State) ->
-  case handle_telnet(Socket, RawData, State) of
-    {"", NewState} ->
-      {noreply, NewState};
-    {Data, NewState} ->
-      handle_data(Socket, Data, NewState),
-      {noreply, NewState}
-  end;
+handle_info({tcp, _Socket, RawData}, State) ->
+  {ok, NewSession} = em_telnet:parse(State#state.telnet_session, RawData),
+  {noreply, State#state{telnet_session=NewSession}};
 handle_info({tcp_closed, _Socket}, State) ->
   {stop, tcp_closed, State};
 handle_info(timeout, #state{lsock=LSock}=State) ->
@@ -77,7 +72,10 @@ handle_info(timeout, #state{lsock=LSock}=State) ->
       em_conn_sup:start_child(),
       {ok, Session} = em_session_sup:start_child(self()),
       link(Session),
-      {noreply, State#state{socket=Socket, session=Session}};
+      PrintFun = fun(Line) -> em_session:receive_line(Session, Line) end,
+      TelnetSession = em_telnet:new(Socket, PrintFun),
+      {noreply, State#state{socket=Socket, session=Session, 
+                            telnet_session=TelnetSession}};
     {error, closed} ->
       {stop, normal, State}
   end.
@@ -91,12 +89,6 @@ code_change(_Vsn, State, _Extra) ->
 
 %% Internal functions
 
-handle_telnet(_Socket, RawData, State) ->
-  {process_telnet(RawData), State}.
-
-handle_data(_Socket, RawData, State) ->
-  em_session:receive_line(State#state.session, RawData).
-
 write(Socket, Format, Args) ->
   Data = process_output(Format, Args),
   gen_tcp:send(Socket, Data).
@@ -104,29 +96,3 @@ write(Socket, Format, Args) ->
 process_output(Format, Args) ->
   Data = em_text:colorize(io_lib:format(Format, Args)),
   re:replace(Data, "\n", "\r\n", [global, {return, list}]).
-
-%% Telnet protocol handling
-
-process_telnet(RawData) ->
-  process_telnet(RawData, []).
-
-process_telnet([], Output) ->
-  lists:reverse(Output);
-process_telnet([?IAC|RawData], Output) ->
-  process_cmd(RawData, Output);
-process_telnet([Ch|RawData], Output) ->
-  process_telnet(RawData, [Ch|Output]).
-
-process_cmd([], Output) ->
-  Output;
-process_cmd([?WILL,_Opt|RawData], Output) ->
-  process_telnet(RawData, Output);
-process_cmd([?WONT,_Opt|RawData], Output) ->
-  process_telnet(RawData, Output);
-process_cmd([?DO,_Opt|RawData], Output) ->
-  process_telnet(RawData, Output);
-process_cmd([?DONT,_Opt|RawData], Output) ->
-  process_telnet(RawData, Output);
-process_cmd([_|RawData], Output) ->
-  process_telnet(RawData, Output).
-
