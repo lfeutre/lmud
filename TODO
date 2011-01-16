@@ -5,6 +5,7 @@ ErlyMUD TODO
 -----
 * Work on cmd_* implementations to improve error handling etc
 * Add room / item building commands
+* Send IAC GA sequence after printing prompts?
 
 Future
 ------
