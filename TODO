@@ -9,11 +9,18 @@ ErlyMUD TODO
 
 Future
 ------
+* Extend support for navigation and communication
+  - n/e/s/w for movement
+  - '/" for say, : for emote
+  - nod/smile/grin/shrug/..
+* How to make sure we always have a 'live' em_conn waiting for a connection?
+  - maybe have an em_acceptor_sup with 1-4 em_acceptor registered processes
+    doing all the work, then handing off the socket ownership to em_conn
+  - also switch to active_once flow control?
 * Put new parser in place
 * Use 'areas' for organizing rooms and objects
 * Move save file handling to em_game and put files in a better location,
   so they won't be tied to the specific version of the erlymud app
-* How to make sure we always have a 'live' em_conn waiting for a connection?
 * Add 'destroy' command for destroying objects in own inventory?
 * Add 'clone' command for instantiating object templates
 * Shutdown / reboot command
