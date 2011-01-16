@@ -1,4 +1,23 @@
-PC->Conn: connection
+<html>
+<body>
+<h1>Example of successful login sequence</h1>
+<div class=wsd wsd_style="napkin"><pre>
+participant PC
+participant gen_tcp
+participant Conn
+Conn->gen_tcp: accept()
+activate gen_tcp
+PC->gen_tcp: telnet connection\ninitiated
+gen_tcp-->Conn: Socket
+deactivate gen_tcp
+Conn->ConnSup: start_child() 
+activate ConnSup
+note over ConnSup
+  start new Conn to wait
+  for next connection
+end note
+ConnSup-->Conn: ConnPid (discarded)
+deactivate ConnSup
 Conn->SessionSup: start_child() 
 activate SessionSup
 SessionSup->Session: start_link()
@@ -102,4 +121,6 @@ note over Session:
   Living processes
 end note
 deactivate ReqSup
-
+</pre></div><script type="text/javascript" src="http://www.websequencediagrams.com/service.js"></script>
+</body>
+</html>
