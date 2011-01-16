@@ -1,13 +1,14 @@
 ErlyMUD TODO
 ============
 
-0.3.2
+0.3.3
 -----
-* Put new parser in place
 * Work on cmd_* implementations to improve error handling etc
+* Add room / item building commands
 
 Future
 ------
+* Put new parser in place
 * Use 'areas' for organizing rooms and objects
 * Move save file handling to em_game and put files in a better location,
   so they won't be tied to the specific version of the erlymud app
@@ -31,4 +32,3 @@ Future
     * When user logs in again, reconnect it to the em_living and the game
 * Idle timer in 'who' list
 * Put the {In, Out} "client" Pid pair into a record definition for clarity?
-* Better support for the telnet protocol
