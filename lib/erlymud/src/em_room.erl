@@ -13,7 +13,7 @@
 -export([start_link/3, 
          add_exit/3, add_object/2, 
          get_exit/2, get_exits/1, get_name/1, get_objects/1, get_people/1,
-         set_long/2,
+         set_title/2, set_brief/2, set_long/2,
          remove_object/2,
          describe/1, describe_except/2, looking/2,
          enter/2, leave/2, 
@@ -73,6 +73,12 @@ print_except(Room, User, Format, Args) ->
 print_while(Room, Pred, Format, Args) ->
   gen_server:call(Room, {print_while, Pred, Format, Args}).
 
+set_title(Room, Title) ->
+  gen_server:call(Room, {set_title, Title}).
+
+set_brief(Room, Brief) ->
+  gen_server:call(Room, {set_brief, Brief}).
+
 set_long(Room, Long) ->
   gen_server:call(Room, {set_long, Long}).
 
@@ -119,6 +125,10 @@ handle_call({print_while, Pred, Format, Args}, _From, State) ->
   PrintFun = fun(Liv) -> em_living:print(Liv, Format, Args) end,
   lists:map(PrintFun, People),
   {reply, ok, State};
+handle_call({set_title, Title}, _From, State) ->
+  {reply, ok, State#state{title=Title}};
+handle_call({set_brief, Brief}, _From, State) ->
+  {reply, ok, State#state{desc=Brief}};
 handle_call({set_long, Long}, _From, State) ->
   {reply, ok, State#state{long=Long}}.
 

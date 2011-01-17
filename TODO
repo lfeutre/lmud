@@ -5,6 +5,12 @@ ErlyMUD TODO
 -----
 * Work on cmd_* implementations to improve error handling etc
 * Add room / item building commands
+  - redit: Edit / Create Rooms (IN PROGRESS)
+    - change room descs (DONE)
+    - dig new rooms (DONE)
+    - should save rooms / changes.. but only for admins!
+  - addexit: Add exit to existing room
+  - oedit: Edit / Create Objects
 * Send IAC GA sequence after printing prompts?
 
 Future

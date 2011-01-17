@@ -14,7 +14,8 @@
 -export([cmd_look/2, cmd_north/2, cmd_east/2, cmd_south/2, cmd_west/2,
          cmd_go/2, cmd_quit/2, cmd_emote/2, cmd_say/2, cmd_tell/2,
          cmd_who/2, cmd_get/2, cmd_drop/2, cmd_inv/2, cmd_glance/2,
-         cmd_save/2, cmd_setlong/2, cmd_help/2]).
+         cmd_save/2, cmd_setlong/2, cmd_help/2,
+         cmd_redit/2]).
 
 -include("request.hrl").
 
@@ -277,6 +278,51 @@ cmd_setlong(Args, #req{living=Liv}=Req) ->
   em_living:set_long(Liv, string:join(Args, " ")),
   {ok, Req}.
 
+%% REdit
+cmd_redit(["dig", Dir, ToName|_Rest], #req{living=Liv}=Req) ->
+  case em_room_mgr:new_room(ToName) of
+    {ok, ToRoom} ->
+      FromRoom = em_living:get_room(Liv),
+      FromName = em_room:get_name(FromRoom),
+      em_room:add_exit(FromRoom, Dir, ToName),
+      em_room:add_exit(ToRoom, reverse_dir(Dir), FromName);
+    {error, room_exists} ->
+      print("That room already exists!\n", Req)
+  end,
+  {ok, Req};
+cmd_redit(["title", What|Rest], #req{living=Liv}=Req) ->
+  Room = em_living:get_room(Liv),
+  Title = string:join([What|Rest], " "),
+  em_room:set_title(Room, Title),
+  {ok, Req};
+cmd_redit(["brief", What|Rest], #req{living=Liv}=Req) ->
+  Room = em_living:get_room(Liv),
+  Brief = string:join([What|Rest], " "),
+  em_room:set_brief(Room, Brief),
+  {ok, Req};
+cmd_redit(["long", What|Rest], #req{living=Liv}=Req) ->
+  Room = em_living:get_room(Liv),
+  Long = string:join([What|Rest], " "),
+  em_room:set_long(Room, Long),
+  {ok, Req};
+cmd_redit(_Args, Req) ->
+  print(
+  "Edit / create rooms. This won't make changes permanent, yet.\n"
+  "Usage: redit <cmd> <args>\n\n"
+  "Commands:\n"
+  "  dig <dir> <name>       Add an exit <dir> in the current room, leading\n"
+  "                         to the new room <name>\n"
+  "  title <what>           Set the room title to <what>\n"
+  "  brief <what>           Set the room brief desc to <what>\n"
+  "  long <what>            Set the room long desc to <what>\n",
+  Req),
+  {ok, Req}.
+
+reverse_dir("north") -> "south";
+reverse_dir("east") -> "west";
+reverse_dir("south") -> "north";
+reverse_dir("west") -> "east".
+
 %% Help
 cmd_help(_Args, Req) ->
   print(
@@ -303,6 +349,7 @@ cmd_help(_Args, Req) ->
   "                            location and inventory for next login.\n"
   "  setlong <desc>          Set the description others see when they\n"
   "                            look at you.\n"
+  "  redit <cmd> <args>      Edit / create rooms. Try 'redit' for more info.\n"
   "  who                     Display all logged in users.\n",
   Req),
   {ok, Req}.

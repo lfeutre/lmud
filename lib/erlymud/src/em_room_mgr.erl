@@ -9,7 +9,7 @@
 
 -behaviour(gen_server).
 
--export([start_link/0, get_room/1]).
+-export([start_link/0, get_room/1, new_room/1]).
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, 
          terminate/2, code_change/3]).
@@ -38,6 +38,9 @@ get_room(Name) ->
       gen_server:call(?SERVER, {get_room, Name})
   end.
 
+new_room(Name) ->
+  gen_server:call(?SERVER, {new_room, Name}).
+
 %% gen_server callbacks
 
 init([]) ->
@@ -51,7 +54,10 @@ handle_call({get_room, Name}, _From, State) ->
       {reply, {ok, Room}, State};
     {error, not_found} ->
       {reply, {error, not_found}, State}
-  end.
+  end;
+handle_call({new_room, Name}, _From, State) ->
+  Result = do_new_room(Name),
+  {reply, Result, State}.
 
 handle_cast(_Msg, State) ->
   {noreply, State}.
@@ -66,6 +72,26 @@ code_change(_OldVsn, State, _Extra) ->
   {ok, State}.
 
 %% Internal functions
+
+do_new_room(Name) ->
+  case ets:lookup(?TABLE_ID, Name) of
+    [{_Name, _Room}] ->
+      {error, room_exists};
+    [] ->
+      case try_load_room(Name) of
+        {ok, _Room} ->
+          {error, room_exists};
+        {error, not_found} ->
+          make_new_room(Name)
+      end
+  end.
+
+make_new_room(Name) ->
+  Title = "A non-descript room",
+  Brief = "This is a rather boring room, someone should fix that.",
+  {ok, Room} = em_room_pool_sup:start_child(Name, Title, Brief),
+  ets:insert(?TABLE_ID, {Name, Room}),
+  {ok, Room}.
 
 refresh([]) ->
   ok;
