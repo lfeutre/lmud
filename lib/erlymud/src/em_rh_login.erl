@@ -93,13 +93,18 @@ login({got_password, Settings, Name}, Password, #req{conn=Conn}=Req) ->
 
 do_login(Name, #req{conn=Conn}=Req) ->
   {ok, User} = em_user_sup:start_child(Name, Conn),
+  link(User),
   case em_game:login(User) of
     ok ->
       {ok, Living} = em_living_sup:start_child(Name, {User, Conn}),
+      link(Living),
       ok = em_living:load(Living),
       {ok, NewReq} = do_incarnate(Req#req{user=User, living=Living}),
+      unlink(Living),
+      unlink(User),
       ?req_next_and_link(em_rh_game, parse, [], NewReq);
     {error, user_exists} ->
+      unlink(User),
       exit(User, user_exists),
       em_conn:print(Conn, "User already logged in, try again.\n\n"),
       em_conn:print(Conn, "Login: "),
