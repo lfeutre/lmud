@@ -103,7 +103,7 @@ refresh([{_, Room, worker, [em_room]}|Children]) ->
   refresh(Children).
 
 try_load_room(Name) ->
-  RoomFile = filename:join([code:priv_dir(erlymud), "rooms", 
+  RoomFile = filename:join([em_game:data_dir(), "rooms", 
                             Name ++ ".dat"]),
   load_room(RoomFile).
 

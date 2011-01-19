@@ -3,6 +3,9 @@ ErlyMUD TODO
 
 0.3.3
 -----
+* Fix target_system.erl so it packages data dir correctly
+  - include data/rooms/*, data/objects/*
+  - create dirs data/users/, data/livings/
 * Work on cmd_* implementations to improve error handling etc
 * Add room / item building commands
   - redit: Edit / Create Rooms (IN PROGRESS)
@@ -25,8 +28,6 @@ Future
   - also switch to active_once flow control?
 * Put new parser in place
 * Use 'areas' for organizing rooms and objects
-* Move save file handling to em_game and put files in a better location,
-  so they won't be tied to the specific version of the erlymud app
 * Add 'destroy' command for destroying objects in own inventory?
 * Add 'clone' command for instantiating object templates
 * Shutdown / reboot command

@@ -170,9 +170,11 @@ do_remove_object(Ob, State, [NoMatch|Obs], Searched) ->
 %% Load
 
 do_load(#state{name=Name}=State) ->
-  File = filename:join([code:priv_dir(erlymud), "livings",
-                        Name ++ ".dat"]),
+  File = make_filename(Name),
   load_living(File, State).
+
+make_filename(Name) ->
+  filename:join([em_game:data_dir(), "livings", Name ++ ".dat"]).
 
 load_living(Filename, State) ->
   io:format("loading living: ~s~n", [Filename]),
@@ -198,8 +200,7 @@ update_living([_Other|Data], State) ->
 
 do_save(#state{name=Name}=State) ->
   Data = save_living(State),
-  File = filename:join([code:priv_dir(erlymud), "livings",
-                        Name ++ ".dat"]),
+  File = make_filename(Name),
   case file:write_file(File, Data) of
     ok ->
       {ok, State};

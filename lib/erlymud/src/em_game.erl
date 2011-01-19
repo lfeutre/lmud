@@ -12,6 +12,7 @@
 
 %% API
 -export([start_link/0, start/0, 
+         data_dir/0,
          get_users/0, lookup_user/1, lookup_user_pid/1,
          login/1, incarnate/1, logout/1,
          print_except/3, print_while/3]).
@@ -31,6 +32,9 @@ start_link() ->
 
 start() ->
   gen_server:start({local, ?SERVER}, ?MODULE, [], []).
+
+data_dir() ->
+  filename:join([code:lib_dir(erlymud), "..", "..", "data"]).
 
 get_users() ->
   gen_server:call(?SERVER, get_users).

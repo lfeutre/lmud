@@ -55,7 +55,7 @@ new(Ids, Adjs) ->
   resync_names(#object{ids=Ids, adjs=Adjs}).
 
 load(Name) ->
-  File = filename:join([code:priv_dir(erlymud), "objects",
+  File = filename:join([em_game:data_dir(), "objects",
                         Name ++ ".dat"]),
   load_object(Name, File).
 
