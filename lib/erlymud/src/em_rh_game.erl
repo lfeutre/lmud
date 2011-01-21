@@ -36,17 +36,23 @@ parse(Line, Req) ->
 parse_cmd(Cmd, Args, Line, Req) ->
   try list_to_existing_atom("cmd_" ++ string:to_lower(Cmd)) of
     Fun ->
-      case apply(?MODULE, Fun, [Args, Req]) of
-        {ok, Req} ->
-          ?req_next(parse);
-        {stop, Req} ->
-          ?req_done;
-        {error, Reason} ->
-          print(Reason, Req),
-          ?req_next(parse);
-        Other ->
-          print("Error occurred while processing '~s':~n~p~n", 
-            [Line, Other], Req),
+      try
+        case apply(?MODULE, Fun, [Args, Req]) of
+          {ok, Req} ->
+            ?req_next(parse);
+          {stop, Req} ->
+            ?req_done;
+          {error, Reason} ->
+            print(Reason, Req),
+            ?req_next(parse);
+          Other ->
+            print("Error occurred while processing '~s':~n~p~n", 
+              [Line, Other], Req),
+            ?req_next(parse)
+        end
+      catch
+        throw:not_allowed ->
+          print("You're not allowed to use the '~s' command.~n", [Line], Req),
           ?req_next(parse)
       end
   catch
@@ -280,6 +286,7 @@ cmd_setlong(Args, #req{living=Liv}=Req) ->
 
 %% REdit
 cmd_redit(["dig", Dir, ToName|_Rest], #req{living=Liv}=Req) ->
+  ok = verify_privilege(admin, Req),
   case em_room_mgr:new_room(ToName) of
     {ok, ToRoom} ->
       FromRoom = em_living:get_room(Liv),
@@ -291,21 +298,25 @@ cmd_redit(["dig", Dir, ToName|_Rest], #req{living=Liv}=Req) ->
   end,
   {ok, Req};
 cmd_redit(["title", What|Rest], #req{living=Liv}=Req) ->
+  ok = verify_privilege(admin, Req),
   Room = em_living:get_room(Liv),
   Title = string:join([What|Rest], " "),
   em_room:set_title(Room, Title),
   {ok, Req};
 cmd_redit(["brief", What|Rest], #req{living=Liv}=Req) ->
+  ok = verify_privilege(admin, Req),
   Room = em_living:get_room(Liv),
   Brief = string:join([What|Rest], " "),
   em_room:set_brief(Room, Brief),
   {ok, Req};
 cmd_redit(["long", What|Rest], #req{living=Liv}=Req) ->
+  ok = verify_privilege(admin, Req),
   Room = em_living:get_room(Liv),
   Long = string:join([What|Rest], " "),
   em_room:set_long(Room, Long),
   {ok, Req};
 cmd_redit(_Args, Req) ->
+  ok = verify_privilege(admin, Req),
   print(
   "Edit / create rooms. This won't make changes permanent, yet.\n"
   "Usage: redit <cmd> <args>\n\n"
@@ -323,7 +334,23 @@ reverse_dir("east") -> "west";
 reverse_dir("south") -> "north";
 reverse_dir("west") -> "east".
 
+verify_privilege(Priv, #req{user=User}) ->
+  case em_user:has_privilege(User, Priv) of
+    true -> ok;
+    false -> throw(not_allowed)
+  end.
+
 %% Help
+cmd_help(["privileges"], Req) ->
+  print(
+  "Privileges are used to control what commands users have access to.\n"
+  "Currently it's not possible to set them in-game; instead, edit the\n"
+  "file data/users/<username>.dat and add a line like this:\n\n"
+  "{privileges, [admin]}.\n\n"
+  "The 'admin' privilege is the only one in use for now, to restrict\n"
+  "access to commands like 'redit' etc that will modify the game.\n",
+  Req),
+  {ok, Req};
 cmd_help(_Args, Req) ->
   print(
   "Welcome to ErlyMud!\n\n"
@@ -349,8 +376,9 @@ cmd_help(_Args, Req) ->
   "                            location and inventory for next login.\n"
   "  setlong <desc>          Set the description others see when they\n"
   "                            look at you.\n"
-  "  redit <cmd> <args>      Edit / create rooms. Try 'redit' for more info.\n"
-  "  who                     Display all logged in users.\n",
+  "  redit <cmd> <args>      Edit / create rooms. Try 'redit' for info. (*)\n"
+  "  who                     Display all logged in users.\n\n"
+  "(*) Privileged command, see 'help privileges'.\n",
   Req),
   {ok, Req}.
 
