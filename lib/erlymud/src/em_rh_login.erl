@@ -94,6 +94,7 @@ login({got_password, Settings, Name}, Password, #req{conn=Conn}=Req) ->
 do_login(Name, #req{conn=Conn}=Req) ->
   {ok, User} = em_user_sup:start_child(Name, Conn),
   link(User),
+  ok = em_user:load(User),
   case em_game:login(User) of
     ok ->
       {ok, Living} = em_living_sup:start_child(Name, {User, Conn}),
