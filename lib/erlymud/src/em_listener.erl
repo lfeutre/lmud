@@ -2,33 +2,46 @@
 %%% @author Johan Warlander <johan@snowflake.nu>
 %%% @copyright 2010-2011 Johan Warlander
 %%% @doc Listen for new TCP connections.
-%%% This gen_server will start listening for incoming TCP connections, then
-%%% start a number of acceptors in the acceptor pool.
+%%% This gen_server will open a listening port for incoming TCP connections, 
+%%% then start a number of acceptors in the acceptor pool.
 %%% @end
 %%% =========================================================================
 -module(em_listener).
+-include("types.hrl").
 
 -behaviour(gen_server).
 
+%% API
 -export([start_link/0, listen/2]).
 
+%% gen_server
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
--record(state, {lsock}).
+-record(state, {lsock :: socket()}).
 
 -define(SERVER, ?MODULE).
 
 
-%% API
+%% ==========================================================================
+%% API Functions
+%% ==========================================================================
 
+%% @doc Start the server. This won't actually start listening for connections
+%% though, you have to call listen() for that.
 start_link() ->
   gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
 
+%% @doc Start listening for connections on Port, spawning the specified
+%% number of acceptors.
+-spec listen(0..65535, pos_integer()) -> ok.
 listen(Port, Acceptors) ->
   gen_server:call(?SERVER, {listen, Port, Acceptors}).
 
+
+%% ==========================================================================
 %% gen_server callbacks
+%% ==========================================================================
 
 init([]) ->
   {ok, #state{}}.
@@ -65,6 +78,7 @@ code_change(_OldVsn, State, _Extra) ->
 
 %% Internal functions
 
+-spec start_acceptors(socket(), pos_integer()) -> ok.
 start_acceptors(_LSock, 0) -> ok;
 start_acceptors(LSock, Acceptors) when is_integer(Acceptors), Acceptors > 0 ->
   em_acceptor_pool:start_child(LSock),
