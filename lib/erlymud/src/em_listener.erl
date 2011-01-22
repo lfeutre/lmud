@@ -18,8 +18,6 @@
 -record(state, {lsock}).
 
 -define(SERVER, ?MODULE).
--define(DEFAULT_PORT, 2155).
--define(DEFAULT_ACCEPTORS, 1).
 
 
 %% API
