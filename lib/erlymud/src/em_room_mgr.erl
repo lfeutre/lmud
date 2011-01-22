@@ -127,14 +127,13 @@ make_room(Filename, Data) ->
            {long, What} -> What;
            false -> undefined
          end,
-  Obs = case lists:keyfind(objects, 1, Data) of
-          {objects, ObList} -> em_object:load_obs(ObList);
-          false -> []
-        end,
+  Resets = proplists:get_value(objects, Data, []),
+  Obs = em_object:load_obs(Resets),
   {ok, Room} = em_room_pool_sup:start_child(Name, Title, Desc),
   em_room:set_long(Room, Long),
   add_exits(Room, Exits),
   add_objects(Room, Obs),
+  add_resets(Room, Resets),
   {Name, Room}.
 
 add_objects(Room, []) ->
@@ -148,6 +147,12 @@ add_exits(Room, []) ->
 add_exits(Room, [{Dir, Dest}|Exits]) ->
   em_room:add_exit(Room, Dir, Dest),
   add_exits(Room, Exits).
+
+add_resets(Room, []) ->
+  Room;
+add_resets(Room, [Reset|Resets]) ->
+  em_room:add_reset(Room, Reset),
+  add_resets(Room, Resets).
 
 extract_name([Basename]) ->
   re:replace(Basename, "\.dat$", "", [{return, list}]);

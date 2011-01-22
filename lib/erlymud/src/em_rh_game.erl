@@ -15,7 +15,7 @@
          cmd_go/2, cmd_quit/2, cmd_emote/2, cmd_say/2, cmd_tell/2,
          cmd_who/2, cmd_get/2, cmd_drop/2, cmd_inv/2, cmd_glance/2,
          cmd_save/2, cmd_setlong/2, cmd_help/2,
-         cmd_redit/2]).
+         cmd_redit/2, cmd_addexit/2]).
 
 -include("request.hrl").
 
@@ -284,6 +284,26 @@ cmd_setlong(Args, #req{living=Liv}=Req) ->
   em_living:set_long(Liv, string:join(Args, " ")),
   {ok, Req}.
 
+%% addexit
+cmd_addexit([Dir, ToName|_Rest], #req{living=Liv}=Req) ->
+  ok = verify_privilege(admin, Req),
+  case em_room_mgr:get_room(ToName) of
+    {ok, _ToRoom} ->
+      FromRoom = em_living:get_room(Liv),
+      em_room:add_exit(FromRoom, Dir, ToName),
+      ok = em_room:save(FromRoom);
+    {error, not_found} ->
+      print("No such room exists!\n", Req)
+  end,
+  {ok, Req};
+cmd_addexit(_Args, Req) ->
+  ok = verify_privilege(admin, Req),
+  print(
+  "Usage: addexit <dir> <name>\n\n"
+  "  Add an exit in direction <dir> to the existing room <name>.\n",
+  Req),
+  {ok, Req}.
+
 %% REdit
 cmd_redit(["dig", Dir, ToName|_Rest], #req{living=Liv}=Req) ->
   ok = verify_privilege(admin, Req),
@@ -292,7 +312,9 @@ cmd_redit(["dig", Dir, ToName|_Rest], #req{living=Liv}=Req) ->
       FromRoom = em_living:get_room(Liv),
       FromName = em_room:get_name(FromRoom),
       em_room:add_exit(FromRoom, Dir, ToName),
-      em_room:add_exit(ToRoom, reverse_dir(Dir), FromName);
+      ok = em_room:save(FromRoom),
+      em_room:add_exit(ToRoom, reverse_dir(Dir), FromName),
+      ok = em_room:save(ToRoom);
     {error, room_exists} ->
       print("That room already exists!\n", Req)
   end,
@@ -302,18 +324,21 @@ cmd_redit(["title", What|Rest], #req{living=Liv}=Req) ->
   Room = em_living:get_room(Liv),
   Title = string:join([What|Rest], " "),
   em_room:set_title(Room, Title),
+  ok = em_room:save(Room),
   {ok, Req};
 cmd_redit(["brief", What|Rest], #req{living=Liv}=Req) ->
   ok = verify_privilege(admin, Req),
   Room = em_living:get_room(Liv),
   Brief = string:join([What|Rest], " "),
   em_room:set_brief(Room, Brief),
+  ok = em_room:save(Room),
   {ok, Req};
 cmd_redit(["long", What|Rest], #req{living=Liv}=Req) ->
   ok = verify_privilege(admin, Req),
   Room = em_living:get_room(Liv),
   Long = string:join([What|Rest], " "),
   em_room:set_long(Room, Long),
+  ok = em_room:save(Room),
   {ok, Req};
 cmd_redit(_Args, Req) ->
   ok = verify_privilege(admin, Req),

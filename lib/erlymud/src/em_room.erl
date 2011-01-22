@@ -11,18 +11,19 @@
 -behaviour(gen_server).
 
 -export([start_link/3, 
-         add_exit/3, add_object/2, 
+         add_exit/3, add_object/2, add_reset/2,
          get_exit/2, get_exits/1, get_name/1, get_objects/1, get_people/1,
          set_title/2, set_brief/2, set_long/2,
          remove_object/2,
          describe/1, describe_except/2, looking/2,
          enter/2, leave/2, 
-         print_except/4, print_while/4]).
+         print_except/4, print_while/4,
+         save/1]).
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, 
          terminate/2, code_change/3]).
 
--record(state, {name, title, desc, long, people=[], exits=[], objects=[]}).
+-record(state, {name, title, desc, long, people=[], exits=[], objects=[], resets=[]}).
 
 start_link(Name, Title, Desc) ->
   gen_server:start_link(?MODULE, [Name, Title, Desc], []).
@@ -32,6 +33,9 @@ add_exit(Room, Dir, Dest) ->
 
 add_object(Room, Ob) ->
   gen_server:call(Room, {add_object, Ob}).
+
+add_reset(Room, Reset) ->
+  gen_server:call(Room, {add_reset, Reset}).
 
 get_exit(Room, Dir) ->
   gen_server:call(Room, {get_exit, Dir}).
@@ -82,6 +86,9 @@ set_brief(Room, Brief) ->
 set_long(Room, Long) ->
   gen_server:call(Room, {set_long, Long}).
 
+save(Room) ->
+  gen_server:call(Room, save).
+
 % --
 
 init([Name, Title, Desc]) ->
@@ -92,6 +99,8 @@ handle_call({add_exit, Dir, Dest}, _From, #state{exits=Exits} = State) ->
   {reply, ok, State#state{exits=[{Dir, Dest}|Exits]}};
 handle_call({add_object, Ob}, _From, #state{objects=Objects} = State) ->
   {reply, ok, State#state{objects=[Ob|Objects]}};
+handle_call({add_reset, Reset}, _From, #state{resets=Resets} = State) ->
+  {reply, ok, State#state{resets=[Reset|Resets]}};
 handle_call({get_exit, Dir}, _From, #state{exits=Exits} = State) ->
   Response = case lists:keyfind(Dir, 1, Exits) of
                false -> {error, not_found};
@@ -130,7 +139,10 @@ handle_call({set_title, Title}, _From, State) ->
 handle_call({set_brief, Brief}, _From, State) ->
   {reply, ok, State#state{desc=Brief}};
 handle_call({set_long, Long}, _From, State) ->
-  {reply, ok, State#state{long=Long}}.
+  {reply, ok, State#state{long=Long}};
+handle_call(save, _From, State) ->
+  {ok, NewState} = do_save(State),
+  {reply, ok, NewState}.
 
 handle_cast(_Msg, State) ->
   {noreply, State}.
@@ -192,4 +204,50 @@ list_people([]) ->
 list_people(People) ->
   Names = lists:map(fun em_living:get_name/1, People),
   ["\n", [[N, " is here.\n"] || N <- Names]].
-  
+
+%% Save
+
+make_filename(Name) ->
+  filename:join([em_game:data_dir(), "rooms", Name ++ ".dat"]).
+
+do_save(State) ->
+  Data = save_room(State),
+  File = make_filename(State#state.name),
+  io:format("saving room: ~s~n~p~n", [File, Data]),
+  case file:write_file(File, Data) of
+    ok ->
+      {ok, State};
+    {error, Reason} ->
+      {error, file:format_error(Reason)}
+  end.
+
+save_room(State) ->
+  lists:flatten([
+    "{version, 1}.\n",
+    "{title, \"", State#state.title, "\"}.\n",
+    "{desc, \"", State#state.desc, "\"}.\n",
+    save_long(State),
+    "{exits, ", save_exits(State), "}.\n",
+    save_resets(State)
+  ]).
+
+save_long(#state{long=undefined}) ->
+  "";
+save_long(#state{long=Long}) ->
+  ["{long, \"", Long, "\"}.\n"].
+
+save_exits(State) ->
+  ["[", save_exits(State#state.exits, []), "]"].
+
+save_exits([], Result) ->
+  string:join(Result, ",");
+save_exits([{Dir, Dest}|Exits], Result) ->
+  save_exits(Exits, Result ++ [["{\"",Dir,"\",\"",Dest,"\"}"]]).
+
+save_resets(State) ->
+  Resets = State#state.resets,
+  ["{objects, ", save_stringlist(Resets), "}.\n"].
+
+save_stringlist(List) ->
+  ["[", string:join([["\"",Str,"\""]||Str <- List], ", "), "]"].
+
