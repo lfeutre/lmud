@@ -1,13 +1,10 @@
 ErlyMUD TODO
 ============
 
-0.3.3
------
-* Add room / item building commands
-  - oedit: Edit / Create Objects
-
 0.3.4
 -----
+* Add item building commands
+  - oedit: Edit / Create Objects
 * Fix so that failure to load start room puts you in safe room
 * Add 'goto' command for admins, to move to other rooms
 * Add 'transfer' command for admins, to move another player
@@ -22,6 +19,7 @@ Future
 * Test fix for leaking processes when load_living() fails, etc
   - see em_rh_login:do_login()
 * Work on cmd_* implementations to improve error handling etc
+  - 'redit' / 'addexit' should check validity of direction
 * Send IAC GA sequence after printing prompts?
 * Put new parser in place
 * Use 'areas' for organizing rooms and objects

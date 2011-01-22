@@ -343,7 +343,7 @@ cmd_redit(["long", What|Rest], #req{living=Liv}=Req) ->
 cmd_redit(_Args, Req) ->
   ok = verify_privilege(admin, Req),
   print(
-  "Edit / create rooms. This won't make changes permanent, yet.\n"
+  "Edit / create rooms. Changes are immediately saved.\n"
   "Usage: redit <cmd> <args>\n\n"
   "Commands:\n"
   "  dig <dir> <name>       Add an exit <dir> in the current room, leading\n"
@@ -379,32 +379,38 @@ cmd_help(["privileges"], Req) ->
 cmd_help(_Args, Req) ->
   print(
   "Welcome to ErlyMud!\n\n"
-  "The following commands, more or less, are available right now:\n"
+  "The following commands, more or less, are available right now:\n\n"
+  "  drop <item>             Drop an item from your inventory.\n"
+  "  get <item>              Pick up an item in the room.\n"
+  "  glance                  View the brief description of the room.\n"
   "  look                    View the long description of the room.\n"
   "  look [person|item]      View description of person/item.\n"
-  "  glance                  View the brief description of the room.\n"
+  "  ----------------------------------------------------------------------\n"
   "  go <dir>                Leave in the specified direction.\n"
   "  north                     - shortcut for 'go north'\n"
   "  east                      - shortcut for 'go east'\n"
   "  south                     - shortcut for 'go south'\n"
   "  west                      - shortcut for 'go west'\n"
+  "  ----------------------------------------------------------------------\n"
   "  say <what>              Say something, all in room will see it:\n"
   "                            Jack says, \"Hello there!\"\n"
   "  emote <what>            Emote, for roleplaying:\n"
   "                            'emote grumpily kicks at a small rock'\n"
   "                            -> Jack grumpily kicks at a small rock.\n"
   "  tell <person> <what>    Send a private message to another user.\n"
-  "  get <item>              Pick up an item in the room.\n"
-  "  drop <item>             Drop an item from your inventory.\n"
+  "  ----------------------------------------------------------------------\n"
   "  inv                     Show your inventory.\n"
   "  save                    Save your character, will remember your\n"
   "                            location and inventory for next login.\n"
   "  setlong <desc>          Set the description others see when they\n"
   "                            look at you.\n"
+  "  who                     Display all logged in users.\n"
+  "  ----------------------------------------------------------------------\n"
+  "  addexit <dir> <room>    Add an exit to an existing room. (*)\n"
   "  redit <cmd> <args>      Edit / create rooms. Try 'redit' for info. (*)\n"
-  "  who                     Display all logged in users.\n\n"
-  "(*) Privileged command, see 'help privileges'.\n",
-  Req),
+  "\n"
+  "(*) Privileged command, see 'help privileges'.\n"
+  ,Req),
   {ok, Req}.
 
 %% Utility functions

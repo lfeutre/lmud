@@ -1,5 +1,6 @@
 {version, 1}.
-{title, "A non-descript room"}.
-{desc, "This is a rather boring room, someone should fix that."}.
-{exits, [{"south","room1"}]}.
+{title, "This is a test room"}.
+{desc, "While mildly interesting, this room doesn't really have any substance."}.
+{long, "If you look really hard, you can make out what looks like a shimmering portal to the south. Perhaps you should go there."}.
+{exits, [{"east","room2"},{"south","room1"}]}.
 {objects, []}.
