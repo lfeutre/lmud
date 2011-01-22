@@ -24,16 +24,11 @@ Future
   - n/e/s/w for movement
   - '/" for say, : for emote
   - nod/smile/grin/shrug/..
-* How to make sure we always have a 'live' em_conn waiting for a connection?
-  - maybe have an em_acceptor_sup with 1-4 em_acceptor registered processes
-    doing all the work, then handing off the socket ownership to em_conn
-  - also switch to active_once flow control?
 * Put new parser in place
 * Use 'areas' for organizing rooms and objects
 * Add 'destroy' command for destroying objects in own inventory?
 * Add 'clone' command for instantiating object templates
 * Shutdown / reboot command
-* Admin permissions to be able to shutdown / reboot, etc
 * Improve connection lifecycle;
   - If an em_living dies;
     * Then em_user can inform about it, then run a do_login() again to get

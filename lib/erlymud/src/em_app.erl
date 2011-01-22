@@ -18,8 +18,6 @@
 start(_StartType, _StartArgs) ->
     case em_sup:start_link() of
       {ok, Pid} ->
-        % Allow connections
-        em_conn_sup:start_child(),
         {ok, Pid};
       Other ->
         {error, Other}

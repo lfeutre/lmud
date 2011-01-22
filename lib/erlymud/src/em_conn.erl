@@ -1,11 +1,9 @@
 %%% =========================================================================
 %%% @author Johan Warlander <johan@snowflake.nu>
 %%% @copyright 2010-2011 Johan Warlander
-%%% @doc Accept and manage new TCP connections.
-%%% This gen_server will wait in a gen_tcp:accept() call until someone makes
-%%% a connection, then it will immediately spawn a new em_conn server to
-%%% handle the next incoming connection, and launch a new session for the
-%%% current connection.
+%%% @doc Manage new TCP connections.
+%%% This gen_server will launch a new em_session server for the new
+%%% connection, then handle any input/output on the socket.
 %%% @end
 %%% =========================================================================
 -module(em_conn).
@@ -18,13 +16,13 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
--record(state, {lsock, socket, session, telnet_session}).
+-record(state, {socket, session, telnet_session}).
 
 
 %% API
 
-start_link(LSock) ->
-  gen_server:start_link(?MODULE, [LSock], []).
+start_link(Socket) ->
+  gen_server:start_link(?MODULE, [Socket], []).
 
 %% Turn client echo off
 echo_off(Conn) ->
@@ -42,8 +40,8 @@ print(Conn, Format, Args) ->
 
 %% gen_server callbacks
 
-init([LSock]) ->
-  {ok, #state{lsock = LSock}, 0}.
+init([Socket]) ->
+  {ok, #state{socket = Socket}, 0}.
 
 handle_call(echo_off, _From, State) ->
   {ok, TelSess} = em_telnet:will(?ECHO, State#state.telnet_session),
@@ -67,19 +65,13 @@ handle_info({tcp, Socket, RawData}, State) ->
   {noreply, State#state{telnet_session=NewSession}};
 handle_info({tcp_closed, _Socket}, State) ->
   {stop, tcp_closed, State};
-handle_info(timeout, #state{lsock=LSock}=State) ->
-  case gen_tcp:accept(LSock) of
-    {ok, Socket} ->
-      em_conn_sup:start_child(),
-      {ok, Session} = em_session_sup:start_child(self()),
-      link(Session),
-      PrintFun = fun(Line) -> em_session:receive_line(Session, Line) end,
-      TelnetSession = em_telnet:new(Socket, PrintFun),
-      {noreply, State#state{socket=Socket, session=Session, 
-                            telnet_session=TelnetSession}};
-    {error, closed} ->
-      {stop, normal, State}
-  end.
+handle_info(timeout, #state{socket=Socket}=State) ->
+  {ok, Session} = em_session_sup:start_child(self()),
+  link(Session),
+  PrintFun = fun(Line) -> em_session:receive_line(Session, Line) end,
+  TelnetSession = em_telnet:new(Socket, PrintFun),
+  {noreply, State#state{socket=Socket, session=Session, 
+                        telnet_session=TelnetSession}}.
 
 terminate(_Reason, _State) ->
   ok.

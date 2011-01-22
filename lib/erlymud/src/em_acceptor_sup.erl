@@ -1,12 +1,13 @@
 %%% =========================================================================
 %%% @author Johan Warlander <johan@snowflake.nu>
 %%% @copyright 2010-2011 Johan Warlander
-%%% @doc Top-level supervisor.
-%%% This is the top of the supervision tree, where all necessary game
-%%% components are started in the required order.
+%%% @doc Main acceptor supervisor. Starts an acceptor pool and a listener,
+%%% in one_for_all supervision. This prevents issues if the pool dies; the
+%%% listener will also be restarted, and subsequently start up the acceptors
+%%% in the pool again.
 %%% @end
 %%% =========================================================================
--module(em_sup).
+-module(em_acceptor_sup).
 
 -behaviour(supervisor).
 
@@ -32,16 +33,9 @@ start_link() ->
 %% ===================================================================
 
 init([]) ->
-  GameServer = ?CHILD(em_game, worker),
-  RoomSup = ?CHILD(em_room_sup, supervisor),
-  LivingSup = ?CHILD(em_living_sup, supervisor),
-  UserSup = ?CHILD(em_user_sup, supervisor),
-  SessionSup = ?CHILD(em_session_sup, supervisor),
-  ReqSup = ?CHILD(em_req_sup, supervisor),
-  ConnSup = ?CHILD(em_conn_sup, supervisor),
-  AcceptorSup = ?CHILD(em_acceptor_sup, supervisor),
-  Children = [GameServer, RoomSup, LivingSup, UserSup,
-              ReqSup, SessionSup, ConnSup, AcceptorSup],
-  RestartStrategy = {one_for_one, 5, 10},
+  AcceptorPool = ?CHILD(em_acceptor_pool, supervisor),
+  Listener = ?CHILD(em_listener, worker),
+  Children = [AcceptorPool, Listener],
+  RestartStrategy = {one_for_all, 5, 10},
   {ok, {RestartStrategy, Children}}.
 
