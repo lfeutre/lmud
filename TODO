@@ -5,9 +5,6 @@ ErlyMUD TODO
 -----
 * Test fix for leaking processes when load_living() fails, etc
   - see em_rh_login:do_login()
-* Fix target_system.erl so it packages data dir correctly
-  - include data/rooms/*, data/objects/*
-  - create dirs data/users/, data/livings/
 * Work on cmd_* implementations to improve error handling etc
 * Add room / item building commands
   - redit: Edit / Create Rooms (IN PROGRESS)
