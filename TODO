@@ -3,24 +3,26 @@ ErlyMUD TODO
 
 0.3.3
 -----
-* Test fix for leaking processes when load_living() fails, etc
-  - see em_rh_login:do_login()
-* Work on cmd_* implementations to improve error handling etc
 * Add room / item building commands
-  - redit: Edit / Create Rooms (IN PROGRESS)
-    - change room descs (DONE)
-    - dig new rooms (DONE)
-    - should save rooms / changes.. but only for admins!
-  - addexit: Add exit to existing room
   - oedit: Edit / Create Objects
-* Send IAC GA sequence after printing prompts?
 
-Future
-------
+0.3.4
+-----
+* Fix so that failure to load start room puts you in safe room
+* Add 'goto' command for admins, to move to other rooms
+* Add 'transfer' command for admins, to move another player
 * Extend support for navigation and communication
   - n/e/s/w for movement
   - '/" for say, : for emote
   - nod/smile/grin/shrug/..
+* Idle timer in 'who' list
+
+Future
+------
+* Test fix for leaking processes when load_living() fails, etc
+  - see em_rh_login:do_login()
+* Work on cmd_* implementations to improve error handling etc
+* Send IAC GA sequence after printing prompts?
 * Put new parser in place
 * Use 'areas' for organizing rooms and objects
 * Add 'destroy' command for destroying objects in own inventory?
@@ -39,5 +41,4 @@ Future
     * The em_living should get a timer, say 60 seconds, and if not reconnected
       after that time it should stop
     * When user logs in again, reconnect it to the em_living and the game
-* Idle timer in 'who' list
 * Put the {In, Out} "client" Pid pair into a record definition for clarity?
