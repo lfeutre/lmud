@@ -1,0 +1,9 @@
+@author Johan Warlander <johan@snowflake.nu>
+@copyright 2010-2011 Johan Warlander
+@title Welcome to ErlyMUD
+@doc ErlyMUD is a rather minimalistic MUD server, written in Erlang and 
+making use of the excellent OTP libraries. The aim is to have solid support 
+for exploration and roleplaying, within a highly fault-tolerant environment 
+where system crashes or reboots are more of an exotic curiosity than a 
+commonplace thing.
+

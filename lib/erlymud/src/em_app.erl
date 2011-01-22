@@ -1,7 +1,8 @@
 %%% =========================================================================
 %%% @author Johan Warlander <johan@snowflake.nu>
 %%% @copyright 2010-2011 Johan Warlander
-%%% @doc Application module for ErlyMUD.
+%%% @doc Application module for ErlyMUD. Will start listening for connections
+%%% once the application startup has completed.
 %%% @end
 %%% =========================================================================
 -module(em_app).
