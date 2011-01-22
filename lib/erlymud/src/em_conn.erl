@@ -61,8 +61,9 @@ handle_call({print, Format, Args}, _From, #state{socket=Socket}=State) ->
 handle_cast(_Msg, State) ->
   {noreply, State}.
 
-handle_info({tcp, _Socket, RawData}, State) ->
+handle_info({tcp, Socket, RawData}, State) ->
   {ok, NewSession} = em_telnet:parse(State#state.telnet_session, RawData),
+  inet:setopts(Socket, [{active, once}]),
   {noreply, State#state{telnet_session=NewSession}};
 handle_info({tcp_closed, _Socket}, State) ->
   {stop, tcp_closed, State};

@@ -30,7 +30,7 @@ init([]) ->
            {ok, P} -> P;
            undefined -> ?DEFAULT_PORT
          end,
-  {ok, LSock} = gen_tcp:listen(Port, [{active, true},
+  {ok, LSock} = gen_tcp:listen(Port, [{active, once},
                                       {nodelay, true},
                                       {reuseaddr, true}]),
   Connection = {em_conn, {em_conn, start_link, [LSock]},
