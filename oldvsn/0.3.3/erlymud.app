@@ -1,6 +1,6 @@
 {application,erlymud,
              [{description,"ErlyMUD Game Server"},
-              {vsn,"0.3.4"},
+              {vsn,"0.3.3"},
               {registered,[em_sup,em_game,em_room_sup,em_room_pool_sup,
                            em_room_mgr,em_living_sup,em_user_sup,em_req_sup,
                            em_session_sup,em_conn_sup,em_acceptor_sup,
