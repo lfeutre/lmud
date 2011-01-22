@@ -1,0 +1,1 @@
+-type socket() :: gen_tcp:socket().
