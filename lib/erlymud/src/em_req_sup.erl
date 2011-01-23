@@ -16,17 +16,32 @@
 
 -define(SERVER, ?MODULE).
 
+%% Type Specifications
+-include("types.hrl").
+
+
+%% ==========================================================================
+%% API
+%% ==========================================================================
+
 start_link() ->
   supervisor:start_link({local, ?SERVER}, ?MODULE, []).
 
+-spec start_child(mfargs()) -> any().
 start_child(MFA) ->
   supervisor:start_child(?SERVER, [MFA]).
 
+-spec request(mfargs()) -> any().
 request(MFA) ->
   {ok, Req} = start_child(MFA),
   Result = em_req:run(Req),
   exit(Req, normal),
   Result.
+
+
+%% ==========================================================================
+%% Supervisor callbacks
+%% ==========================================================================
 
 init([]) ->
   Request = {em_req, {em_req, start_link, []},

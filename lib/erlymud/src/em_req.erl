@@ -12,24 +12,35 @@
 
 -behaviour(gen_server).
 
+%% API
 -export([start_link/1, run/1]).
 
+%% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
--record(state, {mfa}).
+-record(state, {mfa :: mfargs()}).
+
+%% Type Specifications
+-include("types.hrl").
 
 
-%% API
+%% ==========================================================================
+%% API Functions
+%% ==========================================================================
 
+-spec start_link(mfargs()) -> any().
 start_link(MFA) ->
   gen_server:start_link(?MODULE, [MFA], []).
 
+-spec run(pid()) -> any().
 run(Pid) ->
   gen_server:call(Pid, run).
 
 
+%% ==========================================================================
 %% gen_server callbacks
+%% ==========================================================================
 
 init([MFA]) ->
   process_flag(trap_exit, true),

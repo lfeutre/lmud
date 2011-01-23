@@ -8,6 +8,7 @@
 %%% =========================================================================
 -module(em_rh_game).
 
+%% API
 -export([parse/2]).
 
 %% game commands
@@ -19,10 +20,24 @@
 
 -include("request.hrl").
 
+%% Type Specifications
+-include("types.hrl").
+-type ob_list() :: [em_object:object()].
 
+-type req()      :: #req{}.
+-type req_done() :: {done, req()}.
+-type req_ok()   :: {ok, mfargs(), req()}.
+-type req_any()  :: req_done() | req_ok().
+
+-type cmd_ok()     :: {ok, req()}.
+-type cmd_stop()   :: {stop, req()}.
+
+%% ==========================================================================
 %% API functions
+%% ==========================================================================
 
-parse(Line, Req) ->
+-spec parse(string(), req()) -> req_any().
+parse(Line, Req) -> 
   case string:tokens(Line, " ") of
     [] ->
       print("\n> ", Req),
@@ -33,6 +48,7 @@ parse(Line, Req) ->
       Result
   end.
 
+-spec parse_cmd(string(), [string()], string(), req()) -> req_any().
 parse_cmd(Cmd, Args, Line, Req) ->
   try list_to_existing_atom("cmd_" ++ string:to_lower(Cmd)) of
     Fun ->
@@ -62,26 +78,32 @@ parse_cmd(Cmd, Args, Line, Req) ->
   end.
 
 
+%% ==========================================================================
 %% Game commands
+%% ==========================================================================
 
 %% Inventory
+-spec cmd_inv([string()], req()) -> cmd_ok().
 cmd_inv(_Args, #req{living=Liv}=Req) ->
   Obs = em_living:get_objects(Liv),
   do_inv(Obs, Req),
   {ok, Req}.
 
+-spec do_inv(ob_list(), req()) -> ok.
 do_inv([], Req) ->
   print("You're not carrying anything.\n", Req);
 do_inv(Obs, Req) ->
   print("You're carrying:\n", Req),
   print(desc_inv(Obs, []), Req).
 
+-spec desc_inv(ob_list(), iolist()) -> iolist().
 desc_inv([], Result) -> Result;
 desc_inv([Ob|Obs], Result) ->
   Line = [" ", em_object:a_short(Ob), "\n"],
   desc_inv(Obs, [Result, Line]).
 
 %% Drop
+-spec cmd_drop([string()], req()) -> cmd_ok().
 cmd_drop([], Req) ->
   print("Drop what?\n", Req),
   {ok, Req};
@@ -115,6 +137,7 @@ do_drop(Ob, #req{living=Liv}=Req) ->
   end.
 
 %% Get
+-spec cmd_get([string()], req()) -> cmd_ok().
 cmd_get([], Req) ->
   print("Get what?\n", Req),
   {ok, Req};
@@ -142,6 +165,7 @@ do_get(Id, [Ob|Obs], #req{living=Liv}=Req) ->
   end.
 
 %% Quit
+-spec cmd_quit([string()], req()) -> cmd_stop().
 cmd_quit(_Args, #req{user=User, living=Liv}=Req) ->
   print("Goodbye!\n", Req),
   Name = em_living:get_name(Liv),
@@ -151,12 +175,14 @@ cmd_quit(_Args, #req{user=User, living=Liv}=Req) ->
   {stop, Req}.
 
 %% Glance
+-spec cmd_glance([string()], req()) -> cmd_ok().
 cmd_glance(_Args, #req{living=Liv}=Req) ->
   Room = em_living:get_room(Liv),
   print(em_room:describe_except(Room, Liv), Req),
   {ok, Req}.
 
 %% Look
+-spec cmd_look([string()], req()) -> cmd_ok().
 cmd_look([], #req{living=Liv}=Req) ->
   Room = em_living:get_room(Liv),
   print(em_room:looking(Room, Liv), Req),

@@ -4,7 +4,7 @@ ErlyMUD TODO
 0.3.4
 -----
 * Add typespecs, documentation for (at least) API functions
-  -next: em_living_sup
+  -status: continue with em_rh_game
 * Write some tests?
 
 0.3.5

@@ -3,6 +3,7 @@
 -type file_path()       :: string().
 -type orddict(Key, Val) :: [{Key, Val}].
 -type proplist()        :: [{atom(), any()}].
+-type mfargs()          :: {atom(), atom(), list()}.
 
 %% Network stuff
 -type socket() :: port().
