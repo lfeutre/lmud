@@ -7,6 +7,7 @@
 %%% @end
 %%% =========================================================================
 -module(em_conn).
+-include("types.hrl").
 -include("telnet.hrl").
 
 -behaviour(gen_server).
@@ -16,25 +17,30 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
--record(state, {socket, session, telnet_session}).
+-record(state, {socket::socket(), session::pid(), telnet_session}).
 
 
 %% API
 
+-spec start_link(socket()) -> any().
 start_link(Socket) ->
   gen_server:start_link(?MODULE, [Socket], []).
 
 %% Turn client echo off
+-spec echo_off(pid()) -> any().
 echo_off(Conn) ->
   gen_server:call(Conn, echo_off).
 
 %% Turn client echo on
+-spec echo_on(pid()) -> any().
 echo_on(Conn) ->
   gen_server:call(Conn, echo_on).
 
+-spec print(pid(), iolist()) -> any().
 print(Conn, Format) ->
   gen_server:call(Conn, {print, Format}).
 
+-spec print(pid(), iolist(), list()) -> any().
 print(Conn, Format, Args) ->
   gen_server:call(Conn, {print, Format, Args}).
 
@@ -82,10 +88,12 @@ code_change(_Vsn, State, _Extra) ->
 
 %% Internal functions
 
+-spec write(socket(), iolist(), list()) -> ok | {error, any()}.
 write(Socket, Format, Args) ->
   Data = process_output(Format, Args),
   gen_tcp:send(Socket, Data).
 
+-spec process_output(iolist(), list()) -> string().
 process_output(Format, Args) ->
   Data = em_text:colorize(io_lib:format(Format, Args)),
   re:replace(Data, "\n", "\r\n", [global, {return, list}]).

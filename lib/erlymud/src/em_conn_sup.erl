@@ -5,6 +5,7 @@
 %%% @end
 %%% =========================================================================
 -module(em_conn_sup).
+-include("types.hrl").
 
 -behaviour(supervisor).
 
@@ -19,6 +20,7 @@
 start_link() ->
   supervisor:start_link({local, ?SERVER}, ?MODULE, []).
 
+-spec start_child(socket()) -> any().
 start_child(Socket) ->
   supervisor:start_child(?SERVER, [Socket]).
 

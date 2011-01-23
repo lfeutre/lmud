@@ -34,7 +34,7 @@ start_link() ->
 
 %% @doc Start listening for connections on Port, spawning the specified
 %% number of acceptors.
--spec listen(0..65535, pos_integer()) -> ok.
+-spec listen(inet_port(), count()) -> ok.
 listen(Port, Acceptors) ->
   gen_server:call(?SERVER, {listen, Port, Acceptors}).
 
@@ -78,7 +78,7 @@ code_change(_OldVsn, State, _Extra) ->
 
 %% Internal functions
 
--spec start_acceptors(socket(), pos_integer()) -> ok.
+-spec start_acceptors(socket(), count()) -> ok.
 start_acceptors(_LSock, 0) -> ok;
 start_acceptors(LSock, Acceptors) when is_integer(Acceptors), Acceptors > 0 ->
   em_acceptor_pool:start_child(LSock),
