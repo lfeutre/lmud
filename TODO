@@ -17,6 +17,9 @@ ErlyMUD TODO
 
 Future
 ------
+* Improve password hashing security
+  - at least use password + secret
+  - or look at implementing HMAC?
 * Test fix for leaking processes when load_living() fails, etc
   - see em_rh_login:do_login()
 * Work on cmd_* implementations to improve error handling etc
