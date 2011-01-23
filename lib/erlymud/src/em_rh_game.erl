@@ -23,11 +23,7 @@
 %% Type Specifications
 -include("types.hrl").
 -type ob_list() :: [em_object:object()].
-
--type req()      :: #req{}.
--type req_done() :: {done, req()}.
--type req_ok()   :: {ok, mfargs(), req()}.
--type req_any()  :: req_done() | req_ok().
+-type liv_list() :: [em_living:living_pid()].
 
 -type cmd_ok()     :: {ok, req()}.
 -type cmd_stop()   :: {stop, req()}.
@@ -112,6 +108,7 @@ cmd_drop([Id|_Args], #req{living=Liv}=Req) ->
   try_drop(Id, Obs, Req),
   {ok, Req}.
 
+-spec try_drop(string(), ob_list(), req()) -> ok.
 try_drop(_Id, [], Req) ->
   print("You don't have anything like that.\n", Req);
 try_drop(Id, [Ob|Obs], Req) ->
@@ -122,6 +119,7 @@ try_drop(Id, [Ob|Obs], Req) ->
       try_drop(Id, Obs, Req)
   end.
 
+-spec do_drop(em_object:object(), req()) -> ok.
 do_drop(Ob, #req{living=Liv}=Req) ->
   Name = em_living:get_name(Liv),
   Room = em_living:get_room(Liv),
@@ -148,6 +146,7 @@ cmd_get([Id|_Args], #req{living=Liv}=Req) ->
   do_get(Id, Obs, Req),
   {ok, Req}.
 
+-spec do_get(string(), ob_list(), req()) -> ok.
 do_get(_Id, [], Req) ->
   print("There's no such thing here.\n", Req);
 do_get(Id, [Ob|Obs], #req{living=Liv}=Req) ->
@@ -202,6 +201,7 @@ cmd_look([Id|_Args], #req{living=Liv}=Req) ->
       end
   end.
 
+-spec do_look_ob(string(), ob_list(), req()) -> ok | {error, not_found}.
 do_look_ob(_Id, [], _Req) ->
   {error, not_found};
 do_look_ob(Id, [Ob|Obs], Req) ->
@@ -214,6 +214,7 @@ do_look_ob(Id, [Ob|Obs], Req) ->
       do_look_ob(Id, Obs, Req)
   end.
 
+-spec do_look_liv(string(), liv_list(), req()) -> ok | {error, not_found}.
 do_look_liv(_Id, [], _Req) ->
   {error, not_found};
 do_look_liv(Id, [Liv|People], Req) ->
@@ -227,20 +228,27 @@ do_look_liv(Id, [Liv|People], Req) ->
   end.
 
 % Go / North / East / South / West 
+-spec cmd_north([string()], req()) -> cmd_ok().
 cmd_north(_Args, Req) ->
   cmd_go(["north"], Req).
+-spec cmd_east([string()], req()) -> cmd_ok().
 cmd_east(_Args, Req) ->
   cmd_go(["east"], Req).
+-spec cmd_south([string()], req()) -> cmd_ok().
 cmd_south(_Args, Req) ->
   cmd_go(["south"], Req).
+-spec cmd_west([string()], req()) -> cmd_ok().
 cmd_west(_Args, Req) ->
   cmd_go(["west"], Req).
 
+-spec cmd_go([string()], req()) -> cmd_ok().
 cmd_go([Dir|_Args], #req{living=Liv}=Req) ->
   Room = em_living:get_room(Liv),
   do_go(em_room:get_exit(Room, Dir), Req), 
   {ok, Req}.
 
+-spec do_go({error, not_found}, req()) -> ok
+         ; ({ok, {string(), string()}}, req()) -> cmd_ok().
 do_go({error, not_found}, Req) ->
   print("You can't go in that direction.\n", Req);
 do_go({ok, {Dir, Dest}}, #req{living=Liv}=Req) ->
@@ -256,6 +264,7 @@ do_go({ok, {Dir, Dest}}, #req{living=Liv}=Req) ->
   cmd_glance([], Req).
 
 %% Emote
+-spec cmd_emote([string()], req()) -> cmd_ok().
 cmd_emote(Args, #req{living=Liv}=Req) ->
   Text = em_grammar:punctuate(string:join(Args, " ")),
   Name = em_living:get_name(Liv),
@@ -265,6 +274,7 @@ cmd_emote(Args, #req{living=Liv}=Req) ->
   {ok, Req}.
 
 %% Say
+-spec cmd_say([string()], req()) -> cmd_ok().
 cmd_say([FirstWord|Rest], #req{living=Liv}=Req) ->
   Text = string:join([em_text:capitalize(FirstWord)|Rest], " "),
   Name = em_living:get_name(Liv),
@@ -274,6 +284,7 @@ cmd_say([FirstWord|Rest], #req{living=Liv}=Req) ->
   {ok, Req}.
 
 %% Tell
+-spec cmd_tell([string()], req()) -> cmd_ok().
 cmd_tell([Who,FirstWord|Rest], #req{user=User}=Req) ->
   Name = em_user:get_name(User),
   case em_game:lookup_user(Who) of
@@ -289,12 +300,14 @@ cmd_tell([Who,FirstWord|Rest], #req{user=User}=Req) ->
   {ok, Req}.
 
 %% Who
+-spec cmd_who([string()], req()) -> cmd_ok().
 cmd_who(_Args, Req) ->
   print(["Users:\n",
     [[" ", Name, "\n"] || {Name, _Pid} <- em_game:get_users()]], Req),
   {ok, Req}.
 
 %% Save
+-spec cmd_save([string()], req()) -> cmd_ok().
 cmd_save(_Args, #req{living=Liv}=Req) ->
   print("Saving..\n", Req),
   case em_living:save(Liv) of
@@ -306,11 +319,13 @@ cmd_save(_Args, #req{living=Liv}=Req) ->
   end.
 
 %% Setlong
+-spec cmd_setlong([string()], req()) -> cmd_ok().
 cmd_setlong(Args, #req{living=Liv}=Req) ->
   em_living:set_long(Liv, string:join(Args, " ")),
   {ok, Req}.
 
 %% addexit
+-spec cmd_addexit([string()], req()) -> cmd_ok().
 cmd_addexit([Dir, ToName|_Rest], #req{living=Liv}=Req) ->
   ok = verify_privilege(admin, Req),
   case em_room_mgr:get_room(ToName) of
@@ -331,6 +346,7 @@ cmd_addexit(_Args, Req) ->
   {ok, Req}.
 
 %% REdit
+-spec cmd_redit([string()], req()) -> cmd_ok().
 cmd_redit(["dig", Dir, ToName|_Rest], #req{living=Liv}=Req) ->
   ok = verify_privilege(admin, Req),
   case em_room_mgr:new_room(ToName) of
@@ -380,11 +396,13 @@ cmd_redit(_Args, Req) ->
   Req),
   {ok, Req}.
 
+-spec reverse_dir(string()) -> string().
 reverse_dir("north") -> "south";
 reverse_dir("east") -> "west";
 reverse_dir("south") -> "north";
 reverse_dir("west") -> "east".
 
+-spec verify_privilege(atom(), req()) -> ok.
 verify_privilege(Priv, #req{user=User}) ->
   case em_user:has_privilege(User, Priv) of
     true -> ok;
@@ -392,6 +410,7 @@ verify_privilege(Priv, #req{user=User}) ->
   end.
 
 %% Help
+-spec cmd_help([string()], req()) -> cmd_ok().
 cmd_help(["privileges"], Req) ->
   print(
   "Privileges are used to control what commands users have access to.\n"
@@ -441,8 +460,11 @@ cmd_help(_Args, Req) ->
 
 %% Utility functions
 
+-spec print(iolist(), req()) -> ok.
 print(Format, Req) ->
   print(Format, [], Req).
+
+-spec print(iolist(), list(), req()) -> ok.
 print(Format, Args, #req{conn=Conn}) ->
   em_conn:print(Conn, Format, Args).
     

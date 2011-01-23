@@ -8,17 +8,26 @@
 %%% =========================================================================
 -module(em_rh_login).
 
+%% API
 -export([welcome/1, login/3]).
 
 -include("request.hrl").
 
-%% API
+%% Type Specifications
+-include("types.hrl").
 
+
+%% ==========================================================================
+%% API Functions
+%% ==========================================================================
+
+-spec welcome(em_conn:conn_pid()) -> ok.
 welcome(Conn) ->
   em_conn:print(Conn, "\nWelcome to ErlyMUD 0.3.4\n\n"),
   em_conn:print(Conn, "Login: ").
 
 %% Got a username, do something with it
+-spec login(any(), string(), req()) -> req_ok() | req_link().
 login(got_user, "", #req{conn=Conn}=Req) ->
   em_conn:print(Conn, "Invalid username.\n\n"),
   em_conn:print(Conn, "Login: "),
@@ -91,6 +100,7 @@ login({got_password, Settings, Name}, Password, #req{conn=Conn}=Req) ->
       ?req_next(login, [got_user])
   end.
 
+-spec do_login(string(), req()) -> req_ok() | req_link().
 do_login(Name, #req{conn=Conn}=Req) ->
   {ok, User} = em_user_sup:start_child(Name, Conn),
   link(User),
@@ -112,6 +122,7 @@ do_login(Name, #req{conn=Conn}=Req) ->
       ?req_next(login, [got_user])
   end.
 
+-spec do_incarnate(req()) -> {ok, req()}.
 do_incarnate(#req{conn=Conn, living=Living}=Req) ->
   ok = em_game:incarnate(Living),
   em_conn:print(Conn, "\nType \"help\" to get some basic information about\n"
@@ -120,18 +131,3 @@ do_incarnate(#req{conn=Conn, living=Living}=Req) ->
   em_conn:print(Conn, "\n> "),
   {ok, Req}.
 
--ifdef(false).
-parse(User, Line, #req{conn=Conn}=Req) ->
-  case Line of
-    "" ->
-      em_conn:print(Conn, "> "),
-      ?req_next(parse, [User]);
-    "quit" ->
-      em_living:cmd(User, "quit"),
-      ?req_done;
-    Cmd ->
-      em_living:cmd(User, Cmd),
-      em_conn:print(Conn, "\n> "),
-      ?req_next(parse, [User])
-  end.
--endif.
