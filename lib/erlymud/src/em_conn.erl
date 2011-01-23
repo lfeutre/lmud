@@ -19,6 +19,8 @@
 
 -record(state, {socket::socket(), session::pid(), telnet_session}).
 
+-type conn_pid() :: pid().
+-export_type([conn_pid/0]).
 
 %% API
 

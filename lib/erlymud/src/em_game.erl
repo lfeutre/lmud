@@ -20,7 +20,7 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, 
          terminate/2, code_change/3]).
 
--record(state, {users=[]}).
+-record(state, {users=[]::users()}).
 
 -define(SERVER, ?MODULE).
 
@@ -31,11 +31,7 @@
 -include("types.hrl").
 -type user() :: {string(), pid()}.
 -type users() :: [user()].
--type user_name() :: string().
--type user_pid() :: pid().
--type user_pred() :: fun((user_pid()) -> true|false).
-
--type living_pid() :: pid().
+-type user_pred() :: fun((em_user:user_pid()) -> true|false).
 
 
 %% ==========================================================================
@@ -60,32 +56,32 @@ get_users() ->
 
 %% @doc Log in a user to the game. Returns an error if the user is already
 %% logged in.
--spec login(user_pid()) -> ok | {error, user_exists}.
+-spec login(em_user:user_pid()) -> ok | {error, user_exists}.
 login(User) ->
   gen_server:call(?SERVER, {login, User}).
 
 %% @doc Incarnate a living, putting them in the room where they last saved.
--spec incarnate(living_pid()) -> ok.
+-spec incarnate(em_living:living_pid()) -> ok.
 incarnate(Living) ->
   gen_server:call(?SERVER, {incarnate, Living}).
 
 %% @doc Log out the specified user. Returns an error if user isn't logged on.
--spec logout(user_pid()) -> ok | {error, not_found}.
+-spec logout(em_user:user_pid()) -> ok | {error, not_found}.
 logout(User) ->
   gen_server:call(?SERVER, {logout, User}).
 
 %% @doc Lookup a user by name, return the {Name, UserPid} tuple.
--spec lookup_user(user_name()) -> {ok, user()} | {error, not_found}.
+-spec lookup_user(em_user:user_name()) -> {ok, user()} | {error, not_found}.
 lookup_user(Name) ->
   gen_server:call(?SERVER, {lookup_user, Name}).
 
 %% @doc Lookup a user by pid, return the {Name, UserPid} tuple.
--spec lookup_user_pid(user_pid()) -> {ok, user()} | {error, not_found}.
+-spec lookup_user_pid(em_user:user_pid()) -> {ok, user()} | {error, not_found}.
 lookup_user_pid(Pid) ->
   gen_server:call(?SERVER, {lookup_user_pid, Pid}).
 
 %% @doc Print something to all users except the specified UserPid.
--spec print_except(user_pid(), iolist(), list()) -> ok.
+-spec print_except(em_user:user_pid(), iolist(), list()) -> ok.
 print_except(User, Format, Args) ->
   gen_server:call(?SERVER, {print_except, User, Format, Args}).
 
@@ -158,7 +154,7 @@ code_change(_OldVsn, State, _Extra) ->
 
 %% User Handling
 
--spec do_login(user_pid(), #state{}) -> 
+-spec do_login(em_user:user_pid(), #state{}) -> 
         {ok, #state{}}|{{error, user_exists}, #state{}}.
 do_login(User, #state{users=Users}=State) ->
   Name = em_user:get_name(User),
@@ -171,7 +167,7 @@ do_login(User, #state{users=Users}=State) ->
       {ok, State#state{users=[{Name, User}|Users]}}
   end.
 
--spec do_incarnate(living_pid(), #state{}) -> {ok, #state{}}.
+-spec do_incarnate(em_living:living_pid(), #state{}) -> {ok, #state{}}.
 do_incarnate(Living, State) ->
   Name = em_living:get_name(Living),
   Room = case em_living:get_room(Living) of
@@ -188,7 +184,7 @@ do_incarnate(Living, State) ->
 
 %% @doc Log out a user. Do NOT actually touch the User process here, it might 
 %% have crashed when we call do_logout(). Or could it really, since we link?!
--spec do_logout(user_pid(), #state{}) -> 
+-spec do_logout(em_user:user_pid(), #state{}) -> 
   {ok, #state{}}|{{error, not_found}, #state{}}.
 do_logout(User, #state{users=Users}=State) ->
   case lists:keyfind(User, 2, Users) of
@@ -200,7 +196,7 @@ do_logout(User, #state{users=Users}=State) ->
       {{error, not_found}, State}
   end.
 
--spec do_lookup_user_pid(user_pid(), users()) -> 
+-spec do_lookup_user_pid(em_user:user_pid(), users()) -> 
         {ok, user()}|{error, not_found}.
 do_lookup_user_pid(Pid, Users) ->
   case lists:keyfind(Pid, 2, Users) of
@@ -208,7 +204,7 @@ do_lookup_user_pid(Pid, Users) ->
     UserTuple -> {ok, UserTuple}
   end.
 
--spec do_print_except(users(), user_pid(), iolist(), list()) -> list().
+-spec do_print_except(users(), em_user:user_pid(), iolist(), list()) -> list().
 do_print_except(Users, User, Format, Args) ->
   Pred = fun(U) -> U =/= User end,
   do_print_while(Users, Pred, Format, Args).

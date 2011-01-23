@@ -25,6 +25,10 @@
 
 -record(state, {name, title, desc, long, people=[], exits=[], objects=[], resets=[]}).
 
+-type room_name() :: string().
+-type room_pid() :: pid().
+-export_type([room_name/0, room_pid/0]).
+
 start_link(Name, Title, Desc) ->
   gen_server:start_link(?MODULE, [Name, Title, Desc], []).
 

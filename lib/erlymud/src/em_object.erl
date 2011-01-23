@@ -30,6 +30,8 @@
                  is_attached=false, is_plural=false, is_unique=false,
                  template}).
 
+-opaque object() :: #object{}.
+-export_type([object/0]).
 
 %%===========================================================================
 %% API Functions

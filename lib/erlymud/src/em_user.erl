@@ -20,6 +20,9 @@
 
 -record(state, {name, conn, privileges=ordsets:new()}).
 
+-type user_name() :: string().
+-type user_pid() :: pid().
+-export_type([user_name/0, user_pid/0]).
 
 %% API
 
