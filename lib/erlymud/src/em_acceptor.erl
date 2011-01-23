@@ -80,7 +80,7 @@ handle_info(_Info, State) ->
 terminate(_Reason, _State) ->
   ok.
 
--spec code_change(string(), #state{}, any()) -> ok.
+-spec code_change(string(), #state{}, any()) -> {ok, #state{}}.
 code_change(_Vsn, State, _Extra) ->
   {ok, State}.
 

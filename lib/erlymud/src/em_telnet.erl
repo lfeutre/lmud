@@ -7,7 +7,7 @@
 -module(em_telnet).
 -include("telnet.hrl").
 
--export([new/2, parse/2, will/2, wont/2]).
+-export([new/2, parse/2, will/2, wont/2, do/2, dont/2]).
 
 -record(telnet, {socket, mode, buffer, printer, local, remote}).
 
@@ -41,6 +41,13 @@ will(Opt, #telnet{}=Session) ->
 wont(Opt, #telnet{}=Session) ->
   telopt_send(?WONT, Opt, Session).
 
+%% @doc Returns {ok, TelnetSession}
+do(Opt, #telnet{}=Session) ->
+  telopt_send(?DO, Opt, Session).
+
+%% @doc Returns {ok, TelnetSession}
+dont(Opt, #telnet{}=Session) ->
+  telopt_send(?DONT, Opt, Session).
 
 %% ==========================================================================
 %% Internal functions
@@ -116,6 +123,8 @@ telopt_recv(?DONT, Opt, #telnet{local=Local}=Session) ->
 %% --------------------------------------------------------------------------
 %% @doc Handle outgoing option command
 %% --------------------------------------------------------------------------
+-spec telopt_send(?WILL|?DO|?WONT|?DONT, byte(), #telnet{}) ->
+  {ok, #telnet{}}.
 telopt_send(?WILL, Opt, #telnet{local=Local}=Session) ->
   ?DEBUG_PRINT("telnet: SEND WILL ~w?\n", [Opt]),
   {ok, NewOpts} = request_telopt_enable(Opt, Local, Session),
