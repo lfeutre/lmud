@@ -6,16 +6,21 @@
 %%% functions, item name manipulation and so on.
 %%% @end
 %%% =========================================================================
-
 -module(em_grammar).
 
+%% API
 -export([add_article/1, number_of/2, number_word/1, pluralize/1, punctuate/1]).
 
-%% --------------------------------------------------------------------------
-%% @spec add_article(Str::string()) -> string()
+%% Type Specifications
+-include("types.hrl").
+
+
+%% ==========================================================================
+%% API Functions
+%% ==========================================================================
+
 %% @doc Add 'a', 'an' to a string as appropriate
-%% @end
-%% --------------------------------------------------------------------------
+-spec add_article(string()) -> string().
 add_article(["a"|Str]) ->
   ["an ", "a"|Str];
 add_article(["o"|Str]) ->
@@ -29,23 +34,17 @@ add_article(["e"|Str]) ->
 add_article(Str) ->
   ["a "|Str].
 
-%% --------------------------------------------------------------------------
-%% @spec number_of(Num::integer(), What::string()) -> string()
 %% @doc Handle proper pluralization in expressions like "0 bottles",
-%%      "1 bottle", "2 bottles", "3 bottles"
-%% @end
-%% --------------------------------------------------------------------------
+%% "1 bottle", "2 bottles", "3 bottles"
+-spec number_of(count(), string()) -> string().
 number_of(1, What) ->
   "1 " ++ What;
 number_of(Num, What) ->
   integer_to_list(Num) ++ " " ++ pluralize(What).
 
-%% --------------------------------------------------------------------------
-%% @spec number_word(Num::integer()) -> string()
 %% @doc Convert a number to the correct word as appropriate for use in
-%%      in-game descriptions etc
-%% @end
-%% --------------------------------------------------------------------------
+%% in-game descriptions etc
+-spec number_word(count()) -> string().
 number_word(Num) ->
   case Num of
     1 -> "one";
@@ -60,22 +59,16 @@ number_word(Num) ->
     _Other -> integer_to_list(Num)
   end.
 
-%% --------------------------------------------------------------------------
-%% @spec pluralize(Str::string()) -> string()
 %% @doc Return the plural version of a given word
-%% @end
-%% --------------------------------------------------------------------------
+-spec pluralize(string()) -> string().
 pluralize([Str|"ff"]) ->  Str ++ "s";
 pluralize([Str|"f"]) ->   Str ++ "ves";
 pluralize([Str|"s"]) ->   Str ++ "es";
 pluralize([Str|"x"]) ->   Str ++ "es";
 pluralize(Str) ->         Str ++ "s".
 
-%% --------------------------------------------------------------------------
-%% @spec punctuate(Str::string()) -> string()
 %% @doc Punctuate a string if it ends with a-z or A-Z
-%% @end
-%% --------------------------------------------------------------------------
+-spec punctuate(string()) -> string().
 punctuate(Str) ->
   NewStr = string:strip(Str, right),
   punctuate(NewStr, lists:last(NewStr)).
