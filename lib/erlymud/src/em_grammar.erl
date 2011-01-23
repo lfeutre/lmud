@@ -20,7 +20,7 @@
 %% ==========================================================================
 
 %% @doc Add 'a', 'an' to a string as appropriate
--spec add_article(string()) -> string().
+-spec add_article(string()) -> nonempty_string().
 add_article(["a"|Str]) ->
   ["an ", "a"|Str];
 add_article(["o"|Str]) ->

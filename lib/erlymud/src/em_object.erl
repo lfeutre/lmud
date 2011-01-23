@@ -21,46 +21,53 @@
          get_template/1
         ]).
 
--record(object, {ids=[], plurals=[], adjs=[], 
-                 primary_id="", primary_adj="",
-                 short="nondescript thing", long="", 
-                 show_in_room = "",
-                 proper_name = "",
-                 quantity = 0,
-                 is_attached=false, is_plural=false, is_unique=false,
-                 template}).
+-record(object, {ids=[]::id_list(), plurals=[]::id_list(), 
+                 adjs=[]::adj_list(), 
+                 primary_id=""::id(), primary_adj=""::adj(),
+                 short="nondescript thing"::string(), long=""::string(), 
+                 show_in_room = ""::string(),
+                 proper_name = ""::string(),
+                 quantity = 0::count(),
+                 is_attached=false::boolean(), 
+                 is_plural=false::boolean(), 
+                 is_unique=false::boolean(),
+                 template="dummy"::string()}).
 
 -opaque object() :: #object{}.
 -export_type([object/0]).
 
-%%===========================================================================
-%% API Functions
-%%===========================================================================
+%% Type Specifications
+-include("types.hrl").
+-type name() :: string().
+-type id() :: string().
+-type id_list() :: [id()].
+-type adj() :: string().
+-type adj_list() :: [adj()].
 
-%%---------------------------------------------------------------------------
+%% ===========================================================================
+%% API Functions
+%% ===========================================================================
+
 %% @doc Create new object with 'short desc' string; we yank out adjs and an 
 %%      id from there.
 %%      Example: 
 %%        "small wooden table" -> adjs=["small", "wooden"], ids=["table"]
-%% @spec new(Name::string()) -> object()
-%% @end
-%%---------------------------------------------------------------------------
+-spec new(name()) -> object().
 new(Name) ->
   set_name(#object{}, Name).
 
-%%---------------------------------------------------------------------------
 %% @doc New object with list of ids and adjs
-%% @spec new(Ids::list(), Adjs::list()) -> object()
-%% @end
-%%---------------------------------------------------------------------------
+-spec new(id_list(), adj_list()) -> object().
 new(Ids, Adjs) ->
   resync_names(#object{ids=Ids, adjs=Adjs}).
 
+-spec load(name()) -> {ok, object()} | {error, not_found}.
 load(Name) ->
   File = filename:join([em_game:data_dir(), "objects",
                         Name ++ ".dat"]),
   load_object(Name, File).
 
+-spec load_object(name(), file_path()) -> {ok, object()} | {error, not_found}.
 load_object(Name, Filename) ->
   io:format("loading object: ~s~n", [Filename]),
   case file:consult(Filename) of
@@ -71,6 +78,7 @@ load_object(Name, Filename) ->
       {error, not_found}
   end.
 
+-spec make_object(proplist(), object()) -> object().
 make_object([], Ob) ->
   Ob;
 make_object([{primary_id, Id}|Data], Ob) ->
@@ -86,57 +94,62 @@ make_object([{is_attached, Flag}|Data], Ob) ->
 make_object([_Other|Data], Ob) ->
   make_object(Data, Ob).
 
+-spec load_obs([name()]) -> [object()].
 load_obs(Names) ->
   load_obs(Names, []).
 
+-spec load_obs([name()], [object()]) -> [object()].
 load_obs([], ObList) ->
   ObList;
 load_obs([Name|Rest], ObList) ->
   {ok, Ob} = load(Name),
   load_obs(Rest, [Ob|ObList]).
 
+-spec a_short(object()) -> string().
 a_short(#object{short=Short}) ->
   em_grammar:add_article(Short).
 
+-spec the_short(object()) -> nonempty_string().
 the_short(#object{short=Short}) ->
-  ["the ", Short].
+  ["the "|Short].
 
+-spec long(object()) -> string().
 long(#object{long=Long}) ->
   Long.
 
+-spec has_id(object(), id()) -> boolean().
 has_id(#object{ids=Ids}, Id) ->
   lists:member(Id, Ids).
 
+-spec has_plural_id(object(), id()) -> boolean().
 has_plural_id(#object{plurals=Plurals}, Id) ->
   lists:member(Id, Plurals).
 
-%%---------------------------------------------------------------------------
 %% @doc Add an id to the specified object
-%% @spec add_id(Ob::object(), Id::object()) -> object()
-%% @end
-%%---------------------------------------------------------------------------
+-spec add_id(object(), id()) -> object().
 add_id(#object{ids=Ids} = Ob, Id) ->
   Ob#object{ids = Ids ++ [Id]}.
 
+-spec add_primary_id(object(), id()) -> object().
 add_primary_id(#object{ids=Ids} = Ob, Id) ->
   resync_names(Ob#object{ids = [Id|Ids]}).
 
+-spec add_adj(object(), adj()) -> object().
 add_adj(#object{adjs=Adjs} = Ob, Adj) ->
   Ob#object{adjs = Adjs ++ [Adj]}.
 
+-spec add_primary_adj(object(), adj()) -> object().
 add_primary_adj(#object{adjs=Adjs} = Ob, Adj) ->
   resync_names(Ob#object{adjs = Adjs ++ [Adj]}).
 
-%%---------------------------------------------------------------------------
 %% @doc Set name of an object given a plain "short desc" string, will
 %%      replace any previous ids / adjs
-%% @spec set_name(Ob::object(), Name::string()) -> object()
-%% @end
-%%---------------------------------------------------------------------------
+-spec set_name(object(), string()) -> object().
 set_name(Ob, Name) ->
   Toks = string:tokens(Name, " "),
   set_name(Ob, Toks, [], []).
 
+-spec set_name(object(), [string()], id_list(), adj_list()) -> object().
 set_name(Ob, [], [], []) ->
   resync_names(Ob);
 set_name(Ob, [], Ids, Adjs) ->
@@ -148,12 +161,15 @@ set_name(Ob, [LastToken], Ids, Adjs) ->
 set_name(Ob, [Token|Toks], Ids, Adjs) ->
   set_name(Ob, Toks, Ids, Adjs ++ [Token]).
 
+-spec set_long(object(), string()) -> object().
 set_long(Ob, Long) ->
   Ob#object{long=Long}.
 
+-spec set_show_in_room(object(), string()) -> object().
 set_show_in_room(Ob, Desc) ->
   Ob#object{show_in_room=Desc}.
 
+-spec show_in_room(object()) -> string().
 show_in_room(#object{show_in_room="", short=Short}) ->
   A_Short =em_grammar:add_article(Short),
   [em_text:capitalize(A_Short), " lies here, discarded.\n"];
@@ -164,12 +180,15 @@ show_in_room(#object{show_in_room=Desc}) ->
     _Other -> string:concat(Desc, "\n")
   end.
 
+-spec set_attached(object(), boolean()) -> object().
 set_attached(Ob, Flag) ->
   Ob#object{is_attached=Flag}.
 
+-spec is_attached(object()) -> boolean().
 is_attached(Ob) ->
   Ob#object.is_attached.
 
+-spec get_template(object()) -> name().
 get_template(Ob) ->
   Ob#object.template.
 
@@ -179,7 +198,7 @@ get_template(Ob) ->
 
 %% @doc Set primary id, primary adj and short description based on the
 %%      ids and adjs lists.
-%% @spec resync_names(Ob) -> object()
+-spec resync_names(object()) -> object().
 
 %% use proper_name, if there is one
 resync_names(#object{proper_name=[Ch|Str]} = Ob) ->
