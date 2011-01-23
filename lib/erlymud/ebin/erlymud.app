@@ -5,7 +5,7 @@
                            em_room_mgr,em_living_sup,em_user_sup,em_req_sup,
                            em_session_sup,em_conn_sup,em_acceptor_sup,
                            em_acceptor_pool,em_listener]},
-              {applications,[kernel,stdlib,sasl]},
+              {applications,[kernel,stdlib,sasl,eunit]},
               {mod,{em_app,[]}},
               {env,[]},
               {modules,[em_acceptor,em_acceptor_pool,em_acceptor_sup,em_app,

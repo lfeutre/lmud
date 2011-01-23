@@ -8,7 +8,7 @@
   {applications, [
                   kernel,
                   stdlib,
-                  sasl
+                  sasl, eunit
                  ]},
   {mod, {em_app, []}},
   {env, []}
