@@ -3,6 +3,7 @@ ErlyMUD TODO
 
 0.3.4
 -----
+* Add typespecs, documentation for (at least) API functions
 * Add item building commands
   - oedit: Edit / Create Objects
 * Fix so that failure to load start room puts you in safe room

@@ -5,73 +5,84 @@
 %%% @end
 %%% =========================================================================
 -module(em_telnet).
--include("types.hrl").
--include("telnet.hrl").
 
+%% API
+-export([new/2, parse/2, will/2, wont/2, do/2, dont/2]).
+
+%% Definitions
+-include("telnet.hrl").
+-define(DEBUG_PRINT(Str), ok).
+-define(DEBUG_PRINT(Str, Args), ok).
+-define(DUMMY_PRINTER, fun(_) -> throw(missing_printer_fun) end).
+
+%% Records
+-record(telopt, {current='NO' :: telopt_state(), 
+                 queue='EMPTY' :: telopt_queue()}).
+-record(nvt, {enable = ?WILL :: telnet_enable_opt(), 
+              disable = ?WONT :: telnet_disable_opt(), 
+              opts = orddict:new() :: telnet_options()}).
+-record(telnet, {socket::socket(), mode = text :: parse_mode(), 
+                 buffer = "" :: string(), 
+                 printer = ?DUMMY_PRINTER :: telnet_printer_fun(), 
+                 local::#nvt{}, remote::#nvt{}}).
+
+
+%% ==========================================================================
+%% Type Specifications
+%% ==========================================================================
+
+-include("types.hrl").
 -type parse_mode() :: text|eol|cmd|sub.
 
 -type telopt_state() :: 'NO'|'YES'|'WANTNO'|'WANTYES'.
 -type telopt_queue() :: 'EMPTY'|'OPPOSITE'.
 
--type telnet_cmd() :: ?SE|?NOP|?DM|?BRK|?IP|?AO|?AYT|?EC|?EL|?GA|?SB|
-                      telnet_opt_neg().
+%-type telnet_cmd() :: ?SE|?NOP|?DM|?BRK|?IP|?AO|?AYT|?EC|?EL|?GA|?SB|
+%                      telnet_opt_neg().
 
 -type telnet_opt_neg() :: telnet_enable_opt() | telnet_disable_opt().
 -type telnet_enable_opt() :: ?WILL|?DO.
 -type telnet_disable_opt() :: ?WONT|?DONT.
-
 -type telnet_option() :: byte().
-
--export([new/2, parse/2, will/2, wont/2, do/2, dont/2]).
-
--record(telopt, {current='NO' :: telopt_state(), 
-                 queue='EMPTY' :: telopt_queue()}).
--record(nvt, {enable = ?WILL :: telnet_enable_opt(), 
-              disable = ?WONT :: telnet_disable_opt(), 
-              opts = dict:new() :: dict()}).
--record(telnet, {socket::socket(), mode = text :: parse_mode(), 
-                 buffer = "" :: string(), 
-                 printer = fun(_) -> throw(missing_printer_fun) end :: fun(), 
-                 local::#nvt{}, remote::#nvt{}}).
+-type telnet_options() :: orddict(telnet_option(), #telopt{}).
+-type telnet_printer_fun() :: fun((string()) -> ok). 
 
 
--define(DEBUG_PRINT(Str), ok).
--define(DEBUG_PRINT(Str, Args), ok).
-
-%% --------------------------------------------------------------------------
-%% API
-%% --------------------------------------------------------------------------
+%% ==========================================================================
+%% API Functions
+%% ==========================================================================
 
 %% @doc Returns TelnetSession
--spec new(socket(), fun()) -> #telnet{}.
+-spec new(socket(), telnet_printer_fun()) -> #telnet{}.
 new(Socket, PrintFun) ->
-  Local = #nvt{enable=?WILL, disable=?WONT, opts=dict:new()},
-  Remote = #nvt{enable=?DO, disable=?DONT, opts=dict:new()},
+  Local = #nvt{enable=?WILL, disable=?WONT, opts=orddict:new()},
+  Remote = #nvt{enable=?DO, disable=?DONT, opts=orddict:new()},
   #telnet{socket=Socket, mode=text, buffer="", printer=PrintFun, 
           local=Local, remote=Remote}.
 
-%% @doc Returns {ok, TelnetSession}
+%% @doc Parse an incoming chunk of data. Handle telnet commands, buffer
+%% other input until \r\n is received.
 -spec parse(#telnet{}, string()) -> {ok, #telnet{}}.
 parse(#telnet{}=Session, Data) ->
   ?DEBUG_PRINT("telnet: Parsing data: ~p\n", [Data]),
   process_data(Data, Session).
 
-%% @doc Returns {ok, TelnetSession}
+%% @doc Tell other side that we will activate the specified option.
 -spec will(telnet_option(), #telnet{}) -> {ok, #telnet{}}.
 will(Opt, #telnet{}=Session) ->
   telopt_send(?WILL, Opt, Session).
 
-%% @doc Returns {ok, TelnetSession}
+%% @doc Tell other side that we decline to activate the specified option.
 -spec wont(telnet_option(), #telnet{}) -> {ok, #telnet{}}.
 wont(Opt, #telnet{}=Session) ->
   telopt_send(?WONT, Opt, Session).
 
-%% @doc Returns {ok, TelnetSession}
+%% @doc Tell other side that they should activate the specified option.
 -spec do(telnet_option(), #telnet{}) -> {ok, #telnet{}}.
 do(Opt, #telnet{}=Session) ->
   telopt_send(?DO, Opt, Session).
 
-%% @doc Returns {ok, TelnetSession}
+%% @doc Tell other side that they should NOT activate the specified option.
 -spec dont(telnet_option(), #telnet{}) -> {ok, #telnet{}}.
 dont(Opt, #telnet{}=Session) ->
   telopt_send(?DONT, Opt, Session).
@@ -179,7 +190,7 @@ telopt_send(?DONT, Opt, #telnet{remote=Remote}=Session) ->
         {ok, #nvt{}}.
 request_telopt_enable(Opt, NVT, Session) ->
   Opts = ensure_exists(Opt, NVT#nvt.opts),
-  TelOpt = case dict:fetch(Opt, Opts) of
+  TelOpt = case orddict:fetch(Opt, Opts) of
              #telopt{current='NO'}=TO ->
                tcp_send([?IAC,NVT#nvt.enable,Opt], Session),
                TO#telopt{current='WANTYES', queue='EMPTY'};
@@ -197,13 +208,13 @@ request_telopt_enable(Opt, NVT, Session) ->
              #telopt{current='WANTYES', queue='OPPOSITE'}=TO ->
                TO#telopt{queue='EMPTY'}
            end,
-  {ok, NVT#nvt{opts=dict:store(Opt, TelOpt, Opts)}}.
+  {ok, NVT#nvt{opts=orddict:store(Opt, TelOpt, Opts)}}.
 
 -spec request_telopt_disable(telnet_option(), #nvt{}, #telnet{}) ->
         {ok, #nvt{}}.
 request_telopt_disable(Opt, NVT, Session) ->
   Opts = ensure_exists(Opt, NVT#nvt.opts),
-  TelOpt = case dict:fetch(Opt, Opts) of
+  TelOpt = case orddict:fetch(Opt, Opts) of
              #telopt{current='NO'}=TO ->
                ?DEBUG_PRINT("telopt error: option ~w already disabled\n", [Opt]),
                TO;
@@ -221,7 +232,7 @@ request_telopt_disable(Opt, NVT, Session) ->
                ?DEBUG_PRINT("telopt error: already queued disable request for ~w\n", [Opt]),
                TO
            end,
-  {ok, NVT#nvt{opts=dict:store(Opt, TelOpt, Opts)}}.
+  {ok, NVT#nvt{opts=orddict:store(Opt, TelOpt, Opts)}}.
 
 %% --------------------------------------------------------------------------
 %% --------------------------------------------------------------------------
@@ -229,7 +240,7 @@ request_telopt_disable(Opt, NVT, Session) ->
         {ok, #nvt{}}.
 handle_telopt_enable(Opt, NVT, Session) ->
   Opts = ensure_exists(Opt, NVT#nvt.opts),
-  TelOpt = case dict:fetch(Opt, Opts) of
+  TelOpt = case orddict:fetch(Opt, Opts) of
                #telopt{current='NO'}=TO ->
                  tcp_send([?IAC,NVT#nvt.disable,Opt], Session),
                  TO;
@@ -247,7 +258,7 @@ handle_telopt_enable(Opt, NVT, Session) ->
                  tcp_send([?IAC,NVT#nvt.disable,Opt], Session),
                  TO#telopt{current='WANTNO', queue='EMPTY'}
              end,
-  {ok, NVT#nvt{opts=dict:store(Opt, TelOpt, Opts)}}.
+  {ok, NVT#nvt{opts=orddict:store(Opt, TelOpt, Opts)}}.
 
 %% --------------------------------------------------------------------------
 %% --------------------------------------------------------------------------
@@ -255,7 +266,7 @@ handle_telopt_enable(Opt, NVT, Session) ->
         {ok, #nvt{}}.
 handle_telopt_disable(Opt, NVT, Session) ->
   Opts = ensure_exists(Opt, NVT#nvt.opts),
-  TelOpt = case dict:fetch(Opt, Opts) of
+  TelOpt = case orddict:fetch(Opt, Opts) of
                #telopt{current='NO'}=TO ->
                  TO;
                #telopt{current='YES'}=TO ->
@@ -271,15 +282,15 @@ handle_telopt_disable(Opt, NVT, Session) ->
                #telopt{current='WANTYES', queue='OPPOSITE'}=TO ->
                  TO#telopt{current='NO', queue='EMPTY'}
              end,
-  {ok, NVT#nvt{opts=dict:store(Opt, TelOpt, Opts)}}.
+  {ok, NVT#nvt{opts=orddict:store(Opt, TelOpt, Opts)}}.
 
 %% --------------------------------------------------------------------------
 %% --------------------------------------------------------------------------
--spec ensure_exists(telnet_option(), dict()) -> dict().
+-spec ensure_exists(telnet_option(), telnet_options()) -> telnet_options().
 ensure_exists(Opt, Opts) ->
-  case dict:is_key(Opt, Opts) of
+  case orddict:is_key(Opt, Opts) of
     true -> Opts;
-    false -> dict:store(Opt, #telopt{}, Opts)
+    false -> orddict:store(Opt, #telopt{}, Opts)
   end.
 
 %% --------------------------------------------------------------------------
