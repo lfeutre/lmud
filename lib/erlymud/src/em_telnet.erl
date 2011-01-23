@@ -5,14 +5,35 @@
 %%% @end
 %%% =========================================================================
 -module(em_telnet).
+-include("types.hrl").
 -include("telnet.hrl").
+
+-type parse_mode() :: text|eol|cmd|sub.
+
+-type telopt_state() :: 'NO'|'YES'|'WANTNO'|'WANTYES'.
+-type telopt_queue() :: 'EMPTY'|'OPPOSITE'.
+
+-type telnet_cmd() :: ?SE|?NOP|?DM|?BRK|?IP|?AO|?AYT|?EC|?EL|?GA|?SB|
+                      telnet_opt_neg().
+
+-type telnet_opt_neg() :: telnet_enable_opt() | telnet_disable_opt().
+-type telnet_enable_opt() :: ?WILL|?DO.
+-type telnet_disable_opt() :: ?WONT|?DONT.
+
+-type telnet_option() :: byte().
 
 -export([new/2, parse/2, will/2, wont/2, do/2, dont/2]).
 
--record(telnet, {socket, mode, buffer, printer, local, remote}).
+-record(telopt, {current='NO' :: telopt_state(), 
+                 queue='EMPTY' :: telopt_queue()}).
+-record(nvt, {enable = ?WILL :: telnet_enable_opt(), 
+              disable = ?WONT :: telnet_disable_opt(), 
+              opts = dict:new() :: dict()}).
+-record(telnet, {socket::socket(), mode = text :: parse_mode(), 
+                 buffer = "" :: string(), 
+                 printer = fun(_) -> throw(missing_printer_fun) end :: fun(), 
+                 local::#nvt{}, remote::#nvt{}}).
 
--record(nvt, {enable, disable, opts}).
--record(telopt, {current='NO', queue='EMPTY'}).
 
 -define(DEBUG_PRINT(Str), ok).
 -define(DEBUG_PRINT(Str, Args), ok).
@@ -22,6 +43,7 @@
 %% --------------------------------------------------------------------------
 
 %% @doc Returns TelnetSession
+-spec new(socket(), fun()) -> #telnet{}.
 new(Socket, PrintFun) ->
   Local = #nvt{enable=?WILL, disable=?WONT, opts=dict:new()},
   Remote = #nvt{enable=?DO, disable=?DONT, opts=dict:new()},
@@ -29,29 +51,36 @@ new(Socket, PrintFun) ->
           local=Local, remote=Remote}.
 
 %% @doc Returns {ok, TelnetSession}
+-spec parse(#telnet{}, string()) -> {ok, #telnet{}}.
 parse(#telnet{}=Session, Data) ->
   ?DEBUG_PRINT("telnet: Parsing data: ~p\n", [Data]),
   process_data(Data, Session).
 
 %% @doc Returns {ok, TelnetSession}
+-spec will(telnet_option(), #telnet{}) -> {ok, #telnet{}}.
 will(Opt, #telnet{}=Session) ->
   telopt_send(?WILL, Opt, Session).
 
 %% @doc Returns {ok, TelnetSession}
+-spec wont(telnet_option(), #telnet{}) -> {ok, #telnet{}}.
 wont(Opt, #telnet{}=Session) ->
   telopt_send(?WONT, Opt, Session).
 
 %% @doc Returns {ok, TelnetSession}
+-spec do(telnet_option(), #telnet{}) -> {ok, #telnet{}}.
 do(Opt, #telnet{}=Session) ->
   telopt_send(?DO, Opt, Session).
 
 %% @doc Returns {ok, TelnetSession}
+-spec dont(telnet_option(), #telnet{}) -> {ok, #telnet{}}.
 dont(Opt, #telnet{}=Session) ->
   telopt_send(?DONT, Opt, Session).
 
 %% ==========================================================================
 %% Internal functions
 %% ==========================================================================
+
+-spec process_data(string(), #telnet{}) -> {ok, #telnet{}}.
 
 %% --- Any Mode ---
 % Input is empty, return state
@@ -103,6 +132,8 @@ process_data([?IAC,?SE|Data], #telnet{mode=sub}=Session) ->
 %% --------------------------------------------------------------------------
 %% @doc Handle incoming option command
 %% --------------------------------------------------------------------------
+-spec telopt_recv(telnet_opt_neg(), telnet_option(), #telnet{}) -> 
+        {ok, #telnet{}}.
 telopt_recv(?WILL, Opt, #telnet{remote=Remote}=Session) ->
   ?DEBUG_PRINT("telnet: RECV WILL ~w\n", [Opt]),
   {ok, NewOpts} = handle_telopt_enable(Opt, Remote, Session),
@@ -123,8 +154,8 @@ telopt_recv(?DONT, Opt, #telnet{local=Local}=Session) ->
 %% --------------------------------------------------------------------------
 %% @doc Handle outgoing option command
 %% --------------------------------------------------------------------------
--spec telopt_send(?WILL|?DO|?WONT|?DONT, byte(), #telnet{}) ->
-  {ok, #telnet{}}.
+-spec telopt_send(telnet_opt_neg(), telnet_option(), #telnet{}) -> 
+        {ok, #telnet{}}.
 telopt_send(?WILL, Opt, #telnet{local=Local}=Session) ->
   ?DEBUG_PRINT("telnet: SEND WILL ~w?\n", [Opt]),
   {ok, NewOpts} = request_telopt_enable(Opt, Local, Session),
@@ -144,6 +175,8 @@ telopt_send(?DONT, Opt, #telnet{remote=Remote}=Session) ->
 
 %% --------------------------------------------------------------------------
 %% --------------------------------------------------------------------------
+-spec request_telopt_enable(telnet_option(), #nvt{}, #telnet{}) ->
+        {ok, #nvt{}}.
 request_telopt_enable(Opt, NVT, Session) ->
   Opts = ensure_exists(Opt, NVT#nvt.opts),
   TelOpt = case dict:fetch(Opt, Opts) of
@@ -166,6 +199,8 @@ request_telopt_enable(Opt, NVT, Session) ->
            end,
   {ok, NVT#nvt{opts=dict:store(Opt, TelOpt, Opts)}}.
 
+-spec request_telopt_disable(telnet_option(), #nvt{}, #telnet{}) ->
+        {ok, #nvt{}}.
 request_telopt_disable(Opt, NVT, Session) ->
   Opts = ensure_exists(Opt, NVT#nvt.opts),
   TelOpt = case dict:fetch(Opt, Opts) of
@@ -190,6 +225,8 @@ request_telopt_disable(Opt, NVT, Session) ->
 
 %% --------------------------------------------------------------------------
 %% --------------------------------------------------------------------------
+-spec handle_telopt_enable(telnet_option(), #nvt{}, #telnet{}) ->
+        {ok, #nvt{}}.
 handle_telopt_enable(Opt, NVT, Session) ->
   Opts = ensure_exists(Opt, NVT#nvt.opts),
   TelOpt = case dict:fetch(Opt, Opts) of
@@ -214,6 +251,8 @@ handle_telopt_enable(Opt, NVT, Session) ->
 
 %% --------------------------------------------------------------------------
 %% --------------------------------------------------------------------------
+-spec handle_telopt_disable(telnet_option(), #nvt{}, #telnet{}) ->
+        {ok, #nvt{}}.
 handle_telopt_disable(Opt, NVT, Session) ->
   Opts = ensure_exists(Opt, NVT#nvt.opts),
   TelOpt = case dict:fetch(Opt, Opts) of
@@ -236,6 +275,7 @@ handle_telopt_disable(Opt, NVT, Session) ->
 
 %% --------------------------------------------------------------------------
 %% --------------------------------------------------------------------------
+-spec ensure_exists(telnet_option(), dict()) -> dict().
 ensure_exists(Opt, Opts) ->
   case dict:is_key(Opt, Opts) of
     true -> Opts;
@@ -245,6 +285,7 @@ ensure_exists(Opt, Opts) ->
 %% --------------------------------------------------------------------------
 %% @doc Given data and a #telnet record, send data on the socket
 %% --------------------------------------------------------------------------
+-spec tcp_send(iolist(), #telnet{}) -> ok | {error, any()}.
 tcp_send(Data, #telnet{socket=Socket}) ->
   ?DEBUG_PRINT("telnet: SEND ~w!\n", [Data]),
   gen_tcp:send(Socket, Data).
