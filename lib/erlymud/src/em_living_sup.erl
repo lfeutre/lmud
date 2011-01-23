@@ -18,9 +18,11 @@
 
 -define(SERVER, ?MODULE).
 
+-spec start_link() -> any().
 start_link() ->
   supervisor:start_link({local, ?SERVER}, ?MODULE, []).
 
+-spec start_child(em_living:living_name(), em_living:client()) -> any().
 start_child(Name, Client) ->
   supervisor:start_child(?SERVER, [Name, Client]).
 
