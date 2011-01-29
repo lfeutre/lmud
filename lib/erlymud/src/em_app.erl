@@ -31,7 +31,7 @@ start(_StartType, _StartArgs) ->
                       {ok, A} -> A;
                       undefined -> ?DEFAULT_ACCEPTORS
                     end,
-        em_listener:listen(Port, Acceptors),
+        em_acceptor_sup:start_listener(Port, Acceptors),
         {ok, Pid};
       Other ->
         {error, Other}

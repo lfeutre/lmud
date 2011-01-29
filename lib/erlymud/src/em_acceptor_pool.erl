@@ -43,6 +43,6 @@ init([]) ->
   Acceptor = {em_acceptor, {em_acceptor, start_link, []},
               transient, brutal_kill, worker, [em_acceptor]},
   Children = [Acceptor],
-  RestartStrategy = {simple_one_for_one, 5, 10},
+  RestartStrategy = {simple_one_for_one, 4, 3600},
   {ok, {RestartStrategy, Children}}.
 
