@@ -16,7 +16,8 @@
          cmd_go/2, cmd_quit/2, cmd_emote/2, cmd_say/2, cmd_tell/2,
          cmd_who/2, cmd_get/2, cmd_drop/2, cmd_inv/2, cmd_glance/2,
          cmd_save/2, cmd_setlong/2, cmd_help/2,
-         cmd_redit/2, cmd_addexit/2]).
+         cmd_redit/2, cmd_addexit/2,
+         cmd_cast/2]).
 
 -include("request.hrl").
 
@@ -396,6 +397,23 @@ cmd_redit(_Args, Req) ->
   Req),
   {ok, Req}.
 
+cmd_cast(["ward"], #req{living=Liv}=Req) ->
+  Room = em_living:get_room(Liv),
+  Name = em_living:get_name(Liv),
+  em_living:print(Liv, 
+    "As you quietly vocalize your chosen mnemonics, "
+    "the spell takes shape.\n"),
+  em_room:print_except(Room, Liv, 
+    "~s starts muttering something incomprehensible.\n", [Name]),
+  em_spell_ward:start(Liv, Room),
+  {ok, Req};
+cmd_cast(_Args, Req) ->
+  print(
+  "You can cast the following spells:\n"
+  "  ward - Will let you know if someone enters the protected room.\n"
+  ,Req),
+  {ok, Req}.
+
 -spec reverse_dir(string()) -> string().
 reverse_dir("north") -> "south";
 reverse_dir("east") -> "west";
@@ -450,6 +468,8 @@ cmd_help(_Args, Req) ->
   "  setlong <desc>          Set the description others see when they\n"
   "                            look at you.\n"
   "  who                     Display all logged in users.\n"
+  "  ----------------------------------------------------------------------\n"
+  "  cast <spell>            Cast a spell. Try 'cast' for more info.\n"
   "  ----------------------------------------------------------------------\n"
   "  addexit <dir> <room>    Add an exit to an existing room. (*)\n"
   "  redit <cmd> <args>      Edit / create rooms. Try 'redit' for info. (*)\n"

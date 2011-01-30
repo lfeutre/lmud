@@ -9,6 +9,7 @@
 -module(em_room).
 
 -behaviour(gen_server).
+-behaviour(em_event_source).
 
 -export([start_link/3, 
          add_exit/3, add_object/2, add_reset/2,
@@ -23,7 +24,10 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, 
          terminate/2, code_change/3]).
 
--record(state, {name, title, desc, long, people=[], exits=[], objects=[], resets=[]}).
+-export([add_event_listener/2, notify/2]).
+
+-record(state, {name, title, desc, long, people=[], exits=[], objects=[], 
+                resets=[], event_listeners=[]}).
 
 -type room_name() :: string().
 -type room_pid() :: pid().
@@ -129,6 +133,7 @@ handle_call({looking, User}, _From, State) ->
   {reply, do_looking(User, State), State};
 handle_call({enter, Who}, _From, #state{people=People} = State) ->
   link(Who),
+  do_notify({enter_room, Who}, State),
   {reply, ok, State#state{people=[Who|People]}};
 handle_call({leave, Who}, _From, #state{people=People} = State) ->
   unlink(Who),
@@ -148,6 +153,12 @@ handle_call(save, _From, State) ->
   {ok, NewState} = do_save(State),
   {reply, ok, NewState}.
 
+handle_cast({add_event_listener, Listener}, State) ->
+  EventListeners = State#state.event_listeners,
+  {noreply, State#state{event_listeners=[Listener|EventListeners]}};
+handle_cast({notify, Event}, State) ->
+  NewListeners = do_notify(Event, State),
+  {noreply, State#state{event_listeners=NewListeners}};
 handle_cast(_Msg, State) ->
   {noreply, State}.
 
@@ -165,7 +176,24 @@ terminate(_Reason, _State) ->
 code_change(_OldVsn, State, _Extra) ->
   {ok, State}.
 
+%% em_event_source
+
+add_event_listener(Room, Listener) ->
+  gen_server:cast(Room, {add_event_listener, Listener}).
+
+notify(Room, Event) ->
+  gen_server:cast(Room, {notify, Event}).
+
 %% Internal functions
+
+do_notify(Event, #state{event_listeners=Listeners}) ->
+  do_notify(Event, Listeners, []).
+
+do_notify(_Event, [], Remaining) ->
+  Remaining;
+do_notify(Event, [{Mod, Args}|Rest], Remaining) ->
+  Mod:handle_event(Args ++ [Event]),
+  do_notify(Event, Rest, [{Mod, Args}|Remaining]).
 
 do_describe(#state{title=Title, desc=Desc, people=People, exits=Exits, objects=Objects}) ->
   ["%^ROOM_TITLE%^", Title, "%^RESET%^\n", em_text:wrapline(Desc, 78), "\n", 
