@@ -132,8 +132,14 @@ Johan Warlander
 
 ## Testing
 
-ErlyMUD has been at least occasionally tested in the following environments,
-please do report if you get it running in a different configuration:
+Currently PropEr is being used together with the ta-qc branch of rebar for 
+testing of ErlyMUD modules. To run tests, first download / compile PropEr, 
+set it up in your Erlang environment, and then just do "./rebar qc" in the 
+top-level directory of ErlyMUD.
+
+On a more general level, ErlyMUD has been at least occasionally tested in the 
+following environments; please do report if you get it running in a different 
+configuration:
 
   * Ubuntu 10.04 (x86_64), Erlang/OTP R14B01
     * Johan Warlander <johan@snowflake.nu>
