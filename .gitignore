@@ -1,5 +1,3 @@
-syntax: glob
-
 .eunit/*
 erl_crash.dump
 edoc-info
@@ -14,7 +12,5 @@ livings/*.dat
 *.swp
 *.tar.gz
 *~
-
 plain.*
-
 rel/erlymud

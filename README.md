@@ -1,5 +1,3 @@
-<!-- -*- markdown -*- -->
-
 # ErlyMUD
 
 ErlyMUD is a rather minimalistic MUD server, written in Erland and making
