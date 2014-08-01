@@ -1,6 +1,6 @@
 # ErlyMUD
 
-ErlyMUD is a rather minimalistic MUD server, written in Erland and making
+ErlyMUD is a rather minimalistic MUD server, written in Erlang and making
 use of the excellent OTP libraries. The aim is to have solid support for
 exploration and roleplaying, within a highly fault-tolerant environment
 where system crashes or reboots are more of an exotic curiosity than a
