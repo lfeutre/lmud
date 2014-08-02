@@ -4,14 +4,14 @@ ErlyMUD is a rather minimalistic MUD server, written in Erlang and making
 use of the excellent OTP libraries. The aim is to have solid support for
 exploration and roleplaying, within a highly fault-tolerant environment
 where system crashes or reboots are more of an exotic curiosity than a
-commonplace thing. 
+commonplace thing.
 
 Erlang/OTP is an excellent match for MUD development, with strong support
 for concurrency through light-weight processes, hot code upgrades, near-
 transparent mechanisms for distributed computing, etc.
 
-This project started out as a way for me to learn Erlang/OTP, within a 
-context that I knew something about. Since those early days three weeks 
+This project started out as a way for me to learn Erlang/OTP, within a
+context that I knew something about. Since those early days three weeks
 ago, it's actually developed into something marginally usable. We'll see
 where this goes.
 
@@ -25,9 +25,10 @@ around between rooms, and handle items.
 ## Game Features
 
   * Rooms have a title, and brief + long descriptions.
-    * The brief description is used when walking into / through a room, and is 
-      intended to only show the most obvious features of the room. 
-    * When using the "look" command, the long description will be shown instead.
+    * The brief description is used when walking into / through a room,
+      and is intended to only show the most obvious features of the room.
+    * When using the "look" command, the long description will be shown
+      instead.
   * Items can be picked up, dropped and looked at;
     * "get sword", "drop sword"
     * If an item is 'attached', it can't be picked up. Instead it belongs to
@@ -41,33 +42,36 @@ around between rooms, and handle items.
 
 ## Technical Stuff
 
-Processes are heavily used in order to obtain concurrency and fault isolation.
+Processes are heavily used in order to obtain concurrency and fault
+isolation.
 
 When someone connects, they initially get a Connection process, which just
-handles gen_tcp abstraction and telnet option negotiation, immediately passing
-input along to a Session process. The Session has a stack of Request Handlers,
-in the form of {M, F, A} tuples. When a line of input is received, the Session
-initiates a Request process, passing along the MFA tuple for the current 
-Request Handler. When the input has been acted upon, the Request process goes 
-away and the Session awaits the next input line.
+handles gen_tcp abstraction and telnet option negotiation, immediately
+passing input along to a Session process. The Session has a stack of Request
+Handlers, in the form of {M, F, A} tuples. When a line of input is received,
+the Session initiates a Request process, passing along the MFA tuple for the
+current Request Handler. When the input has been acted upon, the Request
+process goes away and the Session awaits the next input line.
 
-During login, the User and Living processes get created, representing the user
-account and the in-game incarnation, respectively. The Connection, Session,
-User and Living processes are all linked - which currently means that if one
-dies, so will the rest. This is to avoid process leakage in case of errors. 
+During login, the User and Living processes get created, representing the
+user account and the in-game incarnation, respectively. The Connection,
+Session, User and Living processes are all linked - which currently means
+that if one dies, so will the rest. This is to avoid process leakage in case
+of errors.
 
-In the future, the intent is to intelligently handle process failures, so that 
-if for example the Living process dies, the User process can just start a new
-one, allowing the player to go on as if nothing happened (mostly). Likewise,
-if the User process dies, the Session should kick you back to the login prompt
-(without disconnecting the socket), and when you've enter username and pass-
-word, you should get reconnected to the existing Living process.
+In the future, the intent is to intelligently handle process failures, so
+that if for example the Living process dies, the User process can just start
+a new one, allowing the player to go on as if nothing happened (mostly).
+Likewise, if the User process dies, the Session should kick you back to the
+login prompt (without disconnecting the socket), and when you've enter
+username and password, you should get reconnected to the existing Living
+process.
 
 This kind of error handling is already done for the Game and Room processes,
-which keep player info in their state. The Game process will trap exit signals
-from the User process, and remove the user from its list of logged-on users.
-The Room process will trap exit signals from the Living process and remove it
-from its inventory of people in the room.
+which keep player info in their state. The Game process will trap exit
+signals from the User process, and remove the user from its list of logged-
+on users. The Room process will trap exit signals from the Living process
+and remove it from its inventory of people in the room.
 
 Room loading happens completely dynamically. When a player logs on, the game
 tries to load the room they were in by calling em_room_mgr:get_room(RoomName)
@@ -87,38 +91,39 @@ However, try the following steps to start ErlyMUD directly from the
 development environment; it's been tested on Ubuntu 10.04, 10.10 and
 Mac OS X 10.6.6:
 
-  0. Make sure you have Erlang R14B01 installed, to avoid having to edit
+  1. Make sure you have Erlang R14B01 installed, to avoid having to edit
      the ErlyMUD .rel file
-  1. Download the latest snapshot from my [Bitbucket repository](https://bitbucket.org/jwarlander/erlymud/downloads),
+  1. Download the latest snapshot from the
+     [Github repository](https://github.com/lfex/erlymud),
      currently that means *erlymud-0.3.0.(zip|tar.gz|tar.bz2)*
-  2. Unpack the source code somewhere, you'll get an "erlymud" directory
-  1. Take note of the version you got, by checking the actual name of the 
+  1. Unpack the source code somewhere, you'll get an "erlymud" directory
+  1. Take note of the version you got, by checking the actual name of the
      "erlymud/erlymud-X.Y.Z.rel" file; it should be 0.3.0 or above,
      preferrably. Use the actual version instead of 0.3.0 in the
      instructions below.
-  3. Go to this directory and compile the source:
+  1. Go to this directory and compile the source:
 
      > $ cd erlymud
      > $ ./rebar compile
 
-  4. Start an Erlang shell, with the ErlyMUD ebin path added:
+  1. Start an Erlang shell, with the ErlyMUD ebin path added:
 
      > $ erl -pa lib/erlymud/ebin/
 
-  5. Create a local boot script, then quit the Erlang shell:
+  1. Create a local boot script, then quit the Erlang shell:
 
-     > 1> systools:make_script("erlymud-0.3.0", [local]).  
+     > 1> systools:make_script("erlymud-0.3.0", [local]).
      > 2> q().
 
-  6. Start up ErlyMUD:
+  1. Start up ErlyMUD:
 
      > $ erl -boot ./erlymud-0.3.0
 
-  7. From another terminal, connect to the game and create a user:
+  1. From another terminal, connect to the game and create a user:
 
      > $ telnet localhost 2155
 
-  8. Have fun!
+  1. Have fun!
 
 That's all really. Better documentation might happen sooner or later,
 if this project doesn't die off ;)
@@ -126,17 +131,15 @@ if this project doesn't die off ;)
 If you have any questions, send an e-mail to johan@snowflake.nu and I'll
 try to help you.
 
-Johan Warlander
-
 ## Testing
 
-Currently PropEr is being used together with the ta-qc branch of rebar for 
-testing of ErlyMUD modules. To run tests, first download / compile PropEr, 
-set it up in your Erlang environment, and then just do "./rebar qc" in the 
+Currently PropEr is being used together with the ta-qc branch of rebar for
+testing of ErlyMUD modules. To run tests, first download / compile PropEr,
+set it up in your Erlang environment, and then just do "./rebar qc" in the
 top-level directory of ErlyMUD.
 
-On a more general level, ErlyMUD has been at least occasionally tested in the 
-following environments; please do report if you get it running in a different 
+On a more general level, ErlyMUD has been at least occasionally tested in the
+following environments; please do report if you get it running in a different
 configuration:
 
   * Ubuntu 10.04 (x86_64), Erlang/OTP R14B01
