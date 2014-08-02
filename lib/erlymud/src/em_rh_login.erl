@@ -23,7 +23,7 @@
 
 -spec welcome(em_conn:conn_pid()) -> ok.
 welcome(Conn) ->
-  em_conn:print(Conn, "\nWelcome to ErlyMUD 0.3.4\n\n"),
+  em_conn:print(Conn, "\nWelcome to ErlyMUD " ++ em_util:get_version() ++ "\n\n"),
   em_conn:print(Conn, "Login: ").
 
 %% Got a username, do something with it
