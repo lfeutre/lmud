@@ -15,6 +15,40 @@ context that I knew something about. Since those early days three weeks
 ago, it's actually developed into something marginally usable. We'll see
 where this goes.
 
+
+## Getting Started
+
+ErlyMUD expects that you have Erlang 17 and rebar installed. Once you have
+that taken care of, following these steps:
+
+  1. Download the latest:
+
+     ```sh
+     $ git clone https://github.com/lfex/erlymud.git
+     ```
+
+  1. Change directory, compile the source, and make a release:
+
+     ```sh
+     $ cd erlymud
+     $ make rel
+     ```
+
+  1. Start up ErlyMUD:
+
+     ```sh
+     $ make run
+     ```
+
+  1. From another terminal, connect to the game and create a user:
+
+     ```sh
+     $ telnet localhost 2155
+     ```
+
+  1. Have fun!
+
+
 ## Current Status
 
 ErlyMUD presents what's currently at least a minimally playable environment.
@@ -39,6 +73,7 @@ around between rooms, and handle items.
     * "who", "tell <who> <what>", "say <something>", "emote <something>"
   * Navigation is currently restricted to the basics;
     * "go west", "west", etc..
+
 
 ## Technical Stuff
 
@@ -81,47 +116,6 @@ will simply load the room.
 To avoid problems, em_room_mgr:get_room/1 will always verify that a Room Pid
 is alive before returning it, since a Room might have crashed. If it's not
 alive, then again it'll simply be loaded and replaced in the ETS table.
-
-## Getting Started
-
-Currently, things aren't really set up in a way so that's it's easy for an
-Erlang newbie to get things up and running. This will hopefully improve.
-
-However, try the following steps to start ErlyMUD directly from the
-development environment; it's been tested on Ubuntu 10.04, 10.10 and
-Mac OS X 10.6.6:
-
-  1. Make sure you have Erlang 17 installed, to avoid having to edit
-     the ErlyMUD .rel file
-  1. Download the latest:
-
-     ```sh
-     $ git clone https://github.com/lfex/erlymud.git
-     ```
-
-  1. Change directory, compile the source, and make a release:
-
-     ```sh
-     $ cd erlymud
-     $ make rel
-     ```
-
-  1. Start up ErlyMUD:
-
-     ```sh
-     $ make run
-     ```
-
-  1. From another terminal, connect to the game and create a user:
-
-     ```sh
-     $ telnet localhost 2155
-     ```
-
-  1. Have fun!
-
-That's all really. Better documentation might happen sooner or later,
-if this project doesn't die off ;)
 
 
 ## Testing
