@@ -1,0 +1,1265 @@
+From: "Peter A. Denitto" <pd5295@pegasus.cc.ucf.edu>
+
+[ Complete Builders Reference Manual for StrangeMUD ]                   by Iggy
+
+
+
+
+(MOB.REF)
+---------
+
+  [MOB] Positions                     [MOB] Sex
+
+  POSITION_DEAD  0                    NEUTRAL   0
+  MORTALLYW      1                    MALE      1
+  INCAP          2                    FEMALE    2
+  STUNNED        3
+  SLEEPING       4
+  RESTING        5
+  SITTING        6
+  FIGHTING       7 DON'T USE
+  STANDING       8
+
+  [MOB] Action Flags                  [MOB] Affect Flags
+
+a SPEC                1             a BLIND                1 DON'T USE
+b SENTINEL            2             b INVISIBLE            2
+c SCAVENGER           4             c DETECT_EVIL          4
+d ISNPC               8 DON'T USE   d DETECT_INVIS         8
+e NICE_THIEF         16             e DETECT_MAGIC        16
+f AGGRESSIVE         32             f SENSE_LIFE          32
+g STAY_ZONE          64             g HOLD                64 ???
+h WIMPY             128             h SANCTUARY          128
+i AGGR_EVIL         256             i GROUP              256 DON'T USE
+j AGGR_GOOD         512             j CURSE              512 DON't USE
+k AGGR_NEUTRAL     1024             k INFRARED          1024
+l MEMORY           2048             l POISON            2048 DON'T USE
+m HELPER           4096             m PROTECT_EVIL      4096
+n SWITCHING        8192             n PARALYSIS         8192 DON'T USE
+o VENGEFUL        16384             o HAS_BOAT         16384
+p NO_SUMMON       32768             p FLY              32768
+q EVIL_SCAV       65536             q SLEEP            65536 DON'T USE
+r HUNTER         131072             r DETECT_GOOD     131072
+s MIME           262144             s SNEAK           262144
+t NO_SLEEP       524288             t HIDE            524288
+u NO_TRACK      1048576             u ABEL PROT.     1048576 ???
+                                    v CHARM          2097152 DON'T USE
+                                    w FOLLOW         4194304 DON'T USE
+NOTE:                               x WIMPY          8388608 ???
+WIMPY+AGGR == MOB attacks           y RESIST_COLD   16777216
+              sleeping players      z RESIST_HEAT   33554432
+
+===============================================================================
+
+(MOBSTDRD.REF)
+--------------
+
+LEVEL     THAC0     AC     HP       DAMAGE      EXPERIENCE      GOLD COINS(???)
+*******************************************************************************
+  0         20      10   1d8+0      1d5+0                42          0       1
+  1         20      10   1d13+11    1d6+0               170          2       4
+  2         19       9   1d14+24    1d7+0               340          3       6
+  3         18       8   1d13+39    1d8+0               595          5      10
+  4         17       7   1d14+52    1d10+0              1020        10      20
+  5         16       6   1d13+67    2d5+0               1530        15      30
+  6         15       5   1d14+79    1d10+1              2550        25      50
+  7         14       4   1d13+99    2d5+1               3825        38      76
+  8         13       4   1d14+116   2d6+1               6375        63     126
+  9         12       4   1d13+132   2d6+1              10200       102     204
+ 10         11       3   1d14+154   2d8+1              15300       153     306
+ 11         10       3   1d13+176   2d8+1              18700       187     374
+ 12          9       3   1d13+198   2d9+1              22100       221     442
+ 13          8       2   1d13+220   2d9+1              27200       272     544
+ 14          7       2   1d14+253   2d10+1             30600       306     612
+ 15          6       2   1d13+286   2d10+3             37500       375     750
+ 16          5       1   1d14+319   2d10+3             40800       408     816
+ 17          4       1   1d13+363   3d8+3              47600       476     952
+ 18          3       1   1d14+407   3d8+3              51000       510   1,020
+ 19          2       0   1d13+451   3d8+4              59500       595   1,190
+ 20          1       0   1d14+506   3d8+5              68000       680   1,360
+ 21          1       0   4d11+561   3d9+5              85000       850   1,700
+ 22          1      -1   6d11+616   3d10+5            102000     1,020   2,040
+ 23          1      -1   6d11+693   3d10+5            136000     1,360   2,720
+ 24          1      -1   6d11+659   3d10+5            170000     1,700   3,400
+ 25          1      -2   6d11+825   4d8+5             212000     2,120   4,240
+ 26          1      -2   6d11+908   4d8+5             272000     2,720   5,440
+ 27          1      -2   6d11+990   4d8+6             340000     3,400   6,800
+ 28          1      -3   6d11+1100  4d8+6             425000     4,250   8,500
+ 29          1      -3   6d11+1210  4d8+6             450000     4,500   9,000
+ 30          1      -3   6d11+1320  4d8+6             680000     6,800  13,600
+ 31          1      -4   6d13+1485  5d8+8             850000     8,500  17,000
+ 32          1      -4   7d11+1650  5d8+8            1020000    10,200  20,400
+ 33          1      -4   7d13+1815  5d8+8            1190000    11,900  23,800
+ 34          1      -5   8d11+1980  5d8+9            1360000    13,600  27,200
+ 35          1      -5   8d13+2200  5d8+9            1530000    15,300  30,600
+ 36          1      -5   9d11+2420  5d8+11           1700000    17,000  34,000
+ 37          1      -6   9d13+2640  6d8+11           1955000    19,550  39,100
+ 38          1      -6  11d11+2860  6d8+11           2210000    22,100  44,200
+ 39          1      -6  11d11+3080  6d8+13           2465000    24,650  49,300
+ 40          1      -7  11d11+3300  6d8+13           2720000    27,200  54,400
+ 41          0      -7  11d13+3630  6d8+13           2975000    29,750  59,500
+ 42          0      -7  11d13+3960  6d9+14           3230000    32,300  64,600
+ 43          0      -8  11d13+4290  6d9+14           3570000    35,700  71,400
+ 44          0      -8  11d17+4620  6d9+14           3825000    38,250  76,500
+ 45          0      -8  11d17+4950  6d9+15           4080000    40,800  81,600
+ 46          0      -9  11d17+5280  6d9+15           4335000    43,350  86,700
+ 47          0      -9  11d22+5610  6d9+15           4590000    45,900  91,800
+ 48          0      -9  11d22+5940  6d9+17           4930000    49,300  98,600
+ 49          0     -10  11d22+6270  6d9+17           5270000    52,700 105,400
+ 50          0     -10  16d22+6600  6d10+18          5610000    56,100 112,200
+
+===============================================================================
+
+(MOB_PROG.REF)
+--------------
+
+trigger         argument and what must happen to activate trigger
+-----------------------------------------------------------------------------
+act_prog        WORDLIST or P WORD_PHRASE to match from act() to mobile
+bribe_prog      INTEGER amount of miminum gold amount given to mobile
+entry_prog      PERCENT chance to check when mobile moves to a new room
+give_prog       FULL OBJECT NAME or ALL to match when obj given to mobile
+greet_prog      PERCENT chance to check if visable char enters mobile's room
+all_greet_prog  PERCENT chance to check when any char enters mobile's room
+fight_prog      PERCENT chance to check at fight_pulse if mobile is fighting
+hitprcnt_prog   PERCENT lower than mobiles hit/max_hit if mobile is fighting
+death_prog      PERCENT chance to check after mobile has been slain
+rand_prog       PERCENT chance to check whenever a PC is in the mobiles zone
+speech_prog     WORDLIST or P WORD_PHRASE to match in dialogue to mobile
+
+variable         mobile actor victim random     object 2nd_object
+-----------------------------------------------------------------------------
+  name             $i    $n     $t     $r         $o       $p      
+shrt_desc/title    $I    $N     $T     $R         $O       $P          
+he/she/it          $j    $e     $E     $J         --       --
+his/hers/its       $l    $s     $S     $L         --       --
+him/her/it         $k    $m     $M     $K         --       --
+a/an               --    --     --     --         $a       $A
+ 
+ifcheck       argument?        meaning
+-----------------------------------------------------------------------------
+rand(num)                   Is a random percentage less than or equal to num
+isnpc($*)                   Is $* an NPC
+ispc($*)                    Is $* a PC
+isgood($*)                  Does $* have a good alignment 
+isevil($*)                  Does $* have an evil alignment
+isneutral($*)               Does $* have a neutral alignment
+isfight($*)                 Is $* fighting
+isimmort($*)                Is the level of $* greater than max_mortal
+ischarmed($*)               Is $* affected by charm
+isfollow($*)                Is $* a follower with their master in the room
+isaffected($*) & integer    Is ($*->affected_by & integer) true (person only) 
+hitprcnt($*)  == percent    Is the hit/max_hit of $* equal to percent
+inroom($*)    == integer    Is the room of $* equal to integer (person only)
+sex($*)       == integer    Is the sex of $* equal to integer
+position($*)  == integer    Is the position of $* equal to integer
+level($*)     == integer    Is the level of $* equal to integer
+class($*)     == integer    Is the class of $* equal to integer
+goldamt($*)   == integer    Does $* have a gold total equal to integer
+objtype($*)   == integer    Is the type of $* equal to integer (armor,boat,etc)
+objval#($*)   == integer    Is $*->value[#] equal to integer (# from 0-3)
+number($*)    == integer    Is the vnum of $* equal to integer
+name($*)      == string     Is the name of $* equal to string
+mexists(vnum) == integer    Does MOB exist
+oexists(vnum) == integer    Does OBJ exist (Checks LIMITED items/Rentfile)
+weather($*)   == integer    Is the weather type equal to integer (0-3)
+time($*)      == integer    Is the time equal to integer (0-23 military time)
+age($*)       == integer    Is the age of $* equal to integer
+
+MOBcommand	argument_list		MOBcommand	argument_list
+-----------------------------------------------------------------------------
+MPSTAT		<mobile>		MPASOUND	<text_string>
+MPJUNK		<object>		MPECHO		<text_string>
+MPMLOAD		<mobile>		MPECHOAT	<victim> <text_string>
+MPOLOAD		<object> <level>	MPECHOAROUND	<victim> <text_string>
+MPKILL		<victim>		MPPURGE		[argument]
+MPGOTO		<dest>			MPAT		<dest> <command> 
+MPTRANSFER	<dest> [location]	MPFORCE		<victim> <command>
+
+===============================================================================
+
+(OBJ.REF)
+---------
+
+[OBJ] Type Flags     [OBJ] Extra Flags          [OBJ] Modifiers
+
+LIGHT        1     a GLOW                   1   NONE            0
+SCROLL       2     b HUM                    2   STR             1
+WAND         3     c DARK                   4   DEX             2
+STAFF        4     d LOCK                   8   INT             3
+WEAPON       5     e EVIL                  16   WIS             4
+FIREWEAPON   6     f INVISIBLE             32   CON             5
+MISSILE      7     g MAGIC                 64   SEX             6 DON'T USE
+TREASURE     8     h NODROP               128   CLASS           7 DON'T USE
+ARMOR        9     i BLESS                256   LEVEL           8 DON'T USE
+POTION      10     j ANTI_GOOD            512   AGE             9
+WORN        11     k ANTI_EVIL           1024   CHAR_WEIGHT    10
+OTHER       12     l ANTI_NEUTRAL        2048   CHAR_HEIGHT    11
+TRASH       13     m NO_RENT             4096   MANA           12
+TRAP        14     n NO_DONATE           8192   HIT            13
+CONTAINER   15     o NO_INVIS           16384   MOVE           14
+NOTE        16     p LIMITED            32768   GOLD           15 DON'T USE
+DRINKCON    17     q NO_REMOVE          65536   EXP            16 DON'T USE
+KEY         18     r DONATED           131072   AC             17
+FOOD        19     s POISONED          262144   ARMOR          17
+MONEY       20     t ENCHANTED         524288   HITROLL        18
+PEN         21     u CURSED           1048576   DAMROLL        19
+BOAT        22     v 2_HANDED_WEAPON  2097152   SAVING_PARA    20
+FOUNTAIN    23     w ANTI_MAGIC_USER  4194304   SAVING_ROD     21
+MUTER       24     x ANTI_CLERIC      8388608   SAVING_PETRI   22
+LOCKPICK    25     y ANTI_THIEF      16777216   SAVING_BREATH  23
+                   z ANTI_WARRIOR    33554432   SAVING_SPELL   24
+                   A GOD_ITEM        67108864
+
+[OBJ] Liquid Types   [OBJ] Wear Flags           [OBJ] Container Values
+
+WATER           0    TAKE        1                    CLOSEABLE  1
+BEER            1    FINGER      2                    PICKPROOF  2
+WINE            2    NECK        4                    CLOSED     4
+ALE             3    BODY        8                    LOCKED     8
+DARKALE         4    HEAD       16
+WHISKY          5    LEGS       32
+LEMONADE        6    FEET       64
+FIREBRT         7    HANDS     128
+LOCALSPC        8    ARMS      256
+SLIME           9    SHIELD    512
+MILK           10    ABOUT    1024
+TEA            11    WAISTE   2048
+COFFE          12    WRIST    4096
+BLOOD          13    WIELD    8192
+SALTWATER      14    HOLD    16384
+CLEARWATER     15    THROW   32768
+WATER_OF_LIFE  16
+
+===============================================================================
+
+(OBJ_TYPE.REF)
+--------------
+
+ITEM_LIGHT      (1)
+Value[0]: -
+Value[1]: -
+Value[2]: Number of hours the light can be used for. Zero hours means
+          that the light has gone out. A negative number will create
+          an eternal light source.
+Value[3]: -
+
+
+ITEM_SCROLL     (2)
+Value[0]: Level of the spell on the scroll.
+Value[1]: Which spell (see list somewhere around the end of file)
+Value[2]: Which spell
+Value[3]: Which spell
+  The values(1-3) are three (or less) different spells, mixed 'on'
+  the scroll.
+Unused spells should be set to -1.
+
+
+ITEM_WAND       (3)
+Value[0]: Level of spell in wand.
+Value[1]: Max Charges (1..X)
+Value[2]: Charges Left
+Value[3]: Which spell in wand (see list somewhere around the end of file)
+
+
+ITEM_STAFF      (4)
+Value[0]: Level of spell in staff.
+Value[1]: Max Charges (1..X)
+Value[2]: Charges Left
+Value[3]: Which spell in staff (see list somewhere around the end of file)
+
+
+ITEM_WEAPON     (5)
+Value[0]: Not Used
+Value[1]: Number of dice to roll for damage
+Value[2]: Size of dice to roll for damage
+Value[3]: The weapon type. Type is one of:
+
+         NUMBER  CATEGORY   Message type
+            2  : Slash         "whip/whips"
+            3  : Slash         "slash/slashes"
+
+            6  : Bludgeon      "crush/crushes"
+            7  : Bludgeon      "pound/pounds"
+
+           10  : Blast         "blast/blasts"
+
+           11  : Pierce        "pierce/pierces"
+           12  : Pierce        "pierce/pierces"
+                  No Backstab
+
+          New types can be added as needed.
+
+
+ITEM_FIREWEAPON (6)
+Value[0]: Fire Weapon Type (# of missiles that can be loaded)
+Value[1]: Number of dice to roll for damage
+Value[2]: Size of dice to roll for damage
+Value[3]: -
+
+ITEM_MISSILE    (7)
+Value[0]: Missile Type
+Value[1]: Number of dice to roll for damage
+Value[2]: Size of dice to roll for damage
+Value[3]: -
+
+
+
+
+ITEM_TREASURE   (8)
+Value[0]: -
+Value[1]: -
+Value[2]: -
+Value[3]: -
+
+ITEM_ARMOR      (9)
+Value[0]: The effective AC. >0 enhances the armour class. <0 reduces the
+          armour class (cursed armour for example).
+Value[1]: -
+Value[2]: -
+Value[3]: -
+
+ITEM_POTION    (10)
+Value[0]: Level of the spell in the potion.
+Value[1]: Which spell (Listed elsewhere in this file)
+Value[2]: Which spell
+Value[3]: Which spell
+  The values(1-3) are three (or less) different spells, mixed in the
+  potion.
+Unused spells should be set to -1.
+   Eg.
+   Value 0 : 30  (Level)
+   Value 1 : 27  (Harm)
+   Value 2 : 17  (Curse)
+   Value 3 :  4  (Blindness)
+     (* Don't drink this - It's bad for your health! *)
+
+
+ITEM_WORN      (11)
+Value[0]: -
+Value[1]: -
+Value[2]: -
+Value[3]: -
+
+ITEM_OTHER     (12)
+Value[0]: -
+Value[1]: -
+Value[2]: -
+Value[3]: -
+
+ITEM_TRASH     (13)
+Value[0]: -
+Value[1]: -
+Value[2]: -
+Value[3]: -
+
+ITEM_TRAP      (14)
+Value[0]: -
+Value[1]: -
+Value[2]: -
+Value[3]: -
+
+ITEM_CONTAINER (15)
+Value[0]: Maximum weight the container can contain.
+Value[1]: Container flags:
+
+   CLOSEABLE     1
+   PICKPROOF     2
+   CLOSED        4
+   LOCKED        8
+
+Value[2]: The item-number of the object which can open the object. -1
+          means no lockability.
+Value[3]: Internal use for Corpses that must "rot".
+
+ITEM_NOTE      (16)
+Value[0]: Tongue (language of writing). Not yet used.
+Value[1]: -
+Value[2]: -
+Value[3]: -
+
+ITEM_DRINKCON  (17)
+Value[0]: Maximum drink-units the drink-container can contain.
+Value[1]: Number of drink-units that are left in the container.
+Value[2]: The type of liquid in the drink-container, one of:
+
+              Type           nr.    Effect
+                                    Drunkness   Fullness   Thirst
+
+              LIQ_WATER      0      0           1           10
+              LIQ_BEER       1      3           2           5
+              LIQ_WINE       2      5           2           5
+              LIQ_ALE        3      2           2           5
+              LIQ_DARKALE    4      1           2           5
+              LIQ_WHISKY     5      6           1           4
+              LIQ_LEMONADE   6      0           1           8
+              LIQ_FIREBRT    7      10          0           0
+              LIQ_LOCALSPC   8      3           3           3
+              LIQ_SLIME      9      0           4           -8
+              LIQ_MILK       10     0           3           6
+              LIQ_TEA        11     0           1           6
+              LIQ_COFFE      12     0           1           6
+              LIQ_BLOOD      13     0           2           -1
+              LIQ_SALTWATER  14     0           1           -2
+              LIQ_CLEARWATER 15     0           0           13
+
+          The above values for drunkness/fullness/thirst are used per
+          four "units" drunk. The values are expressed in HOURS!
+          Example:
+            Dragon empties a bottle (say 7 units) of saltwater.
+            His Drunkness is not changed ((7/4)*0)
+            His Fullness increases by ((7/4)*1) hours
+            His Thirst increases by ((7/4)*-2) hours, thus making
+               him More thirsty.
+
+          The hours above are numbers between 0 and 24. 24 hours is
+          maximum for drunkness/fullness/thirst. When hours are zero
+          for any drunkness/fullness/thirst the person will be sober,
+          hungry, or thirsty respectively.
+
+Value[3]: if this value is non-zero, then the drink is poisoned.
+
+
+ITEM_KEY       (18)
+Value[0]: The key-type. This value must match the lock-type the door 
+          that the key can open. 
+Value[1]: Breaking Percentage
+          if a positive number is put in here, that is the chance of
+          breaking out of a hundred on each use.  Putting in a value of
+          0 means it won't break for this reason
+Value[2]: Number of Uses (Charges)
+          if its a postive number, then the key will break after that
+          number of uses.  If its 0, or a negative number, it will not
+          break from this cause.
+Value[3]: -
+
+ITEM_FOOD      (19)
+Value[0]: The number of hours, that this food will fill the stomach
+Value[1]: -
+Value[2]: -
+Value[3]: If this value is non-zero, the food is poisoned.
+
+ITEM_MONEY     (20)
+Value[0]: The number of gold coins "in the pile of coins".
+Value[1]: -
+Value[2]: -
+Value[3]: -
+
+ITEM_PEN       (21)
+Value[0]: -
+Value[1]: -
+Value[2]: -
+Value[3]: -
+
+ITEM_BOAT      (22)
+Value[0]: -
+Value[1]: -
+Value[2]: -
+Value[3]: -
+
+ITEM_FOUNTAIN  (23)
+
+Value[0]: Maximum drink-units the drink-container can contain.
+Value[1]: Number of drink-units that are left in the container.
+Value[2]: The type of liquid in the drink-container; definitions
+          are the same as for ITEM_DRINKCON.
+Value[3]: Drink is posioned if non-zero.
+
+ITEM_MUTER     (24)
+
+Value[0]: -
+Value[1]: -
+Value[2]: -
+Value[3]: -
+
+ITEM_LOCKPICK  (25)
+
+Value[0]: Amount it will increase skill at lock picking when help (0 - 100)
+Value[1]: Breaking Percentage
+          if a positive number is put in here, that is the chance of
+          breaking out of a hundred percent on each use.  Putting in a
+          value of 0 means it won't break for this reason.
+Value[2]: Number of Uses (Charges)
+          if its a postive number, then the lock pick will break after
+          that number of uses.  If its 0, or a negative number, it will
+          not break from this cause.
+Value[3]: -
+
+===============================================================================
+
+(SPEC_ATT.REF)
+--------------
+
+  [MOB] Special Attacks
+
+1 Acid Breath       (Affects Worn OBJ_TYPE_ARMOR Only)
+
+      Strength  Affects Who       What Equipment
+        1- 50   Random Player     One Object per Attack
+       51-100   Random Player     All Objects on Player
+      101-150   All Players       One Object per Player
+      151-200   All Players       All Objects on All Players
+
+For 101-200 STR; Chance of attempting breath is as follows:
+50+(str_level-100) == Chance
+
+
+2 Fire Breath       (Affects Worn/Inventory POTIONS, SCROLLS, WANDS, STAVES)
+
+      Strength  Affects Who       What Equipment
+        1- 50   Random Player     One Object per Attack
+       51-100   All Players       One Object per Attack
+
+
+3 Frost Breath      (Affects Worn/Inventory POTIONS, FOOD, DRINK_CONTAINERS)
+
+      Strength  Affects Who       What Equipment
+        1- 50   Random Player     One Object per Attack
+       51-100   All Players       One Object per Attack
+
+
+4 EQ Destruction    (Affects Worn EQ Only)
+
+      Strength  Affects Who       What Equipment
+        1- 50   Victim Only       One Object per Attack
+       51-100   Victim Only       All Objects on Victim
+
+
+5 Lightning Breath  (Affects Worn/Inventory LIGHTS, TREASURES, KEYS, BOATS,
+                                            LOCKPICKS)
+
+      Strength  Affects Who       What Equipment
+        1- 50   Random Player     One Object per Attack
+       51-100   All Players       One Object per Attack
+
+
+NOTE: Random Player means that it will attempt to use the special attack
+      against any player in the room that is fighting the mobile.
+
+      All Players means that it will attempt to use the special attack
+      against all the players in the room that are fighting the mobile.
+
+
+  [MOB] Special Attacks: Display Messages
+
+1) Message displayed to other characters in the room when victim is hit by
+   Special Attack.
+2) Message displayed to other characters in the room when the victim makes
+   a save for half damage against the Special Attack.
+3) Message displayed to other characters in the room when victim's eq is
+   destroyed by Special Attack.
+
+NOTE: The Special Attack Display Messages are only used in cases 1-3, and 5.
+      Case 4 (Eq Destroying) does not use the user defined Attack Messages.
+      Even though, in Case 4 you must include the 3 ~'s.
+
+  [MOB] Special Attacks: Syntax
+
+Comes directly after Multiple Attacks in .MOB file.
+
+S
+<special attack type> <strength> <% chance>
+<display message #1>~
+<display message #2>~
+<display message #3>~
+
+Sample:
+
+S
+2 30 30
+$n melts $N as $e breaths fire on $S.~
+$N dodges $n's fireball.~
+$N loses $p as it melts from $n's fireball.~
+
+All normal $ variables can be used.
+$n == actor short description
+$N == victim name
+$o == object name
+$p == object short description
+$a == object (a or an)
+...etc...
+
+===============================================================================
+
+(SPELLS.REF)
+------------
+
+                   Spells List
+
+    POTION                             STAFF
+
+  1 ARMOR                            1 ARMOR
+  2 TELEPORT                         2 TELEPORT
+  3 BLESS                            3 BLESS
+  4 BLINDNESS                        4 BLINDNESS
+  6 CALL LIGHTNING                   6 CALL LIGHTNING
+ 14 CURE BLIND                       7 CHARM PERSON
+ 15 CURE CRITIC                     14 CURE BLIND
+ 16 CURE LIGHT                      15 CURE CRITIC
+ 17 CURSE                           16 CURE LIGHT
+ 18 DETECT EVIL                     17 CURSE
+ 19 DETECT INVISIBLE                18 DETECT EVIL
+ 20 DETECT MAGIC                    19 DETECT INVISIBLE
+ 21 DETECT POISON                   20 DETECT MAGIC
+ 22 DISPEL EVIL                     22 DISPEL EVIL
+ 25 ENERGY DRAIN                    23 EARTHQUAKE
+ 27 HARM                            25 ENERGY DRAIN
+ 28 HEAL                            28 HEAL
+ 29 INVISIBLE                       29 INVISIBLE
+ 33 POISON                          33 POISON
+ 34 PROTECT FROM EVIL               34 PROTECT FROM EVIL
+ 35 REMOVE CURSE                    35 REMOVE CURSE
+ 36 SANCTUARY                       36 SANCTUARY
+ 38 SLEEP                           38 SLEEP
+ 39 STRENGTH                        39 STRENGTH
+ 42 WORD OF RECALL                  42 WORD OF RECALL
+ 43 REMOVE POISON                   43 REMOVE POISON
+ 44 SENSE LIFE                      44 SENSE LIFE
+ 55 FEAR                            55 FEAR
+ 61 AIR SHIELD                      61 AIR SHIELD
+ 66 FULL HEAL                       65 MASS SANCTUARY
+ 67 REVITALIZE                      66 FULL HEAL
+ 68 BARKSKIN                        67 REVITALIZE
+ 69 DETECT GOOD                     68 BARKSKIN
+ 70 MASS RECALL                     69 DETECT GOOD
+ 71 MASS TELEPORT                   70 MASS RECALL
+ 74 WALK ON WATER                   71 MASS TELEPORT
+ 76 STONE                           72 ICE BLAST
+ 82 PARALYZE                        73 ICE STORM
+ 84 HASTE                           74 WALK ON WATER
+ 88 REGENERATE                      82 PARALYZE
+ 94 FAERIE FIRE                     83 PEACE
+ 97 WEB                             84 HASTE
+124 DISPEL MAGIC                    88 REGENERATE
+127 RESIST COLD                     94 FAERIE FIRE
+128 RESIST HEAT                     97 WEB
+132 FLY                            123 AURA BLAST
+                                   127 RESIST COLD
+                                   128 RESIST HEAT
+                                   132 FLY
+                                   134 SUNRAY
+                                   135 GROUP HEAL
+                                   136 ABEL PROTECTION
+
+
+
+    SCROLL                             WAND
+
+  1 ARMOR                            1 ARMOR
+  2 TELEPORT                         2 TELEPORT
+  3 BLESS                            3 BLESS
+  4 BLINDNESS                        4 BLINDNESS
+  6 CALL LIGHTNING                   7 CHARM
+  7 CHARM PERSON                    10 COLOUR SPRAY
+ 10 COLOUR SPRAY                    22 DISPEL EVIL
+ 12 CREATE FOOD                     24 ENCHANT WEAPON
+ 17 CURSE                           25 ENERGY DRAIN
+ 21 DETECT POISON                   26 FIREBALL
+ 22 DISPEL EVIL                     27 HARM
+ 23 EARTHQUAKE                      28 HEAL
+ 24 ENCHANT WEAPON                  29 INVISIBLE
+ 25 ENERGY DRAIN                    30 LIGHTNING BOLT
+ 26 FIREBALL                        32 MAGIC MISSILE
+ 29 INVISIBLE                       34 PROTECTION FROM EVIL
+ 30 LIGHTNING BOLT                  36 SANCTUARY
+ 32 MAGIC MISSILE                   38 SLEEP
+ 34 PROTECT FROM EVIL               42 WORD OF RECALL
+ 35 REMOVE CURSE                    43 REMOVE POISON
+ 36 SANCTUARY                       54 ANIMATE DEAD
+ 38 SLEEP                           55 FEAR
+ 39 STRENGTH                        61 AIR SHIELD
+ 42 WORD OF RECALL                  66 FULL HEAL
+ 53 IDENTIFY                        67 GUST OF WIND
+ 54 ANIMATE DEAD                    68 BARKSKIN
+ 55 FEAR                            72 ICE BLAST
+ 61 AIR SHIELD                      73 ICE STORM
+ 65 MASS SANCTUARY                  74 WALK ON WATER
+ 68 BARKSKIN                        76 STONE
+ 70 MASS RECALL                     82 PARALYZE
+ 71 MASS TELEPORT                   84 HASTE
+ 72 ICE BLAST                       88 REGENERATE
+ 73 ICE STORM                       94 FAERIE FIRE
+ 74 WALK ON WATER                   97 WEB
+ 76 STONE                          123 AURA BLAST
+ 82 PARALYZE                       124 DISPEL MAGIC
+ 84 HASTE                          127 RESIST COLD
+ 88 REGENERATE                     128 RESIST HEAT
+ 94 FAERIE FIRE                    132 FLY
+ 97 WEB                            133 RECHARGE
+ 98 ENCHANT ARMOR                  134 SUNRAY
+122 CONJURE ELEMENTAL              135 GROUP HEAL
+124 DISPEL MAGIC                   136 ABEL PROTECTION
+127 RESIST COLD
+128 RESIST HEAT
+131 RELOCATE
+132 FLY
+133 RECHARGE
+134 SUNRAY
+135 GROUP HEAL
+136 ABEL PROTECTION
+
+===============================================================================
+
+(WEIGHTS.REF)
+-------------
+
+[OBJ] Weapons & Carrying Capacity           [OBJ] Weapon Types
+
+ STR    Max. Weight.  Capacity         #    Category      Message Types
+ ---    ------------  --------         0    Whip
+  0           0           0            1    Whip
+  1           1           3            2    Slash         whip/whips
+  2           2           3            3    Slash         slash/slashes
+  3           3          10            4    Crush
+  4           4          25            5    Crush
+  5           5          55            6    Bludgeon      crush/crushes
+  6           6          80            7    Bludgeon      pound/pounds
+  7           7          90            8    Blast
+  8           8         100            9    Blast
+  9           9         100           10    Blast         blast/blasts
+ 10          10         115           11    Pierce        pierce/pierces
+ 11          11         115           12    No_BS_Pierce  pierce/pierces
+ 12          12         140
+ 13          13         140                 [OBJ] Fire Weapon Types
+ 14          14         170
+ 15          15         170                 ?????
+ 16          16         195
+ 17          18         220                 [OBJ] Missile Types
+ 18          20         255
+ 18/01..50   22         280                 ?????
+ 18/51..75   24         305
+ 18/76..90   26         330
+ 18/91..99   28         380
+ 18/100      30         480
+
+[OBJ] Armor Weights & Class Capacities
+
+STR Needed   Monk(*)  Mage     Thief     Cleric     Ranger(*)  Warrior
+
+  0          5        10       40        65         75         100
+  1          6        11       41        66         76         101
+  2          7        12       42        67         77         102
+  3          8        13       43        68         78         103
+  4          9        14       44        69         79         104
+  5          10       15       45        70         80         105
+  6          11       16       46        71         81         106
+  7          12       17       47        72         82         107
+  8          13       18       48        73         83         108
+  9          14       19       49        74         84         109
+ 10          15       20       50        75         85         110
+ 11          16       21       51        76         86         111
+ 12          17       22       52        77         87         112
+ 13          18       23       53        78         88         113
+ 14          19       24       54        79         89         114
+ 15          20       25       55        80         90         115
+ 16          21       26       56        81         91         116
+ 17          22       27       57        82         92         117
+ 18          23       28       58        83         93         118
+ 18/10       25       30       60        85         95         120
+ 18/20       27       32       62        87         97         122
+ 18/30       29       34       64        89         99         124
+ 18/40       31       36       66        91        101         126
+ 18/50       33       38       68        93        103         128
+ 18/60       35       40       70        95        105         130
+ 18/70       37       42       72        97        107         132
+ 18/80       39       44       74        99        109         134
+ 18/90       41       46       76       101        111         136
+ 18/100      43       48       78       103        113         138
+
+===============================================================================
+
+(WLD.REF)
+---------
+
+  [WLD] Room Flags               [WLD] Sector Types   [ZON] Wear Flags
+
+a DARK             1             INSIDE        0      LIGHT      0
+b DEATH            2             CITY          1      FINGER_R   1
+c NO_MOB           4             FIELD         2      FINGER_L   2
+d INDOORS          8             FOREST        3      NECK_1     3
+e HOSTILE         16             HILLS         4      NECK_2     4
+f NO_RECALL       32             MOUNTAIN      5      BODY       5
+g NO_SUMMON       64             WATER_SWIM    6      HEAD       6
+h NO_MAGIC       128             WATER_NOSWIM  7      LEGS       7
+i TUNNEL         256                                  FEET       8
+j PRIVATE        512             [WLD] Door Flags     HANDS      9
+k GODROOM       1024                                  ARMS      10
+l BFS_MARK      2048 DON'T USE   0 NO DOOR       0    SHIELD    11
+m NO_CAMP       4096             a IS DOOR       1    ABOUT     12
+n ROOM_HOT      8192             b PICKPROOF     2    WAISTE    13
+o ROOM_COLD    16384             c MEDIUM PICK   4    WRIST_R   14
+p ROOM_TP      32768             d HARD PICK     8    WRIST_L   15
+q ROOM_NOKILL  65536             e SECRET       16    WIELD     16
+                                                      HOLD      17
+  [MOB_PROG] Weather Types
+                                   [MOB_PROG] Times of Day
+0 Cloudless
+1 Cloudy                         0 Midnight     12 Noon
+2 Rainy                          5 Sunrise      21 Sundown
+3 Lightning                      6 Day Break    22 Nightfall
+
+===============================================================================
+
+(ZON.REF)
+---------
+
+[Reset Modes]
+
+0 No Reset
+1 Reset when Empty
+2 Always Reset
+
+
+M == Load MOBile
+M <if_flag> <mobile nr> <max_exist> <room nr>
+
+
+O == Load OBJect
+O <if_flag> <object nr> <max_exist> <room nr>
+
+
+G == Give OBJect > MOBile
+G <if_flag> <object nr> <max_exist>
+
+
+E == Equip MOBile with OBJect
+E <if_flag> <object nr> <max_exist> <equip_pos>
+
+
+P == Put OBJect in OBJect
+P <if_flag> <object nr1> <max_exist> <object nr2>
+
+
+D == Set Door state
+D <if_flag> <room nr> <exit nr> <state>
+
+0 = Open
+1 = Closed
+2 = Closed and Locked
+
+
+R == Remove OBJect from Room
+R <if_flag> <room nr> <object nr>
+
+
+F == Remove MOBile from Room
+F <if_flag> <room nr> <mobile nr>
+
+===============================================================================
+
+[ Complete Builders Formula Reference for StrangeMUD ]                  by Iggy
+
+
+
+
+(FORMULA.MOB)
+-------------
+
+[MOB] 'L'azy MOBile Format
+
+#<virtual number>
+<aliases>~
+<name>~
+<short description>
+~
+<long description>
+~
+<action flags> <affection flags> <alignment> L
+<level> <gold> <position> <default position> <sex>
+{MOBile Programs(optional)}
+M {Multiple Attacks(optional)}
+<attacks> <basis> <less>
+S {Special Attacks(optional)}
+<special attack type> <spec strength> <spec chance>
+<successful attack>~
+<successful attack/half damage>~
+<successful destroying of eq>~
+W {Switching(optional)}
+<number of rounds for switch>
+<switching message>~
+
+
+[END] Information
+
+At the very end of the .MOB file the following must be added:
+
+#99999
+$~
+
+-----------------------------------------------------------------------------
+
+[MOB] 'S'imple MOBile Format
+
+#<virtual number>
+<aliases>~
+<name>~
+<short description>
+~
+<long description>
+~
+<action flags> <affection flags> <alignment> S
+<level> <thac0> <armor> <hitpoints> <damage>
+<gold> <experience>
+<position> <default position> <sex>
+{MOBile Programs(optional)}
+M {Multiple Attacks(optional)}
+<attacks> <basis> <less>
+S {Special Attacks(optional)}
+<special attack type> <spec strength> <spec chance>
+<successful attack>~
+<successful attack/half damage>~
+<successful destroying of eq>~
+W {Switching(optional)}
+<number of rounds for switch>
+<switching message>~
+
+
+[END] Information
+
+At the very end of the .MOB file the following must be added:
+
+#99999
+$~
+
+-----------------------------------------------------------------------------
+
+[MOB] 'D'etailed MOBile Format
+
+#<virtual number>
+<aliases>~
+<name>~
+<short description>
+~
+<long description>
+~
+<action flags> <affection flags> <alignment> D
+<level> <thac0> <armor> <hitpoints> <damage>
+<max mana> <max move> <class> <height> <weight>
+<gold> <exp> <position> <default position> <sex>
+<strength> <intelligence> <wisdom> <dexterity> <constitution>
+<paralysis> <rod> <petrification> <breath> <spell>
+{MOBile Programs(optional)}
+M {Multiple Attacks(optional)}
+<attacks> <basis> <less>
+S {Special Attacks(optional)}
+<special attack type> <spec strength> <spec chance>
+<successful attack>~
+<successful attack/half damage>~
+<successful destroying of eq>~
+W {Switching(optional)}
+<number of rounds for switch>
+<switching message>~
+
+
+[END] Information
+
+At the very end of the .MOB file the following must be added:
+
+#99999
+$~
+
+===============================================================================
+
+(FORMULA.OBJ)
+-------------
+
+[OBJ] Formula
+
+#<virtual number>
+<aliases>~
+<short description>~
+<long description>~
+~
+<object type> <extra flags> <wear flags>
+<value[0]> <value[1]> <value[2]> <value[3]>
+<weight> <value> <rent cost>
+{extra descriptions(optional)}
+E
+<extra description keyword(s)>~
+<extra description>
+~
+"Any new extra descriptions must begin with the 'E'...There
+ is no real limit on extra descriptions, save memory requirements."
+{Affection flags(optional) *2 max affections possible*}
+A
+<modifier number> <value>
+
+
+[END] Information
+
+At the very end of the .MOB file the following must be added:
+
+#99999
+$~
+
+===============================================================================
+
+(FORMULA.WLD)
+-------------
+
+[WLD] Formula
+
+#<room virtual number>
+<room title>~
+<room description>
+~
+<zone number> <room flags> <sector type>
+{direction fields(optional)}
+D<direction Number>
+<exit description>
+~
+{door keyword(s) == (if door)}~
+<door flag> <key virtual number> <exit: room virtual number>
+"There is a maximum of six exits per room(of course); Each
+ direction may appear only once."
+{extra description(s)(optional)}
+E
+<extra description keyword(s)>~
+<extra description>
+~
+"Any new extra descriptions must begin with the 'E'...There
+ is no real limit on extra descriptions, save memory requirements."
+S
+
+
+[END] Information
+
+At the very end of the .MOB file the following must be added:
+
+#99999
+$~
+
+===============================================================================
+
+(FORMULA.ZON)
+-------------
+
+[ZON] Formula
+
+#<zone number>
+<zone name>~
+<top of zone> <life span> <reset mode>
+{command(s) table == this is where you place objects and mobiles into
+the world (commands shown below)}
+S
+#99999
+$~
+
+[ZON] Commands
+
+D <if_flag> <room number> <exit number> <state>
+E <if_flag> <object number> <max_exists> <equip_position>
+F <if_flag> <room number> <mobile number>
+G <if_flag> <object number> <max_exists>
+M <if_flag> <mobile number> <max_exists> <room number>
+O <if_flag> <object number> <max_exists> <room number>
+P <if_flag> <object number 1> <max_exists> <object number 2>
+R <if_flag> <room number> <object number>
+
+D == Door State
+E == Equip MOBile
+F == Remove MOBile from Room
+G == Give OBJect to MOBile
+M == Load MOBile
+O == Load OBJect
+P == Put OBJect(1) in OBJect(2)
+R == Remove OBJect from Room
+
+===============================================================================
+
+[ Complete Builders Sample Reference for StrangeMUD ]                   by Iggy
+
+
+
+
+(SAMPLE.MOB)
+------------
+
+[MOB] 'L'azy MOBile Sample
+
+#3000
+Puff dragon~
+Puff the Magic Dragon~
+Puff the Magic Dragon is smoking a cigar here.
+~
+Puff has a huge cigar in his mouth.  He is blowing smoke rings
+directly into your face.
+~
+begn hkz 1000 L
+50 10000 5600000 8 8 1
+>all_greet_prog 50~
+if isimmort($n)
+or isnpc($n)
+   break
+else
+   MPECHOAT $n $I greets you with a smile and blows smoke in your face.
+   MPECHOAROUND $n $I greets $n with a smile and blows smoke in $s face.
+endif
+~
+|
+M
+3 75 0
+S
+2 15 10
+$n breathes fire and smoke rings all over $N.~
+$n breathes a smoke ring at $N.~
+$p goes up in smoke as $n breathes fire on $N.~
+W
+10
+$n bumps heads with $N.~
+#99999
+$~
+
+-----------------------------------------------------------------------------
+
+[MOB] 'S'imple MOBile Sample
+
+#3000
+Puff dragon~
+Puff the Magic Dragon~
+Puff the Magic Dragon is smoking a cigar here.
+~
+Puff has a huge cigar in his mouth.  He is blowing smoke rings
+directly into your face.
+~
+begn hkz 1000 S
+50 0 -10 16d22+6600 6d10+18
+10000 5600000
+8 8 1
+>all_greet_prog 50~
+if isimmort($n)
+or isnpc($n)
+   break
+else
+   MPECHOAT $n $I greets you with a smile and blows smoke in your face.
+   MPECHOAROUND $n $I greets $n with a smile and blows smoke in $s face.
+endif
+~
+|
+M
+3 75 0
+S
+2 15 10
+$n breathes fire and smoke rings all over $N.~
+$n breathes a smoke ring at $N.~
+$p goes up in smoke as $n breathes fire on $N.~
+W
+10
+$n bumps heads with $N.~
+#99999
+$~
+
+-----------------------------------------------------------------------------
+
+[MOB] 'D'etailed MOBile Sample
+
+#3000
+Puff dragon~
+Puff the Magic Dragon~
+Puff the Magic Dragon is smoking a cigar here.
+~
+Puff has a huge cigar in his mouth.  He is blowing smoke rings
+directly into your face.
+~
+begn hkz 1000 D
+50 0 -10 16d22+6600 6d10+18
+500 600 0 500 750
+10000 5600000 8 8 1
+11 18 15 11 11
+30 30 30 4 30
+>all_greet_prog 50~
+if isimmort($n)
+or isnpc($n)
+   break
+else
+   MPECHOAT $n $I greets you with a smile and blows smoke in your face.
+   MPECHOAROUND $n $I greets $n with a smile and blows smoke in $s face.
+endif
+~
+|
+M
+3 75 0
+S
+2 15 10
+$n breathes fire and smoke rings all over $N.~
+$n breathes a smoke ring at $N.~
+$p goes up in smoke as $n breathes fire on $N.~
+W
+10
+$n bumps heads with $N.~
+#99999
+$~
+
+===============================================================================
+
+(SAMPLE.OBJ)
+------------
+
+[OBJ] OBJect Sample
+
+#3000
+cigar~
+a cigar~
+A thick, smelly cigar is lying on the floor here.~
+~
+12 a 16385
+0 0 0 0
+1 100 10
+E
+cigar~
+You can smell it a mile away.  It is still burning brightly at one end.
+~
+A
+4 2
+A
+23 3
+#99999
+$~
+
+===============================================================================
+
+(SAMPLE.WLD)
+------------
+
+[WLD] WorLD Sample
+
+#3000
+Puff's Alcove~
+        You are in a huge cavern.  This cavern appears to be the
+lair of a very large dragon.  There are piles upon piles of jewels,
+gold pieces and other treasures lying all around the lair.
+~
+30 adfm 1
+D0
+A huge gaping hole in the wall exits out into the forest.
+~
+~
+0 0 3001
+E
+treasures gold jewels~
+        The gold and jewels glitter brightly.  Your temptation to take
+the treasure and run is overwhelming.
+~
+S
+#99999
+$~
+
+===============================================================================
+
+(SAMPLE.ZON)
+------------
+
+[ZON] ZONe Sample
+
+#30
+Puff's Alcove~
+3099 30 2
+*
+M 0 3000 1 3000           (mob) Puff the Magic Dragon
+E 1 3000 1 17              (hold) a cigar
+*
+S
+#99999
+$~
+
+===============================================================================

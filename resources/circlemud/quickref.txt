@@ -1,0 +1,359 @@
+Quickref for CircleMUD 3.0.				   Approx size: 6 pages
+Written by Todd A. Laycock (tlaycoc@orion.it.luc.edu)
+
+===============================================================================
+World Files:
+===============================================================================
+-------------------------------------------------------------------------------
+World File Format: (end file with $~  field desc's after ***)
+-------------------------------------------------------------------------------
+#<virtual number>				*** room's vnum
+<room name>~					*** room's name
+<room description>				*** what ppl see when they look
+~
+<zone number> <room bitvector> <sector type>	*** see below for bv and type
+D0						*** Direction for exit #
+<look north text>				*** what ppl see in dir. #
+~
+<portal keywords>~				*** what the door is called
+<door type> <key number> <leads to room #>	*** see below, object vnum
+E						*** Extra description
+<keywords>~					*** keywords for exa <item>
+<description of extra item>			*** desc of item
+~
+S						*** End of Record marker
+-------------------------------------------------------------------------------
+Room Flags:			Sector Type:		Directions:
+---------------------		---------------------	---------------------
+a DARK		    1		0 Inside		0 North
+b DEATH		    2		1 City			1 East
+c NOMOB		    4		2 Field			2 South
+d INDOORS	    8		3 Forest		3 West
+e PEACEFUL	   16		4 Hills			4 Up
+f SOUNDPROOF	   32		5 Mountain		5 Down
+g NOTRACK	   64		6 Water_swim
+h NOMAGIC	  128		7 Water_noswim		Door Types:
+i TUNNEL	  256		8 Underwater		---------------------
+j PRIVATE	  512		9 Flying		0 open exit
+k GODROOM	 1024					1 closeable/lockable
+l HOUSE		 2048 Reserved				2 pickproof
+m HOUSE_CRASH	 4096 Reserved
+n ATRIUM	 8192 Reserved
+o OLC		16384 Reserved
+p BFS_MARK	32768 Reserved
+
+===============================================================================
+Mobiles:
+===============================================================================
+-------------------------------------------------------------------------------
+Mobile type 'S' format: description of fields right after
+-------------------------------------------------------------------------------
+#<mobile vnum>		*** mob's vnum
+<alias list>~		*** mob's name(s)
+<short desc>~		*** ex. a small dog
+<long desc>		*** ex. a small dog barks at you.
+~
+<detailed desc>		*** what ppl see when they look <mobile>
+~	** see below for bitvectors, alignment, positions
+<action bitvector> <affection bitvector> <alignment> S
+<level> <thac0> <armor class> <max hit points> <bare hand damage>
+<gold> <experience points>
+<load position> <default position> <sex>
+-------------------------------------------------------------------------------
+Note:
+max hp: xdy+z	(x num of dice of size y to roll + bonus of z)
+bhd:    xdy+z	(z num of dice of size y to roll + bonus of z)
+-------------------------------------------------------------------------------
+Type 'E'nhanced Mobiles:
+-------------------------------------------------------------------------------
+*** change line with action, affection, alignment to:
+<action bitvector> <affection bitvector> <alignment> E
+*** and then after the line with positions and sex
+Enhanced specs:	*** see below for valid values
+*** end mobile entry with 'E'
+-------------------------------------------------------------------------------
+Action bitvector:	Affection bitvector:	Armor Class:
+			(if ALL CAPS don't use)
+----------------------	-----------------------	-----------------------
+a Spec		     1	a blind		      1	AC  10	Naked person
+b Sentinel	     2	b invisible	      2	AC   0	full plate
+c Scavenger	     4	c detect_align	      4	AC -10  battle tank
+d ISNPC		     8	d detect_invis	      8
+e Aware		    16	e detect_magic	     16	Alignment:
+f Aggressive	    32	f sense_life	     32	-----------------------
+g Stay_zone	    64	g waterwalk	     64 -1000 .. - 350	Evil
+h Wimpy		   128	h sanctuary	    128 - 349 ..   349	Neutral
+i Aggr_evil	   256	i GROUP		    256   350 ..  1000	Good
+j Aggr_good	   512	j curse		    512
+k Aggr_neutral	  1024	k infravision	   1024 Positions:
+l Memory	  2048	l POISON	   2048	-----------------------
+m Helper	  4096	m protect_evil	   4096	4 Sleeping
+n Nocharm	  8192	n protect_good	   8192 5 Resting
+o Nosummon	 16384	o SLEEP		  16384 6 Sitting
+p Nosleep	 32768	p notrack	  32768 8 Standing
+q Nobash	 65536	q UNUSED16	  65536
+r Noblind	131072	r UNUSED17	 131072 Sex:
+			s sneak		 262144	-----------------------
+'E'nhancements:		t hide		 524288 0 Neutral (it/its)
+----------------------	u UNUSED20	1048576	1 Male    (he/his)
+BareHandAttack:		v CHARM		2097152 2 Female  (she/hers)
+Str:	Wis:	Con:
+Int:	Dex:	Cha:
+StrAdd:
+
+BareHandAttacks (BHD types)
+---------------------------
+ 0 hit/hits		 1 sting/stings		 2 whip/whips
+ 3 slash/slashes	 4 bite/bites		 5 bludgeon/bludgeons
+ 6 crush/crushes	 7 pound/pounds		 8 claw/claws
+ 9 maul/mauls		10 thrash/thrashes	11 pierce/pierces
+12 blast/blasts		13 punch/punches	14 stab/stabs
+
+===============================================================================
+Objects:
+===============================================================================
+-------------------------------------------------------------------------------
+Object File Format:
+-------------------------------------------------------------------------------
+#<virtual number>	*** obj's vnum
+<alias list>~		*** obj's name
+<short desc>~		*** ex. A torn cloak
+<long desc>~		*** ex. A torn cloak hangs on a peg
+<action desc>~		*** objs which are readable, contains text, else blank
+<type flag> <effects bitvector> <wear bitvector>	*** see below
+<value 0> <value 1> <value 2> <value 3>			*** see chart below
+<weight> <cost> <rent_per_day>	*** weight in pounds, value, cost to rent
+E			*** 'E'xtra description
+<keywords>~		*** keywords of description item
+<description>		*** description of item
+~
+A			*** bonus/penalty from object
+<location> <value>	*** see below for locs, value > 0 bonus
+-------------------------------------------------------------------------------
+Types:		Effects:		Wear Bitvector:	Addon Locations:
+---------------	-----------------------	--------------- ------------------
+1  Light	a glow		      1	a take	      1	 0 None
+2  Scroll	b hum		      2	b finger      2	 1 Str
+3  Wand		c norent	      4	c neck	      4	 2 Dex
+4  Staff	d nodonate	      8	d body	      8	 3 Int
+5  Weapon	e noinvis	     16	e head	     16	 4 Wis
+6  ---------	f invisible	     32	f legs	     32	 5 Con
+7  ---------	g magic		     64	g feet	     64	 6 Cha
+8  Treasure	h nodrop	    128	h hands	    128	 7 Class (unimp'd)
+9  Armor	i bless		    256	i arms	    256	 8 Level (unimp'd)
+10 Potion	j anti_good	    512	j shield    512	 9 Age
+11 ---------	k anti_evil	   1024	k about	   1024	10 Char Weight
+12 Other	l anti_neutral	   2048	l waist	   2048	11 Char Height
+13 Trash	m anti_magic_user  4096	m wrist    4096	12 Mana
+14 ---------	n anti_cleric	   8192	n wield	   8192	13 Hit
+15 Container	o anti_thief	  16384	o hold	  16384	14 Move
+16 Note		p anti_warrior	  32768			15 Gold (unimp'd)
+17 Drink Con	q nosell	  65536			16 Exp (unimp'd)
+18 Key							17 Armor Class
+19 Food							18 Hit Roll
+20 Money						19 Damage Roll
+21 Pen							20 Para save throw
+22 Boat							21 Rod save throw
+23 Fountain						22 Petri "  "
+							23 Breath " "
+							24 Spells " "
+Values:
+-------------------------------------------------------------------------------
+Light :	0		| 0		| Hours good	| 0
+Scroll:	lvl 4 casting	| Spell # 1	| Spell # 2	| Spell # 3
+Wand  : lvl 4 casting	| Max Charges	| Current Chrgs	| Spell #
+Staff : lvl 4 casting	| Max Charges	| Current Chrgs | Spell #
+Weapon: 0		| # of dam dice	| Size of dice	| (see BHD types)
+------: 0		| 0		| 0		| 0
+------: 0		| 0		| 0		| 0
+Treasu: 0		| 0		| 0		| 0
+Armor : AC bonus/penalty| 0		| 0		| 0
+Potion: lvl 4 casting	| Spell # 1	| Spell # 2	| Spell # 3
+------: 0		| 0		| 0		| 0
+Other : 0		| 0		| 0		| 0
+Trash : 0		| 0		| 0		| 0
+------: 0		| 0		| 0		| 0
+Contai: max weight	| *look at end* | 0		| 0
+Note  : 0		| 0		| 0		| 0
+DrinkC: Max # of units	| Current #	| *Type--below* | !0 if poisoned
+Key   : 0		| 0		| 0		| 0
+Food  : # hours satisfy | 0		| 0		| !0 if poisoned
+Money : # of coins	| 0		| 0		| 0
+Pen   : 0		| 0		| 0		| 0
+Boat  :	0		| 0		| 0		| 0
+Founta: Max # of units  | Current #	| *Type--below* | !0 if poisoned
+
+Drink Types:
+------------------------------------------------------------------------
+ # Type			Drunk		Full		Thirst
+ 0 Water		  0		1		 10
+ 1 Beer			  3		2		  5
+ 2 Wine			  5		2		  5
+ 3 Ale			  2		2		  5
+ 4 Dark Ale		  1		2		  5
+ 5 Whiskey		  6		1		  4
+ 6 Lemonade		  0		1		  8
+ 7 Firebreather		 10		0		  0
+ 8 Local spec(?)	  3		3		  3
+ 9 Slime		  0		4		- 8
+10 Milk			  0		3		  6
+11 Tea			  0		1		  6
+12 Coffee		  0		1		  6
+13 Blood		  0		2		- 1
+14 Saltwater		  0		1		- 2
+15 Clearwater		  0		0		 13
+
+Container bitvector:
+--------------------
+1 Closeable
+2 Pickproof
+4 Closed when loaded
+8 Locked when loaded 
+
+===============================================================================
+Zone files:
+===============================================================================
+-------------------------------------------------------------------------------
+Zone file format:
+-------------------------------------------------------------------------------
+#<virtual number>		*** number of zone
+<zone name>~			*** name of zone
+<top room number> <lifespan> <reset mode>	*** top room #,
+						*** lifespan in RL minutes
+						*** reset mode -- see below
+<command 1>			*** commands for loading mobiles
+<command 2>			*** objects, equipping them, etc.
+...
+<command n>
+S				*** End of file marker
+-------------------------------------------------------------------------------
+Reset Mode:
+-------------
+0 Never reset
+1 When empty
+2 Always
+
+Commands:
+---------------------------------------------------------------------
+'M'obile		M <if> <mob num> <max existing> <room num>
+'O'bject		O <if> <obj num> <max existing> <room num>
+'G'ive obj->mob 	G <if> <obj num> <max existing>
+'E'quip mob		E <if> <obj num> <max existing> <eq pos>
+'P'ut obj n obj		P <if> <obj num> <max existing> <con obj num>
+'D'oor state		D <if> <room num> <exit num> <state>
+'R'emove obj		R <if> <room num> <obj num>
+
+where if is 0 (false) or 1 (true).  means only if last cmd worked.
+mob num is a mobile's virtual number.
+obj num is an object's virtual number.
+room num is a room's virtual number.
+eq pos is the equipment position to be used (look below)
+con obj num is the container object's number
+exit num is one of the exit #s (0 North, 1 East...)
+state is (0 open, 1 closed, 2 closed and locked)
+
+Equipment Positions:
+------------------------------
+ 0 Used as light
+ 1 Worn on right finger
+ 2 Worn on left finger
+ 3 First obj worn around neck
+ 4 Second obj worn around neck
+ 5 Worn on body
+ 6 Worn on head
+ 7 Worn on legs
+ 8 Worn on feet
+ 9 Worn on hands
+10 Worn on arms
+11 Worn as shield
+12 Worn about body
+13 Worn around waist
+14 Worn around right wrist
+15 Worn around left wrist
+16 Wielded as a weapon
+17 Held
+
+===============================================================================
+Shop files:
+===============================================================================
+-------------------------------------------------------------------------------
+File format for version 3.0 (end file with $~)
+-------------------------------------------------------------------------------
+CircleMUD v3.0 Shop File~	*** label so 3.0 knows shop format
+#<shop vnum>~			*** number of shop
+<item vnum 1>			*** items constantly in supply of by shop
+<item vnum 2>
+...
+<item vnum n>
+-1
+<profit when buying>		*** profit when shop sells, > 1.0 usually
+<profit when selling>		*** profit when shop buys, < 1.0 usually
+<buy type 1> [namelist]		*** object type and optional name list
+<buy type 2> [namelist]		*** of keywords which must be present for
+...				*** the shop to buy item
+<buy type n> [namelist]
+-1
+<message when item to be bought doesn't exist>~
+<message when item to sell doesn't exist>~
+<message when shop doesn't buy item>~
+<message when shop can't afford item>~
+<message when player can't afford item>~
+<message when shop sells item successfully>~
+<message when shop buys item successfully>~
+<temper>			*** keeper's reaction to players -- see below
+<bitvector>			*** see below
+<shop keeper (mob) vnum>	*** mobile's vnum who is shop keep
+<trade with bitvector>		*** who the shop trades with -- see below
+<shop room vnum 1>		*** the list of room #s that the owner sells
+<shop room vnum 2>		*** from
+...
+<shop room vnum n>
+-1
+<time when open first time>	*** when shop opens for the day
+<time when close first time>	*** when shop closes for lunch
+<time when open second time>	*** when shop opens again
+<time when close second time>	*** when shop closes for the day
+
+-------------------------------------------------------------------------------
+File format for version 2.20
+-------------------------------------------------------------------------------
+#<number>~			*** shop number for display purposes
+<item vnum 1>			*** item number 1 or -1 if no item
+<item vnum 2>			*** item number 2 or -1 if no item
+<item vnum 3>			*** item number 3 or -1 if no item
+<item vnum 4>			*** item number 4 or -1 if no item
+<item vnum 5>			*** item number 5 or -1 if no item
+<profit when selling>		*** should be >= 1.0
+<profit when buying>		*** should be <= 1.0
+<buy type 1>			*** 1st object type shop will buy
+<buy type 2>			*** 2nd object type shop will buy
+<buy type 3>			*** 3rd object type shop will buy
+<buy type 4>			*** 4th object type shop will buy
+<buy type 5>			*** 5th object type shop will buy
+<message when item to be bought doesn't exist>~
+<message when item to be sold doesn't exist>~
+<message when shop doesn't buy that object type>~
+<message when shop can't afford that item>~
+<message when player can't afford that item>~
+<message when item is bought by player>~	*** include %d to show price
+<message when item is sold by player>~		*** include %d to show price
+<temper>			*** keeper's reaction -- see below
+<bitvector>			*** See below
+<shopkeeper vnum>		*** The shopkeepers vnum -- mobile obviously
+<trade with bitvector>		*** who the shop deals with -- see below
+<shop room number>		*** what room the shop is in
+<time when first open>		*** when the shop opens for the day
+<time when first closed>	*** when the shop closed first
+<time when second open>		*** when the shop opens again
+<time when second closed>	*** when it closes for the day
+-------------------------------------------------------------------------------
+
+Trade with:		Temper:			Bitvector:
+-------------------	-------------------	----------
+a No good	  1	-1 No action		a Will fight	  1
+b No evil	  2	 0 Pukes on player	b Will bank money 2
+c No neutral	  4	 1 Smokes his joint
+d No magic users  8
+e No clerics	 16
+f No thieves	 32
+g No warriors	 64

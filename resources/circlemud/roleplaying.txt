@@ -1,0 +1,1196 @@
+                           A PROPOSAL FOR MUD WORLDS
+		               AND ROLE PLAYING
+
+
+Revision History
+   First edition completed 7.February.1997, size: 12.6k
+   Second edition completed 19.February.1997, size: 16.2k
+   Third edition completed 23.February.1997, size: 44.6k
+   Fourth edition completed 1.April.1997, size: 55.3k
+   Fifth edition in progress 15.May.1997, size: 56.7k
+
+This file is intended to cover common questions and a proposal for role-
+playing on the DIKU/CircleMUD code base.  Code examples included have been
+sparsely tested on the CircleMUD 3.0 beta patchlevel 11, primary author
+Jeremy Elson.  DIKUMUD was written by Sebastion Hammer, Michael Seifert,
+Hans Staerfeldt, and Katja Nyboe.  For more information concerning
+CircleMUD, visit the CircleMUD homepage at <http://www.circlemud.org> or the
+CircleMUD mailing list page at <http://cspo.queensu.ca/~fletcher/Circle>
+see Credits for other information.
+
+----------------------------------------------------------------------------
+
+Table of Contents:
+
+1.     Introduction
+1.1    Purpose
+1.2    So why aren't there many DIKU role play MUDs?
+1.3    Common Abbreviations
+
+2.     Code
+2.1    Add "DemiLife" to most if not all mobs.
+2.2    Artificial Players
+2.3    Removal of Levels
+2.4    Should I add languages to my MUD?
+2.5    How realistic are global channels?
+2.6    Permanent Death
+2.6.1  Levels and Permanent Death
+
+3.     Immortals
+3.1    Domains
+3.1.1  Advance the Immortal to the position of "Elder"
+3.1.2  Advance the Immortal to "Deity"
+3.1.3  Other Positions
+3.1.4  (gasp) Give them more land?
+3.2    Apprenticeships
+3.2.1  Responsibilities of the Elder
+3.3    Incentives, Bribery, and the sort
+3.4    Quality Control
+3.5    Approval of Names
+3.6    Giving Mobiles Personality (AI?)
+3.7    Adventures
+
+4.     Players
+4.1    Simply ROLE PLAY
+4.1.1  The language you use
+4.1.2  Character Backgrounds
+4.1.3  Character Goals, In and Out of Character
+4.1.4  The power of emote
+4.1.5  Using emotions in role playing
+4.2    Leave yourself out of the MUD
+4.3    Don't bother the Implementors.
+4.4    Make mistakes?
+4.5    Don't tell what your character is
+4.6    Don't play "cheaply"
+4.7    Your name
+
+5.     Building Tips
+5.1    Variety of Items
+5.2    Good and Bad Useless items
+5.3    What the player sees, descriptions
+5.3.1  You think, I think, but what do they think?
+5.3.2  Describing mobiles where mobiles should be
+5.3.3  Less descriptions can be good
+5.3.4  Describing player action
+5.4    References to non theme-related items
+
+6.     World
+6.1    Themes
+6.1.1  Why shouldn't I have specific goals described in the world?
+6.1.2  Interdependancy
+6.1.3  Time periods, genre's, and you
+6.2    Prices
+6.3    Balance
+6.3.1  Food
+6.4    Environment
+
+7.     Non Player Characters
+7.1    The Invisible Population
+7.1.1  In gameplay
+
+8.     Realism
+
+9.     Ending/Credits
+9.1    Submission information
+9.2    Contributers to this FAQ
+9.3    Other Informational Sources
+
+----------------------------------------------------------------------------
+
+1.  Introduction
+
+    1.1 Purpose
+      
+    To lay out the basic structure and guidelines for a role playing
+    world using the CircleMUD (DIKU) base code and to provide hints and
+    tips to both Mortals and Immortals to RP MUD gameplay.
+
+    1.2  So why aren't there many DIKU role playing MUDs?
+
+    For quite awhile, this code base has been considered that of a "hack and
+    slash" style.  This meaning, that the sole purpose of the player was to
+    move around about the world killing everything in sight.  Obviously this
+    brings forth many problems, and most lack the player support it takes to
+    fulfill the needed contributions of life to the environment.
+
+    1.3  Common Abbreviations
+    
+    PC   = Play(ing) Character, the thing that has a person behind a keyboard,
+           opposite of MOB.
+    MOB  = Mobile, those things that move around the MUD and are usually
+           killed by PC's (bad)
+    MUD  = Multi User Thingamagigger.  (go look it up)
+    RTFM = What you should do before asking a question, Read the friggin
+           Manual.  (censored)
+    RTFC = See above, C = Code.
+    RL   = Real Life
+    OOC  = Out of Character, yourself
+    IC   = In Character, the thing you are in the MUD
+    IMHO = In My Humble Opinion
+    IMO  = In My Opinion
+    BTW  = By The Way
+    WTF  = What the Fuck
+
+2.  Code
+
+    There is only so much that can be done to the code that can "automate"
+    an true role playing environment, its just practically impossible to
+    make enough AI to run the world (notice I said practically, there are
+    some instances in which this HAS been done).  The following are my
+    proposals for code addition:
+
+    2.1  Add "DemiLife" to most if not all mobiles.
+    
+    *DemiLife: Action without awareness.
+
+    By this I mean add some sort of code behind the standard thing moving
+    about the MUD and fighting.  Add a specproc, or if you are not
+    profficient enough in C, attempt to use MOBProgs.
+
+    Example:
+      
+        The town watchman says, 'Lovely weather we are having today.'
+
+    Nothing fancy, just have him randomly say that.  Now of course that in
+    itself may seem pretty lame, but if you add more statements, or maybe
+    even a check to see what the weather is, the opportunities are
+    limitless.  Then of course you could code specials such as actions for
+    non-sentient beings.
+
+    Example:
+       
+        The bear cub rolls gleefully in the grass.
+
+    Another stupid example, but it is the whole idea of adding life and
+    motion to basically inanimate objects.  A question you may want to ask
+    yourself is in pen and paper RPG's, how many NPC's just moved around
+    occasionally killing things?  In most instances there are none.  (most)
+
+    
+    DemiLife Example (special):
+
+    SPECIAL(bearcub)
+    {
+      if(cmd)
+        return 0;
+
+      switch (number(0,30)) {
+        case 0:
+        case 1:
+          act("$n tackles one of its siblings in playful games.",FALSE,ch,0,0,TO_ROOM);
+          break;
+        case 2:
+          act("$n looks at you curiously.",FALSE,ch, 0, 0, TO_ROOM);
+          break;
+        default:
+          return(FALSE);
+          break;
+        return 1;
+      }
+      return 0;
+    }
+
+    This is a very basic example that does nothing but at random execute two
+    unique actions.
+
+    Notice: If you do not know how to declare specprocs in spec_assign.c, do
+            not email the author of this FAQ, RTFC.
+
+    2.2  Artificial Players
+
+    Now here is something that only once I have seen, but instantly took a
+    liking to.  In the contributed CircleMUD area known as "Sundhaven" there
+    is a MOB specproc known as Stu.  It is just a mob that has the long
+    description of a normal character, "Stu the Recruit is standing here."
+    In my month of running a MUD, I have had several questions directed
+    toward me of people who wanted to know if he was real, people wanting me
+    to even purge/mute/ban it.  It is still the basic idea of DemiLife, just
+    with a more humanistic flair to it.  Most MOB's on MUDs don't have a
+    social life, and as a result don't complain about it.  The occasional
+    complaint can always add an instance of doubt.
+
+    Now at this point you might be wondering why you would want to do this. 
+    It seems fairly useless to try to fool the PC into thinking there is
+    another living, breathing person controlling the character.  But thats
+    the whole point of role playing!  It adds to the depth of the game.  Say
+    you don't give them the characteristics of a player, which I'm not
+    telling you to do, but GIVE THE MOBS PERSONALITY!  The world is as real
+    as the creatures that inhabit it.  If the player does not believe, then
+    the game is as good as worthless.
+
+    
+    Concluding, the code, in what little and much it actually does, does not
+    include for movement.  If you just let a mob wander about just waiting
+    to be killed, then thats all the players will do.  Kill it.  But say for
+    example the mob contains a vital clue for a quest.  In the past the clue
+    would have been written on a note, or some item in which the MOB was
+    carrying, and this was good.  If in the game the mobile says a clue, or
+    hints at it in some related way, players (may) become slower in their
+    hasty kill,kill,kill-like actions.
+
+    2.3  Removal of Levels
+
+    This is one of the more drastic measures that could be taken to increase
+    the role playing atmosphere.  I have found in past experience that extra
+    stats are incentive to level, not play.  So either the removal of
+    knowledge of the levels, or the removal of levels may be helpful.  (now
+    that was a mouthful);
+
+    As explained in later sections, players and immortals alike see the max
+    level they can attain and set that as a goal to reach.  So then its just
+    kill, kill, kill, until they reach immortalship, and then its just work,
+    work, work for the Implementors.
+
+    Take note, removing levels totally from your MUD can pose several code
+    related problems, and I mean A LOT.  The CAN_SEE macro, and practically
+    all invisibility related code, as with backstabbing, titles, etc.  are
+    all based upon levels.  My reccomendation is to create more skills/stats
+    to base success rate on instead of level.
+
+    2.4  Should I add languages to my MUD?
+
+    It really depends on the type of language you wish to implement.  The
+    two types that I have encountered are scrambled, and not scrambled (go
+    figure).  Here's what they look like:
+  
+      Someone says something in a language you do not understand.
+
+    Or it is scrambled like this:
+
+      Someone says, 'xcorby easht qsgt'
+
+    The first is not as annoying, though the second is what has caused
+    several problems in the past.  You'll soon find mortals gossiping things
+    such as "Ha ha, you don't understand this," etc.  Of course if you
+    remove global channels you wouldn't have this problem.
+
+    2.5  How realistic are global channels?
+
+    How's not really for an answer, unless you are so loud that you can be
+    heard across the world.  Channels like Holler and Yell are ok, because
+    both are limited, and both take away MV as you use them.  There
+    shouldn't even be a tell for that matter if you want to be realistic,
+    How can you send a message to someone across the world without anyone
+    else hearing?
+
+    Solution:  Ye olde Telegraph, or even Mages.
+
+    You may not be able to scream that loud, but maybe there is some magic
+    device that could amplify your voice, or communicate with another
+    player, the possibilities are limitless, and if there is not a way, just
+    ask the PCs, they'll think of some way around the limits, trust me.
+
+    Shout/holler aren't really all that realistic, just *more*
+    realistic than gossip. A good realistic example would be your voice
+    only carrying certain distances and only to people that could hear
+    it. This requires rooms to have sizes, voices to have a particular
+    loudness, and character's ability to hear to have a setting. The idea
+    here is that a pixie screaming wouldn't be heard by a giant 4 feet
+    away but would be heard by a dog sitting right next to her.
+
+    Obviously, much of role-playing hinges on interacting with others, and
+    so it is necessary to encourage such interaction.  This is not best
+    accomplished, I feel, by having such commands as tell/page and shout
+    operative in the MU*; such abilities (unless the shout is ranged) are
+    rarely justified in terms of the game world, and because of this
+    detract more from the atmosphere than they add to the ability to
+    communicate. They also concentrate only on speech, which is only one
+    aspect of interaction and communication. (jn)
+
+    2.6  Permanent death
+
+    Death on many CircleMUDs (including stock) is only a minor setback on
+    the part of the player.  You're sent to the main menu, you hit '1,' and
+    whala, you're back playing with just a minor loss in experience.  Well
+    thats not like the real world, nor should that happen in RP worlds.  The
+    main reason for this is it encourages carelessness.  If a player knows
+    that when his character dies it will be dead, he or she will be more
+    carefull not to die, group with others, etc.
+
+      2.6.1  Levels and Permanent death
+
+      Permanent death is not a fun thing for players, but as you can
+      imagine, it will most likely happen often with newbie players, and
+      will discourage them, assuming you are using a level based system
+      (which I discourage), you may want to consider lowering max levels. 
+      After all, the progress will be much slower than if the player had a
+      chance to come back from the dead.
+
+3.  Immortals
+    
+    Ahh, so those people that have raised all X amount of levels finally
+    have something more to do.  In my experience, I have seen Imm's range in
+    production from contributing to the MUD, to just sitting around and toying
+    with the mortals.
+
+    3.1  Domains
+
+    First I must attribute some of this idea to the Heaven7 LP mudlib, but
+    it is quite a structure.  It works something like this.  You have your
+    main city/township/village in your world, and maybe a few zones here and
+    there, you can imagine an expanse of unsettled land stretching for
+    endless miles afar.  So what do you do?  You give land to the Higher
+    level Immortals.  The idea works on the existing (yet very old) idea of
+    the Feudal system where the King would grant land to the Nobles, which
+    then in turn commissioned knights in their service, and so on down the
+    chain.
+
+    The main city (or whatever you choose to be the central body in the
+    world) is where the capital would reside, a sort of no mans land that no
+    Immortal can modify.  Assuming there are paths leading from the city,
+    the Implementor would assign X zones to a person which he could develop
+    over his time playing as an immortal.  He could then build within the
+    allotted amount of space.
+
+    Q.  Why the heck would you want to limit the amount a builder can build?
+
+    A.  Simply put, Quality.  If someone has only so much land as a quota,
+        then once it is filled, there is not much else to do but go back and
+        refine what already exists!  This would over time allow for much
+        higher quality work (in theory).
+    
+    Once the builder has refined and added to his zone to where every
+    possible item position, description, etc is filled, then what?  Well,
+    there are several options that came to mind:
+        
+      3.1.1  Advance the Immortal to a position of an Elder
+            
+	  This position is that of a Teacher to the new(er) Immortals.  He
+          or she would be the one who would be responsible for the tips of
+          domain structures, descriptive suggestions, etc.  It would be in
+          hope of passing on good information.
+
+          *Notice:  I know that many people prefer to get away from being
+                    pestered by newbies, but one on one is much better than
+                    an Imp being pestered by everyone.
+
+      3.1.2  Advance the Immortal to a position of a Deity
+
+          This position is that of one who would control the flow of the
+          game quietly.  THIS DOES NOT MEAN USE THE FORCE COMMAND EVERY
+          THREE SECONDS.  The idealology behind it is basically hold a
+          carrot in front of the horse to make it go.  In basic, it is most
+          important for this class to ensure the smooth running of the game.
+          
+      3.1.3  Give the Immortal another position
+
+          If there isn't something listed in this FAQ, or if there is
+          something else you can think of, DO IT!  The worse thing is to
+          have powerful people doing nothing.  Only bad things happen from
+          that.
+
+      3.1.4  Give them more land
+
+          I'd hate to tread on this subject, but it is a popularly used
+          alternative.  Many Immortals are driven by statistics.  In their
+          eyes they see this: "The more zones I build, the higher level I 
+          get."  In that single sentence you can expect to lose all quality
+          in a zone.  From that, 99% of the time, speed is what is most
+          important.  They have beaten the game, rising above all the rest. 
+          And now they must stop 'playing' and turn to contributing to the
+          world in other ways.
+          
+    3.2  Apprenticeships
+
+    Apprenticeships are in all purpose to diffuse the amount of newbie
+    questions asked to the Implementor(s) or other higher ranking Immortals. 
+    In theory an Elder would sponser a new Immortal, and teach him/her the
+    ropes of building and the Immortal policy.
+
+      3.2.1  Responsibilities of the Elder
+  
+          In short, the Elder would make use of his zone as a teaching aid
+	  to the new-found builder.  The Apprentice should NOT be given a
+          zone of his/her own until s/he has proven that s/he is able of
+          fulfilling the task of building within the descretion of the
+          Implementor(s).
+
+    3.3  Incentives, Bribery, etc, etc.
+
+    BAD.  (Assuming you care anything about Quality.)  see also 3.1.4
+
+    3.4  Quality Control
+
+    So you have your old builders building, confident that they know what
+    they are doing, but what about the Newbie Immortals?  My suggestion is
+    to have a board of Elders who decide this in a democratic manner of
+    majority vote.
+
+    A deliberation by experienced builders is much less stressful and
+    annoying than an Implementor deciding.  To those who are new at
+    Implementing, you will quickly find that there are much more important
+    things to worry about than if an Immortal passed his tests.  DELEGATE
+    YOUR AUTHORITY!
+
+    The circle of Elders would evaluate the playability, descriptiveness,
+    and creativity of the Immortal's first area.  This does not nescessarily
+    mean that the Newbie has to design a 100 room zone with 100 objects and 
+    mobs fully described.  On the contrary, it is a waste of time to do
+    that.  Maybe a 10 room sample area, enough to demonstrate to their best
+    ability how good they (the Newbies) are.
+
+    
+    This by no means is a complete plan of action, just a basic idea.  The
+    Domain system is meant to go downwards by level in the amount of land
+    you control.  allotting X amount of zones beforehand is to show the
+    immortal that there is no reason to rush, because if he does, he/she will
+    just have to refine it anyway.
+
+    3.5  Approval of Names
+
+    Much is defined in a player's name, well, in RP player's names.  Whats
+    the difference?  Oh, just something like the name "Killer" and "Tromaq."
+    One brings a thought to mind in RL, the other is like a definitionless
+    word that means nothing.  Only the player can define it.  Immortals
+    should somehow approve names before they are allowed to play.
+
+    3.6  Giving Mobiles Personality (AI?)
+
+    A good idea here is to have an immortal play a mobile for a little while
+    with player's online and interacting. Have the immortal pretend they
+    are truly that mobile, as if that mobile was their character (or grab
+    a good role-playing player of your mud to do it) and keep a log of what
+    happens. Then you design your scripts/spec-procs around what was done.
+    You end up giving the mobile a personality because someone else truly
+    did give it emotions, feelings, intelligence, etc. for a short while.
+    You then don't have to ever have the mobile played again by someone,
+    but can perhaps extend the scripts/spec-procs dependant upon what
+    happens during the game. This perhaps requires DL's (DomainLords) to
+    monitor what is going on in each section of the world, a DM (Dungeon
+    Master) that looks over the entire world and either changes the
+    scripts or passes on select information in a nice way to the coder so
+    that spec-procs can be extended. If you have the right people, it
+    works!
+
+    3.7  Adventures
+                                       
+    Quests and adventuring have been common enough in many LP and Diku
+    MUDs for some time. More recently TinyPlots have spread this idea to
+    the role-playing TinyMU*s. However, there is still plenty of room for
+    growth in the area of organised adventures, and it is one such
+    possibility that I am outlining in this article. More particularly, my
+    emphasis is on adventures with multiple participants.
+    
+    MU*s, whilst being undeniably multi-player, suffer from a lack of
+    concerted playing by many characters. Since a player can theoretically
+    log in at any time while the MU* is running (and in most cases this is
+    all day), and given that players have outside committments at varying
+    hours, it is difficult to ensure that any set of characters will be
+    logged on at any one time. Admittedly there are peak times, but even
+    then there is no guarantee that a particular character will be
+    present.
+    
+    This leads to problems, particularly with respect to "quests" which
+    require multiple characters. One obvious solution is for players
+    interested in co-ordinating their playing times with others to contact
+    those others and arrange a time in advance. While this is fine from
+    the players' point of view, from the administrator's perspective it is
+    not so helpful. Since most administrators wish to cater to as many of
+    their players as possible, it is not a good idea to make many
+    activities require more than one player; despite its multi-player
+    nature, the solo player is usually not overlooked. This naturally
+    limits what can be specifically designed only for groups of
+    characters.
+    
+    Another negative aspect of MU*s that stems from the multi-player
+    aspect of the games is that there cannot be individual attention from
+    administrators. Although the game mechanics and database are something
+    of a substitute for the "game master" of traditional role-playing
+    games, administrators should also fulfill a large part of the
+    functions of that person, not only by creating new areas and objects
+    for later use, but also by running NPCs and creating and changing the
+    database in immediate reaction to events. Even with the best set of
+    mechanics and laws of physics in a game, it is impossible to model the
+    world of the MU* adequately without some outside `tweaking' at
+    opportune moments. No computer yet can react to events so as to help a
+    story or adventure along - it is a rare enough skill in people.
+    Unfortunately, given that administrators are usually present in much
+    smaller numbers than characters, this is not possible in the normal
+    course of events. Most administrators, in any case, have too much else
+    to do to bother with such functions without some definite purpose to
+    them.
+    
+    On the one hand, then, MU*s are a multi-player, interactive game, and
+    on the other they are limited in the extent to which the environment
+    can be adjusted to suit the story. There are, however, a number of
+    approaches that can be taken in organising and running adventures for
+    more than one player. To begin with the familiar, those few LP style
+    quests which require multiple characters in order to be completed are
+    coded into the rooms, objects and NPCs involved. The wizard, aside
+    from the initial input coding the quest, does not become involved in
+    the quest, particularly not during the course of characters performing
+    it. This makes the quest inflexible, since all of the important parts
+    are coded, and the wizard does not interact with the characters
+    (through the objects, NPCs and rooms of the quest area) in order to
+    react to the characters' actions.
+    
+    By contrast TinyPlots are far more dynamic and interactive. The
+    participants decide some details of the adventure ahead of time, while
+    judges resolve conflicts between different groups and individuals.
+    Much of the adventure is left to the players themselves to role-play.
+    While this is a good thing, there is still not the interactivity
+    between those involved in the adventure and those who can arbitrarily
+    change the database.
+    
+    A more radical solution, and one which presents a number of problems,
+    is to make the MU* a specific adventure setting. This involves, for
+    varying lengths of time, the `closure' of the MU* to all but certain
+    predetermined characters. These characters then participate in an
+    adventure previously designed and prepared for by the administrators.
+    Such preparation may involve changes to any existing database in order
+    to facilitate the running of the adventure. When the characters
+    actually play the adventure, the administrators are always close at
+    hand; they change the database in response to those actions of the
+    characters which are not resolved by the game mechanics, role-play any
+    non-player characters, and generally ensure that the adventure works.
+    
+    As an extension of this idea, the entire MU* could be turned over
+    simply to these customised adventures. The administrators, after
+    designing the adventure, prepare the database, and then open to MU* up
+    to the selected players. After the adventure has been run, the
+    database is scrapped, until a new adventure is designed, with its own
+    database. This would naturally result in a lot of downtime for the
+    MU*, and it would be limited in the number of players it could cater
+    for at any one time. An additional problem is that there might
+    (depending on the characters used and the settings used) little
+    continuity between adventures. This loss of the `campaign feel' is the
+    greatest drawback to this type of MU*ing, I feel. However, even this
+    can be avoided, if the MU* is used by a consistent set of players; in
+    this case, the administrators can run linked adventures, much like as
+    in traditional role-playing games.
+    
+    The first and most obvious problem with this solution is its closed
+    nature; only the selected few may play during the adventure, and no
+    one may be added during the adventure (unless this is also arranged
+    outside of the game). Where an adventure involves a proportionally
+    small number of characters, this is a nuisance to those not involved.
+    It could also be seen as something of a waste of the resources of the
+    MU*; as I stated above, most administrators would prefer to see many
+    players on their MU*, rather than giving `special' treatment to a
+    select few.
+   
+    Of course, it is possible to run such a scheme without shutting other
+    characters out of the MU*. This allows for perhaps more realism,
+    although it does introduce many unaccountable elements into what would
+    otherwise be a strictly controlled environment. This is far less of a
+    departure from normal MU*ing than closing the MU*, although because of
+    the additional unknown factors, it is perhaps harder on the
+    administrators running the adventure. (jn)
+   
+4. Players
+
+    The most important piece of a Role Playing Environment is the Players. 
+    They are not the dirt you step on while designing a MUD.  Without
+    players, the MUD is ABSOLUTLY NOTHING.  Besides, what fun is it to
+    multiplay 100 times just to look like someone cares.
+
+    4.1  Simply ROLE PLAY
+ 
+    Its not that hard, really!  Its all in your speech.  Here is an example
+    of what I'm talking about.
+
+    H&S mud example:
+
+      Annoying player gossips, 'Where's the Knight's Guild?!'
+
+    RP mud example:
+  
+      The knight asks, 'Kind sir, could you please direct me to the Knight's
+      guild?'
+
+    There are two major differences between these two examples.  First, the
+    h&s example made use of a global channel, which is BAD.  40+ people
+    really don't want to hear a player asking that, especially the
+    Implementor(s).  And besides, can you really yell across a world?
+
+    Second and most important is the dialog used.  The first example uses
+    common, everyday language and rudely interrupts gameplay for something
+    that is meant to be a quest to find (hints scattered about).  The second
+    example on the other hand sounds like a humble, modest traveller seeking
+    to find the local knight's guild.  It adds flavor, and a sense of
+    reality to the game that h&s does not offer.
+
+      4.1.1  The language you use
+
+      The language you use should be greatly based on your character.  For
+      example, Giant's won't be speaking the same way a Harvard grad. would,
+      nor would they have cunning ideas.
+
+      4.1.2  Character Backgrounds
+
+      Before you start role playing, you may want to know who exactly you
+      will be playing.  What is your views on life, you attitude.  What do
+      you love, hate, or like, etc?  You should try to establish a firm
+      background including information such as your family, childhood 
+      experiences, your relationships with others, your personality, and
+      lastly your goals.
+
+      4.1.3  Character Goals, In and Out of Character
+
+      Most Goals in DIKU (h&s) MUDs are Out of Character Goals, meaning your
+      goal is to become the most powerful, have the most gold, eq, blah,
+      blah, etc.  This is not what your character would want, rather it is
+      what you want (see 4.2).  You character should have its own goals,
+      because in the RP world, not everyone will be champions towering above
+      the rest, it just won't happen.  Your character background should
+      guide you in your lifelong goals.  Say you were a magick user, and the
+      people of your town had a natural hatred of mages, or they forbade
+      spellcasting.  Your goal could be to rebel against this, or persuade
+      the people that your kind was not evil.
+
+      Goals in role-playing should be all but non-existant. The only goal
+      should really be development of your character. If that requires you
+      to go on a quest, etc. then let it be done, but don't make questing
+      or combat a personal goal, keep those as goals and incentives from
+      your character. It's of vast import in role-playing to pretend that
+      your character really is another person, not you. In other words,
+      you have to pretend that while you are playing Nefaris that Nefaris
+      is acting in this fantasy world, that Nefaris exists in that world,
+      and that world to him, is reality. Thus, Nefaris plays out his life
+      in the world, you don't make Nefaris act. Hence, you should try to
+      avoid going OOC, especially when there's a lot of heavy role-playing
+      going on. Also, when not playing Nefaris, to further your illusion
+      that Nefaris is truly a different person, refer to him as if he were
+      his own person (as in truth, he isn't really you).
+
+      4.1.4  The power of emote
+
+      Emote is action.  It can be used to "do" things that the MUD does not
+      specifically have a command for.  Some people use socials or aliases
+      to demonstrate action, but how many people do the same thing the same
+      way every time?  Of course there are things such as habits that
+      aliases would come in handy with, such as constantly sniffling, or
+      biting your nails, but emote, as said by Armageddon player Nathaniel,
+      is "the color in vision."
+
+      4.1.5  Using emotions in role playing
+
+      Ever see a woman crying over a romance novel or watching a soap
+      opera intently? Maybe even saying, "Damn that John! He crushed Tina's
+      heart again!" or sobbing even slightly? Have you ever done that? Ever
+      see a guy jump up and down during a football game or call the coach
+      an idiot? Why do these people do these things when they can't really
+      influence or change what is going on? When their emotions are caused
+      by something artificial (a movie) or trivial (football)? For people
+      getting excited during sports, it might be money riding on the game,
+      but more likely it's because they've stopped thinking that the coach
+      can't logically hear them. The adreneline pumping through his veins,
+      he's sitting on the edge of his seat, and staring at the scream until
+      his eyes are burning. He says something like, "Hey, fvcker! Die!" or
+      screams, "Get him, get him, you idiots! Tackle the son of a bitch!".
+      He's believing now that he can change things, because his emotions
+      are ruling his logic. Same with a movie/book and crying or perhaps
+      excitement. When someone gets involved with the plotline and what's
+      going on, they are very succeptable to your commands. Think about it.
+      You have a movie in which you show this kid just playing and being
+      happy, being a lovable kid for 30 minutes, maybe an hour. Then as
+      the kid is having a great deal of fun, maybe it's his birthday, he
+      gets killed by some guy. The watchers insantly feel sorrow for the
+      kid and rage towards the murderer.
+
+      With this stuff from movies and books, you can make your role-playing
+      world so deep that you can take control, for perhaps just a moment,
+      of someone, make them believe that Delindra truly died and they'll
+      never see her again. She's gone, their friend is gone. But in order
+      to control these kind of responses, you have to give a player
+      something to do. Now, I'm not saying they *must* do anything. They
+      could sit still for their entire gaming life, doing nothing, but  if
+      there's something risky or dangerous to do, chances are someone will
+      accept, and if there's a price to pay, then they'll still risk it,
+      and when it comes time to pay that price, will they do so? Will they
+      rebel against it and try to escape with everything they had before?
+      Will they have second-thoughts or regrets? If you *program them to do
+      so*, they will. I don't mean coding, wise, either, I mean with your
+      world, by suspension of disbelief, to where the player can grow
+      attached to things, and then have them ripped out from underneathe.
+
+    4.2  Leave yourself out of the MUD.
+
+    Once entering an RP environment, you are NOT yourself.  You have entered
+    a game where for a short (or in some cases long) period of time, you are
+    not who you really are.  You are escaping to a fantasy world, where you
+    are someone totally different.  You may have been rejected by a girl you
+    wanted to go with to the Prom, but your character did not.  Keep it that
+    way.
+
+    4.3  Don't bother the Implementors!
+
+    Try to solve the problem yourself.  Think about the social structure. 
+    The Immortal+ are gods, and gods really don't go around taking a KNOWN
+    active role in society, thus you really shouldn't approach them because
+    you hit a deathtrap.  Just consider yourself lucky you just lost your EQ
+    and not your life.
+
+    4.4  Make mistakes
+
+    This is a rare thing, but no character is perfect.  The main key to RP
+    in MUDs is getting into your character.  Maybe he/she's delusional,
+    maybe he sees blood whenever he looks at a fountain and draws his sword
+    as if there is an enemy approaching... have flaws!
+
+    4.5  Don't tell what your character is
+
+    The thing that comes to mind is thieves.  How many people go around
+    saying, "Hi, I'm John the Thief, and I have 100% lock picking skill!"
+    Not many.  If you are a thief, you may lie about your profession to
+    others, con people into helping you, etc, etc.  This is a game, play it.
+
+    4.6  Don't play "cheaply"
+
+    This is what really burns a lot of people.  Things like using the kick
+    skill a hundred times during a battle, or the backstab/flee combo. 
+    Especially when gaining skills through usage is implemented.  This ruins
+    the fun of the game.
+
+    4.7  Your name
+
+    Any name in role-playing is very poor (especially "Killer"
+    and things like that, IMO) unless it fits your character or
+    intentionally decieves about the true nature of your character. Some
+    good examples of names well chosen are from books. Consider Dracula.
+    That name in itself is dark and ominous. Now, think if Dracula had
+    been named Bill or Humperdink. I doubt that Dracula would have been
+    remembered as well as it is today. Other examples being Terry
+    Goodkind's "Darken Rahl". Darken is evil and his name just resonates
+    of that darkness. If someone came to you and said, "There's this guy
+    over there who says he wants to talk to you, his name's Darken Rahl,"
+    would you not be a little afraid? Now, you may not think it from the
+    name, but from the fact a complete stranger has sent for you
+    specifically. But think again. "There's this guy over there who says
+    he wants to talk to you, his name's Ernest Carmichael." Not nearly
+    so threatening. Sounds more like an accountant (although that in
+    itself is quite threatening) than some evil magicician.
+ 
+    A name, while it should (usually) represent the character in some
+    way, should not be really basic. Like "Killer". I mean, really, it
+    sounds more like a dog's name. Also, it's highly unrealistic that
+    the person's parents would have named him "Killer", further
+    unrealistic in the themed world. No-one is really named Killer,
+    so while it might conjure an image of someone that's dangerous, it's
+    only a programmed response to an English word. Good names translate
+    throughout all languages to being evil. Point in case, again, being
+    Dracula. I'd suspect that Darken Rahl would even translate quite well,
+    even given "Darken". Now, naming your evil character, "Antago Nist,"
+    is silly as well (antagonist) or your good character, "Prota Gonist."
+    So keep away from using real words (or provide a twist on them) and
+    make sure they convey something about the character, unless...
+
+    You want to purposely deceive. A good example being Stephen King's
+    The Shining, with Jack Torrance. Sounds like a fine and cheery
+    person, a fairly average name, nothing special. We later find out
+    that this is far from true, and it brings an element to the story.
+    The same can be true for muds. Any emotion, when invoked properly,
+    can override logic and make someone truly believe in something for
+    quite some time...
+
+5. Building Tips
+
+   5.1  Variety of Items
+
+   The key to the types of items in a Role playing world is BALANCE.  Think
+   realistic.  How many magic-gems-that-transport-you-to-another-plane are
+   there in your world?  Now compare that number to the amount of steel and
+   wooden weapons and armour are there?  Remember, power items mean easier
+   advancement, which leads to the problems of too many idle hands.  (see
+   previous sections).
+
+   5.2  Good and Bad Useless Items
+
+   Along with weapons, armour, and food, many MUDs have a large variety of
+   useless items just added for flavor.  This in some cases is good, but
+   also be realistic.  If there is a weapon attached to the wall, there
+   should be a way to remove it and use it as one.  If there is a small pot
+   on the ground, you should be able to lift it.  If you create something,
+   the PC must be able to use the object (no matter how deranged their
+   thoughts are).
+
+   5.3  What the player sees, descriptions!
+
+   Descriptions are a major key to your MUD.  The include practically
+   everything the PC sees, they are the content.  The following is some of
+   the most annoying things to see in your descriptions (and examples!)
+
+     5.3.1  You think, I think, but what do they think?
+
+     In all of my experience in both Imp'ing and playing, the most annoying
+     description flaw I have seen is when you enter a room and it says
+     something like this:
+
+     	You have entered a dimly lighted room, all around you are little
+     pygmies with heads on their spears.  You think you really shouldn't be
+     here quite at this time.
+
+     Now this is what a QC person would have a field day on.  First it uses
+     "You" at the beginning of the description, which is not bad, but gets
+     real repetative.  The second major problem, and the topic of this
+     section is the second sentence beginning with "You think."  I pulled
+     this description from an area rated for levels 1 through 5.  If I am a
+     level 67 mage, and walk into a hut with some midgits with toothpicks
+     for spears, I don't think I'd be to scared, and you can guarentee the
+     PC won't be.
+
+     5.3.2  Describing mobs where mobs should be
+
+     This topic was mentioned in the CircleMUD building.doc, and probably
+     several other places, but it is quite important.  DO NOT DESCRIBE MOBS
+     IN ROOM DESCRIPTIONS.  This is imperitive because what if the MOB is
+     dead?  I don't think a King will shout attack if there is no King
+     there, nor will it squirm in his seat as his guards are slowly killed.
+
+     Notice:  An exception may be made with the invisible population, see
+     section 7.1
+
+     5.3.3  Less descriptions can be good
+
+     See also DemiLife.  Instead of putting something within a description,
+     try making a special procedure that does the same thing, players will
+     appreciate it more.
+
+     5.3.4  Describing player action (The "You" rule)
+
+     Player action is often too dictated and restricted in hack and slash
+     mud's.  An example of a very bad description follows.
+
+       You walk into the elevator.  You activate the switch and the elevator
+       begins to move up.  The elevator lurches to a stop and the doors open.
+
+     For a minute forget the serious grammatical problems with this
+     description and focus on what it says.  It tells the player that he
+     pressed a button, and that the elevator moved up as a result of the
+     action.  What if the player didn't want to push the button?  This
+     method of describing player action has been used in other ways like
+     "You think X," and "You feel X."  Where X is something.  As a general
+     rule (on Morgaelin), using "You" in this way is not allowed.
+
+     Now there is exceptions to the rule, telling something they already
+     did.  "As you enter the large room," for instance.  If the player just
+     exited into a large room, you can write that.  Note that it does not
+     say from where, or the position they are in.  Only the fact that they
+     entered a large room is displayed.  Phrases such as "You are in X," are
+     ok, but fairly redundant if you have a title for each room.
+ 
+   5.4  References to non theme related items
+
+   Items is too specific, this is important in all aspects of the MUD in
+   which your players see.  There are two ways that builders refer to non
+   theme-related items, that is directly and indirectly.  Direct references
+   can be spotted with little to no effort.  An example of an object that is
+   not theme related would be something like seeing the following object in
+   a fantasy themed mud:
+  
+     A purple and gold speckled A71 multi-phase blaster has been left here.
+
+   Naturally, there *normally* aren't many multi-phase blaster's in the
+   past, of course there are some people who could justify it, but that's
+   QC's problem.  The problem that this causes is lack of believability in
+   the game play.
+
+   The other way is the biggie, because indirect references to events can
+   only be stopped by thorough descriptions.  But before there is a
+   solution, it might help knowing what the heck it is.  Indirect references
+   to other times is when you are given a description such as this:
+
+     Hallway
+     You are standing in a hallway.
+
+   That doesn't tell me much, so I assume, yes it is a gray hallway like in
+   my house, it has white trim and a speckled ceiling, even though the
+   builder saw a grand oaken hallway, wide and spacious with gold trim where
+   Kings were crowned.  You see there are two totally different descriptions
+   seen when the same sentence was given.  As said earlier, the only real
+   solution to this problem is not to assume!  You may see something, but
+   what you see doesn't matter, you're a builder, not a player, you don't
+   count =).  Now even if I am given a description such as below, it still
+   explains the hallway better.
+
+   A grand hallway
+     Aged, hand carved oaken boards selected from the finest of trees adorn
+   the walls of this age old crowning place of the Kings.  Depicted on these
+   walls are the visages of the famous rulers of this land from times long
+   ago.  All around, servants scatter about preparing the hall for one of
+   the many occasions, one of which always seems to be taking place.
+
+   No grand work, doesn't even describe all that was mentioned in the
+   previous paragraph, but it is more than "You are standing in a hallway."
+   In any sense, you get the picture.. literally.     
+
+6. World
+    
+   6.1  Themes
+
+   The most important thing you can have in your world is a "believable"
+   theme, but what is a theme?  A theme IS NOT WHAT THE PERSON'S GOALS ARE. 
+   A theme is more the genre of the world you are in.  Fantasy, Future,
+   Present Day, or time periods can be considered themes.  "Slay the Dragon"
+   is NOT a theme.
+
+     6.1.1  Why shouldn't I have specific goals described in the world?
+
+     History changes everything.  Respawning is not a really good thing,
+     because say a powerful character slayed a dragon, it doesn't make much
+     sense that five minutes later everything is back to normal.  On that
+     note, if the dragon is dead, why would the world have notes of how the
+     peasants are running in fear as the dragon flies near?
+
+     6.1.2  Interdependancy
+
+     Another reason that most characters don't interact in a MUD world is
+     that the world was not designed for that.  This goes upon the lines of
+     respawning of objects and mobiles.  Say you have Tim the Baker, if some
+     criminal kills Tim the Baker, then Tim should not respawn after five
+     minutes.  As with the previous example of the Dragon, the world is not
+     set up to realise that the dragon is dead, instead it just allows every
+     character the opportunity to slay the dragon.
+
+     6.1.3  Time periods, genre's, and you
+
+     The time period you use in most cases dictates the type of MUD you run,
+     be it Fantasy related, present day, or even future.  The problem with
+     some worlds is the occurance of "flukes" that really don't belong in
+     the world and detract from the realistic belief of the world.  A
+     specific example of this, is in an unnamed MUD, I encountered a
+     sanitarium on the dockside of a city, and that was fine.  Here is the
+     room description.
+
+     Hallway
+     You are standing in a hallway.
+     An old man is drooling on himself in his wheelchair.
+     A sanitarium worker goes about on her business.
+
+     First off, the description is lacking, it is too attached to real life
+     views.  I am standing in a hallway, so the first thing that comes to
+     mind is a hallway that I have encountered in real life.  We as humans
+     unconsciously fill in the blanks as to what we see.  (See building tips
+     for further discussion on this.)  The main thing I am getting at is the
+     old man in the wheelchair.  This belongs here about as much as an alien
+     ship with laser blasters and flashing lights, unless some illusionist
+     was trippin'.
+
+   6.2  Prices
+
+   Prices as of the current CircleMUD (and other worlds) are way out of
+   range for role playing.  The major part of creating a rp mud is realism. 
+   This means people won't pay 50+ gold for a waybread!  And then a
+   non-sentient mob giving a character 10k gold is also unrealistic.  The
+   following is a list of prices in which I (Faras) use for my MUD, you are
+   no way inclined to use this list, its just an example of low prices.
+
+   Item Type				Value in Copper
+   ---------				---------------
+   WEAPON/ARMOUR			1 - 1000
+   MAGIC ITEMS				1 - 1000
+   OTHER ITEMS				1 - 100   (fishing rods, bags, etc)
+   FOOD					1 - 20
+
+   Note: In shops, no item should be worth more than 1000 gold, or give more
+   than 1000.  Non-shop items can have a maximum value of 5000 coins pending
+   on the approval of a QC.
+
+   Remember, this is only what I use.  QC has the responsibility to set
+   standards.
+
+   6.3  Balance
+
+   Balance is the degree in which areas in a mud mesh together.  This is
+   having a standard of how much experience to gain per difficulty mob, and
+   how much gold to gain, etc.  There is no way this document can help you
+   balance your world, but there are a few ideas.
+
+     6.3.1  Food
+
+     Food is a problem with realism, in addition to prices, there is also
+     the amount a food makes full.  Just recently I saw a single tuna that
+     kept someone full for 13 hours.  I don't know about the average
+     populus, but a single fish isn't going to keep me full for that long
+     unless it is much larger.  If you want a standard, no food should keep
+     full for more than 12 hours, which would be something such as a 5
+     course meal.
+
+     Price is easy to set, just make it cost how long it makes you full, a
+     simple standard that works most of the time.  Now this may not be true
+     if you have a very rare berry, or wine.
+
+   6.4  Environment
+
+   Environment is undisputedly a great contributer to personality, and
+   consequently it is vital that an administrator have a world which is
+   realistic in as many ways as possible. If the players cannot
+   understand the world and see it as a consistent whole which works
+   according to sets of rules, (although there is no necessity for them
+   to be those of this world), then they will have difficulty in truly
+   living the lives of their characters.  To achieve this consistency and
+   realism, it is necessary for administrators to carefully judge the
+   applicability of ideas (where in the form of areas, items, or
+   abilities) to their world. Everything should be in strict accordance
+   with the theme - any break from this, unless with a suitably
+   `in-theme' justification, destroys the concept of the game world being
+   distinct from, and yet no less real than, the world we live in. (jn)
+   
+7. Non Player Characters
+
+   7.1  The Invisible Population
+
+   Another suggestion to consider for mud use is the concept of an
+   'invisible population'. Since we can't logically create a mobile for
+   each person in the world and include stories, etc. for all the
+   people that once lived or do live in our world, we adopt the concept
+   of an 'invisible population'. The invisible population are people
+   that aren't particularly interesting, thus we don't really create
+   them, we just say they were there and they did this or that. They
+   rarely have names, although on occassion there is a child or
+   grandchild mobile and thus some history is revealed via that and
+   the player can take a peak at the invisible population.
+
+   Essentially, in most muds the invisible population exists, just is
+   ignored. Someone had to have built that great city (and I don't mean 
+   the immortal), so who? Well, part of the invisible population. They
+   don't exist in the game, but in the fantasy world they do (or did).
+   In role-playing games it's important to acknowledge the invisible
+   population and occassionally give them names, etc. so as to provide
+   insight. See, in your world you probably have millions or billions
+   of people...Maybe more, who knows. Each one has some kind of insight
+   into the world, they participated in something that shaped the world
+   or they are going to do something in the future that will shape the
+   world. While I find what each of them might have to tell on the
+   world extremely interesting and advantageous towards shaping how
+   it looks when the mud takes place, your players probably won't.
+   Thus, the creator of a role-playing game must pretend that there are
+   these millions or billions of people out in the world, and since they
+   can't create them all and players wouldn't be terribly interested in
+   most of them, the invisible population only comes into play twice.
+   Once when you are shaping the world. Writers often say that their
+   characters write the story *through* them, that the author just put
+   the pen on paper, and began to write, but soon they stopped writing,
+   and the story began to write itself. In essence, the writer is
+   now "listening" to what his characters had to say, what they did,
+   they were telling the author a tale, and the author was acting as a
+   vessel to transfer this information. So, you should be able to do
+   the same with the mud world, but on a greater scale. The entire
+   invisible population can probably say one thing or another about the
+   world in which you are creating, so if you open up your mind and
+   just listen to what all those little voices are telling you about
+   the world they live in...well, everything takes shape by itself and
+   it's almost magical to see the end result.
+
+   I know this sounds a little on the crazy side (and it probably is),
+   but it works for me. I also like to take it a step further than just
+   letting the invisible population tell me what the world is like, I
+   like to "ask" them what it's like, what they fear, what they find
+   beautiful, etc. The invisible population, while it doesn't exist, can
+   have a lot to say.
+
+   In essence, you create the populus of your fantasy world, whom have
+   lived their all their lives, they know what has happened in the world
+   and were perhaps right in Caer Domain when Morganis Dars took over,
+   or during the War of Challenge when Dars II overthrew Dars I for the
+   throne after being exiled. Maybe they were there when Brin Do'Toman
+   died and the morning turned to darkness for three hours afterward. Or
+   perhaps they were in the southern lands of Aateoc when it was still
+   called the Savageland and a young girl of 17 was delving into magical
+   powers and leading and army of brutes for the north-west to take over
+   half the known world and call it the Caer Domain? Who knows what they
+   have to say...
+
+   BTW, the examples in the last paragraph are from my own mud and are
+   my property by trademark. (Daniel Koepke, dkoepke@california.com)
+
+     7.1.1  In gameplay
+
+     Looking back on the invisible population, they can also take part in
+     the game play. You can assign an "invisible populus" count to your
+     areas and use that to tally taxes at a certain rate. If you add tax
+     rates, etc. and make it so players can own terrorities and rule it
+     however they want to.
+
+     Of course, you have to remember that role-play is about reactions,
+     too. If you are pretending to be someone and nothing happens as a
+     result, then it's a fairly unrewarding experience. However, if you
+     pretend to be someone and there's results then the reaction is much
+     better. So, if a player rules a terrority with an iron fist, killing
+     many and raising taxes, the populus might go down or people will
+     rebel, etc.
+
+     But all reactions should have some way in which the person can act
+     in and it shouldn't be limited to the original causer of the problem.
+     So, if Lord Lai, who is known for being rather stupid, moves to
+     extend his city onto orc lands and hence the orcs attack, Parris
+     Calmore of Mana Han'Tai should be able to come and fight the orcs,
+     and Ghrish should be able to come and fight with the orcs...
+
+8. Realism
+
+   Realism has been often been looked upon as the key element of a Role
+   Playing MUD, though by looking at it like that there leaves much to be
+   desired.
+
+   8.1  What is Realism?
+
+   Before looking at the role Realism plays in RP, one must first know what
+   is "real."  One must define the bounds of the MUD world.  For instance,
+   were you to base a MUD entirely on what is "real" you couldn't have
+   magic, elves, etc.  Too often there is the argument such as, "How could
+   one holler across the world?"  True this seems unreal for any situation
+   we are used to, but in some twisted mental world this *may* be possible,
+   it is just not seen often.
+
+   8.2  Why is realism necessary?
+
+   Realism is very necessary to encourage RP on your mud.  By setting the
+   bounds of your mud world, it is like setting a law that will always be
+   true.  By violating this, the PC is encouraged to break others.  This
+   might sound a bit odd, but take this scenario:
+   
+     Once in a land long ago, Elves flourished in the misty timberlands of
+     the North.  The lands were silent, only the slight chatter of brush as
+     the wind dances between the underbrush.
+
+     Kilean the Elf gossips, "Hey everyone!"
+     Gorath the Elf gossips, "Hi Kilean, wasup?"
+     Tinkle the Gnome gossips, "Hi Kilean, did you crush that Dragon last
+       night?"
+
+   First a global channel was used, but that is frowned upon in earlier
+   sections.  The main point is that it implies in the description that
+   Elves were a quiet, independant race.  Sure you probably think oh, well
+   this is just poor Role Playing, which it is.  It is unfortunate to say,
+   but if there is a feature that would allow PC's to violate RP, it will
+   most likely be broken by someone during the uptime.  So basically if you
+   don't give them a chance to break a rule, they can't break it.  That is
+   the key to setting bounds.
+
+9. Ending/Credits
+
+   9.1  Submission information
+   
+   If you have any additional information you wish to be included within
+   this FAQ, please send email to the primary author of the FAQ, Michael
+   Steinmann, <mailto:claywar@cetlink.net>.
+
+   9.2  Contributors to this FAQ:
+      
+   claywar@cetlink.net        - editor, major writer
+   ghost@eola.ao.net
+   dkoepke@california.com
+   jamie@akeake.its.vuw.ac.nz
+   <this space available>
+   
+   Special thanks to Daniel Koepke for his many contributions to this
+   quickly growing document.
+
+   9.3  Disclaimer   
+
+   DO NOT EMAIL ME ASKING FOR SNIPPETS OF CODE ILLUSTRATING ANY
+   IDEAS LISTED ABOVE, ANY INFORMATION GIVEN WITHIN THIS FAQ IS TO BE
+   USED AT YOUR OWN RISK.  (basically, if something happens thats bad,
+   its NOT the fault of anyone related to this FAQ).
+
+   9.4  Other Information
+
+   Building Information included within this document come in part from the
+   Curious Area Workshop Builders Handbook, and CircleMUD's building.doc. 
+   The basis of the Domain/Apprenticeship structure came from the Heaven7 LP
+   Mudlib.  Some RP tips were taken from Armageddon MUD's Role Playing
+   Guides.
+
+
+  
