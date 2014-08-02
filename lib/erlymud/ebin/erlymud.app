@@ -1,6 +1,6 @@
 {application,erlymud,
              [{description,"ErlyMUD Game Server"},
-              {vsn,"0.3.4"},
+              {vsn,"0.3.5"},
               {registered,[em_sup,em_game,em_room_sup,em_room_pool_sup,
                            em_room_mgr,em_living_sup,em_user_sup,em_req_sup,
                            em_session_sup,em_conn_sup,em_acceptor_sup,
@@ -15,4 +15,5 @@
                         em_rh_login,em_room,em_room_mgr,em_room_pool_sup,
                         em_room_sup,em_session,em_session_sup,em_spell,
                         em_spell_sup,em_spell_ward,em_sup,em_telnet,em_text,
-                        em_user,em_user_sup,em_util_sha2]}]}.
+                        em_text_prop,em_user,em_user_sup,em_util,
+                        em_util_sha2]}]}.
