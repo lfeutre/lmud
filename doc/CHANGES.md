@@ -1,10 +1,16 @@
 ErlyMUD Change Log
 ==================
 
+0.3.5
+-----
+* Added login banner support.
+* Added get_version function.
+* Minor code cleanup/formatting.
+
 0.3.2
 -----
-* Incorporated Steve Vinoski's SHA2 module (as em_util_sha2.erl) to avoid 
-  dependency on the OTP crypto app, meaning ErlyMUD will now run in Windows 
+* Incorporated Steve Vinoski's SHA2 module (as em_util_sha2.erl) to avoid
+  dependency on the OTP crypto app, meaning ErlyMUD will now run in Windows
   without too much extra work
 * Basic support for telnet protocol negotiation, which mostly does nothing
   right now except decline any option requests; implemented according to
