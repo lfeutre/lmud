@@ -14,3 +14,6 @@ livings/*.dat
 *~
 plain.*
 rel/erlymud
+.rebar/
+data/*
+deps/*
