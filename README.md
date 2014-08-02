@@ -95,41 +95,40 @@ Mac OS X 10.6.6:
      the ErlyMUD .rel file
   1. Download the latest snapshot from the
      [Github repository](https://github.com/lfex/erlymud),
-     currently that means *erlymud-0.3.0.(zip|tar.gz|tar.bz2)*
+     currently that means *erlymud-0.3.5.(zip|tar.gz|tar.bz2)*
   1. Unpack the source code somewhere, you'll get an "erlymud" directory
   1. Take note of the version you got, by checking the actual name of the
-     "erlymud/erlymud-X.Y.Z.rel" file; it should be 0.3.0 or above,
-     preferrably. Use the actual version instead of 0.3.0 in the
+     "erlymud/erlymud-X.Y.Z.rel" file; it should be 0.3.5 or above,
+     preferrably. Use the actual version instead of 0.3.5 in the
      instructions below.
   1. Go to this directory and compile the source:
 
-     > $ cd erlymud
-     > $ ./rebar compile
+     $ cd erlymud
+     $ rebar get-deps
+     $ rebar compile
 
   1. Start an Erlang shell, with the ErlyMUD ebin path added:
 
-     > $ erl -pa lib/erlymud/ebin/
+     $ erl -pa lib/erlymud/ebin/
 
   1. Create a local boot script, then quit the Erlang shell:
 
-     > 1> systools:make_script("erlymud-0.3.0", [local]).
-     > 2> q().
+     1> systools:make_script("erlymud-0.3.5", [local]).
+     2> q().
 
   1. Start up ErlyMUD:
 
-     > $ erl -boot ./erlymud-0.3.0
+     $ erl -boot ./erlymud-0.3.5
 
   1. From another terminal, connect to the game and create a user:
 
-     > $ telnet localhost 2155
+     $ telnet localhost 2155
 
   1. Have fun!
 
 That's all really. Better documentation might happen sooner or later,
 if this project doesn't die off ;)
 
-If you have any questions, send an e-mail to johan@snowflake.nu and I'll
-try to help you.
 
 ## Testing
 
