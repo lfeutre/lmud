@@ -101,31 +101,17 @@ Mac OS X 10.6.6:
      "erlymud/erlymud-X.Y.Z.rel" file; it should be 0.3.5 or above,
      preferrably. Use the actual version instead of 0.3.5 in the
      instructions below.
-  1. Go to this directory and compile the source:
+  1. Go to this directory and compile the source and make a release:
 
      ```sh
      $ cd erlymud
-     $ rebar get-deps
-     $ rebar compile
-     ```
-
-  1. Start an Erlang shell, with the ErlyMUD ebin path added:
-
-     ```sh
-     $ erl -pa lib/erlymud/ebin/
-     ```
-
-  1. Create a local boot script, then quit the Erlang shell:
-
-     ```erlang
-     1> systools:make_script("erlymud-0.3.5", [local]).
-     2> q().
+     $ make rel
      ```
 
   1. Start up ErlyMUD:
 
      ```sh
-     $ erl -boot ./erlymud-0.3.5
+     $ make run
      ```
 
   1. From another terminal, connect to the game and create a user:
