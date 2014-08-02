@@ -94,9 +94,11 @@ Mac OS X 10.6.6:
   1. Make sure you have Erlang 17 installed, to avoid having to edit
      the ErlyMUD .rel file
   1. Download the latest:
+
      ```sh
      $ git clone https://github.com/lfex/erlymud.git
      ```
+
   1. Change directory, compile the source, and make a release:
 
      ```sh
