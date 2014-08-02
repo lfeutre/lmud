@@ -79,7 +79,7 @@ $ cat > lib/erlymud/ebin/erlymud.appup
 }.
 
 # Generate relup file; note need to provide path to previous versions of .app files:
-> systools:make_relup("erlymud-0.3.1", ["erlymud-0.3.0"], ["erlymud-0.3.0"], 
+> systools:make_relup("erlymud-0.3.1", ["erlymud-0.3.0"], ["erlymud-0.3.0"],
     [{path, ["oldvsn/*/"]}]).
 
 
@@ -112,7 +112,7 @@ Attaching to /tmp/erlang.pipe.3 (^D to exit)
 > release_handler:install_release("0.3.1").
 {ok,"0.3.0",[]}
 
-# If everything is OK, make new release permanent; otherwise, 
+# If everything is OK, make new release permanent; otherwise,
 # the old one will be used at reboot
 > release_handler:make_permanent("0.3.1").
 ok
