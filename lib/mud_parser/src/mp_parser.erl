@@ -82,13 +82,13 @@ parse([r_input|Rest], Tokens) ->
 parse([r_command|Rest], Tokens) ->
   ?DEBUG(r_command,Rest,Tokens),
   case parse([r_command1|Rest], Tokens) of
-    #match{ptree=Tree}=Match -> 
+    #match{ptree=Tree}=Match ->
       Match#match{ptree = [{input, Tree}]};
-    #error{}=_Error -> 
+    #error{}=_Error ->
       case parse([r_command2|Rest], Tokens) of
-        #match{ptree=Tree}=Match -> 
+        #match{ptree=Tree}=Match ->
           Match#match{ptree = [{input, Tree}]};
-        #error{}=Error -> 
+        #error{}=Error ->
           Error
       end
   end;
@@ -104,7 +104,7 @@ parse([r_command|Rest], Tokens) ->
 parse([r_command1|Rest], [Current|Tokens]) ->
   ?DEBUG(r_command1,Rest,[Current|Tokens]),
   case adverb(Current) of
-    true -> 
+    true ->
       case parse([r_command1|Rest], Tokens) of
         #match{ptree=Tree}=Match -> Match#match{ptree = [{r_command1, [{adverb, Current}|Tree]}]};
         #error{}=_Error -> parse([r_cmd1a|Rest], [Current|Tokens])
@@ -164,7 +164,7 @@ parse([r_cmd1c|Rest], [Current|Tokens]) ->
         #error{}=_Error -> #match{rules=Rest, tokens=[Current|Tokens], ptree=[{adverb, Current}]}
       end
   end;
-%% [ preposition <noun phrase> 
+%% [ preposition <noun phrase>
 parse([r_cmd1d|Rest], [Current|Tokens]) ->
   ?DEBUG(r_cmd1d,Rest,[Current|Tokens]),
   case preposition(Current) of
@@ -197,7 +197,7 @@ parse([r_cmd1e|Rest], [Current|Tokens]) ->
 parse([r_command2|Rest], [Current|Tokens]) ->
   ?DEBUG(r_command2,Rest,[Current|Tokens]),
   case adverb(Current) of
-    true -> 
+    true ->
       case parse([r_command2|Rest], Tokens) of
         #match{ptree=Tree}=Match -> Match#match{ptree = [{r_command2, [{adverb, Current}|Tree]}]};
         #error{}=_Error -> parse([r_cmd2a|Rest], [Current|Tokens])
@@ -208,7 +208,7 @@ parse([r_command2|Rest], [Current|Tokens]) ->
         #error{}=Error -> Error
       end
   end;
-%% preposition <noun phrase> 
+%% preposition <noun phrase>
 parse([r_cmd2a|Rest], [Current|Tokens]) ->
   ?DEBUG(r_cmd2a,Rest,[Current|Tokens]),
   case preposition(Current) of
@@ -220,7 +220,7 @@ parse([r_cmd2a|Rest], [Current|Tokens]) ->
     false ->
       add_error(#error{}, {preposition, failed, Current})
   end;
-%% { adverb } 
+%% { adverb }
 parse([r_cmd2b|Rest], [Current|Tokens]) ->
   ?DEBUG(r_cmd2b,Rest,[Current|Tokens]),
   case adverb(Current) of
@@ -244,7 +244,7 @@ parse([r_cmd2c|Rest], [Current|Tokens]) ->
     false ->
       add_error(#error{}, {verb, failed, Current})
   end;
-%% { adverb } <noun phrase> 
+%% { adverb } <noun phrase>
 parse([r_cmd2d|Rest], [Current|Tokens]) ->
   ?DEBUG(r_cmd2d,Rest,[Current|Tokens]),
   case adverb(Current) of
@@ -268,7 +268,7 @@ parse([r_cmd2e|Rest], [Current|Tokens]) ->
     false ->
       #match{rules = Rest, tokens = [Current|Tokens]}
   end;
-      
+
 %%
 %% <noun phrase> ::= <noun group> { preposition <noun group> }
 %%
@@ -279,7 +279,7 @@ parse([r_cmd2e|Rest], [Current|Tokens]) ->
 parse([r_noun_phrase|Rest], Tokens) ->
   ?DEBUG(r_noun_phrase,Rest,Tokens),
   case parse([r_noun_group, r_npa|Rest], Tokens) of
-    #match{rules=_Rules, tokens=Toks, ptree=Tree} -> 
+    #match{rules=_Rules, tokens=Toks, ptree=Tree} ->
       case parse(Rest, Toks) of
         #match{}=Match -> add_node(Match, {noun_phrase, Tree});
         #error{}=Error -> add_error(Error, {noun_phrase, Tree})
@@ -316,7 +316,7 @@ parse([r_npa|Rest], [Current|Tokens]) ->
 parse([r_noun_group|Rest], Tokens) ->
   ?DEBUG(r_noun_group,Rest,Tokens),
   case parse([r_nga|Rest], Tokens) of
-    #match{rules=_Rules, tokens=Toks, ptree=Tree} -> 
+    #match{rules=_Rules, tokens=Toks, ptree=Tree} ->
       % io:format("CONT: [r_noun_group | ~p] (~p, ~p)~n", [Rules, nil, Toks]),
       case parse(Rest, Toks) of
         #match{}=Match -> add_node(Match, {noun_group, Tree});
@@ -352,7 +352,7 @@ parse([r_ngb|Rest], [Current|Tokens]) ->
 parse([r_ngc|Rest], [Current|Tokens]) ->
   ?DEBUG(r_ngc,Rest,[Current|Tokens]),
   case adjective(Current) of
-    true -> 
+    true ->
       case parse([r_ngc|Rest], Tokens) of
         #match{}=Match -> add_node(Match, {adjective, Current});
         #error{}=_Error -> parse([r_ngd|Rest], [Current|Tokens])
@@ -365,7 +365,7 @@ parse([r_ngd|Rest], [Current|Tokens]) ->
   ?DEBUG(r_ngd,Rest,[Current|Tokens]),
   case noun(Current) of
     true -> #match{rules=Rest, tokens=Tokens, ptree=[{noun, Current}]};
-    false -> 
+    false ->
       case pronoun(Current) of
         true -> #match{rules=Rest, tokens=Tokens, ptree=[{pronoun, Current}]};
         false ->
@@ -427,19 +427,19 @@ verb(_Token) -> false.
 %%
 %% Tokenizer utility functions
 %%
-%% 1> regexp_split_inclusive("How about a nice hawaiian punch?" " +"). 
+%% 1> regexp_split_inclusive("How about a nice hawaiian punch?" " +").
 %% ["How"," ","about"," ","a"," ","nice"," ","hawaiian"," ","punch"]
 %%
 
-%% regexp_loop(Str, Parts, Index, []) -> 
-%%   lists:reverse([string:substr(Str, Index)] ++ Parts); 
-%% regexp_loop(Str, Parts, Index, Rem_Matches) -> 
-%%   {NextPt,PtLen} = hd(Rem_Matches), 
-%%   regexp_loop(Str, [string:substr(Str, NextPt, PtLen), 
-%%                     string:substr(Str, Index, NextPt - Index)] ++ Parts, 
-%%                     NextPt + PtLen, 
-%%                     tl(Rem_Matches)). 
+%% regexp_loop(Str, Parts, Index, []) ->
+%%   lists:reverse([string:substr(Str, Index)] ++ Parts);
+%% regexp_loop(Str, Parts, Index, Rem_Matches) ->
+%%   {NextPt,PtLen} = hd(Rem_Matches),
+%%   regexp_loop(Str, [string:substr(Str, NextPt, PtLen),
+%%                     string:substr(Str, Index, NextPt - Index)] ++ Parts,
+%%                     NextPt + PtLen,
+%%                     tl(Rem_Matches)).
 
-%% regexp_split_inclusive(Str, Regex) -> 
-%%   {match, Matches} = regexp:matches(Str, Regex), 
+%% regexp_split_inclusive(Str, Regex) ->
+%%   {match, Matches} = regexp:matches(Str, Regex),
 %%   regexp_loop(Str, [], 1, Matches).
