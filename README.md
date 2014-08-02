@@ -19,7 +19,7 @@ where this goes.
 ## Getting Started
 
 ErlyMUD expects that you have Erlang 17 and rebar installed. Once you have
-that taken care of, following these steps:
+that taken care of, follow these steps:
 
   1. Download the latest:
 

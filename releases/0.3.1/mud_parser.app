@@ -1,7 +1,0 @@
-{application,mud_parser,
-             [{description,[]},
-              {vsn,"0.1.0"},
-              {registered,[]},
-              {applications,[kernel,stdlib]},
-              {env,[]},
-              {modules,[mp_parser]}]}.
