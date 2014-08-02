@@ -103,26 +103,36 @@ Mac OS X 10.6.6:
      instructions below.
   1. Go to this directory and compile the source:
 
+     ```sh
      $ cd erlymud
      $ rebar get-deps
      $ rebar compile
+     ```
 
   1. Start an Erlang shell, with the ErlyMUD ebin path added:
 
+     ```sh
      $ erl -pa lib/erlymud/ebin/
+     ```
 
   1. Create a local boot script, then quit the Erlang shell:
 
+     ```erlang
      1> systools:make_script("erlymud-0.3.5", [local]).
      2> q().
+     ```
 
   1. Start up ErlyMUD:
 
+     ```sh
      $ erl -boot ./erlymud-0.3.5
+     ```
 
   1. From another terminal, connect to the game and create a user:
 
+     ```sh
      $ telnet localhost 2155
+     ```
 
   1. Have fun!
 
@@ -152,12 +162,14 @@ configuration:
     * NOTE: Currently requires manual compilation of *.erl files,
             then they have to be moved to lib\erlymud\ebin\ before
             starting everything:
-        > cd lib\erlymud\src
-        > erlc -I ..\include\ <file1>.erl ... <fileN>.erl
-        > move *.beam ..\ebin\
-        > cd ..\..\..\
-        > erl -pa lib\erlymud\ebin
-        > 1> systools:make_script("erlymud-0.3.2", [local]).
-        > 2> q().
-        > erl -boot erlymud-0.3.2
 
+        ```sh
+        $ cd lib\erlymud\src
+        $ erlc -I ..\include\ <file1>.erl ... <fileN>.erl
+        $ move *.beam ..\ebin\
+        $ cd ..\..\..\
+        $ erl -pa lib\erlymud\ebin
+        1> systools:make_script("erlymud-0.3.2", [local]).
+        2> q().
+        $ erl -boot erlymud-0.3.2
+        ```
