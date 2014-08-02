@@ -91,17 +91,13 @@ However, try the following steps to start ErlyMUD directly from the
 development environment; it's been tested on Ubuntu 10.04, 10.10 and
 Mac OS X 10.6.6:
 
-  1. Make sure you have Erlang R14B01 installed, to avoid having to edit
+  1. Make sure you have Erlang 17 installed, to avoid having to edit
      the ErlyMUD .rel file
-  1. Download the latest snapshot from the
-     [Github repository](https://github.com/lfex/erlymud),
-     currently that means *erlymud-0.3.5.(zip|tar.gz|tar.bz2)*
-  1. Unpack the source code somewhere, you'll get an "erlymud" directory
-  1. Take note of the version you got, by checking the actual name of the
-     "erlymud/erlymud-X.Y.Z.rel" file; it should be 0.3.5 or above,
-     preferrably. Use the actual version instead of 0.3.5 in the
-     instructions below.
-  1. Go to this directory and compile the source and make a release:
+  1. Download the latest:
+     ```sh
+     $ git clone https://github.com/lfex/erlymud.git
+     ```
+  1. Change directory, compile the source, and make a release:
 
      ```sh
      $ cd erlymud
