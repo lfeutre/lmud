@@ -15,3 +15,6 @@ data/*
 deps/*
 ebin/*.app
 ebin/*.beam
+lmud-*.boot
+lmud-*.rel
+lmud-*.script
