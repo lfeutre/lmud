@@ -5,8 +5,8 @@ compile:
 rel: compile
 	erl -pa ebin/ \
 	-noshell \
-	-eval "systools:make_script(\"erlymud-0.3.5\", [local])." \
+	-eval "systools:make_script(\"lmud-0.4.0\", [local])." \
 	-s erlang halt
 
 run:
-	erl -boot ./erlymud-0.3.5
+	erl -boot ./lmud-0.4.0

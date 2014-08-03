@@ -2,7 +2,8 @@
   (export all))
 
 (defun get-app-src ()
-  (let (((tuple 'ok (list app)) (file:consult "src/erlymud.app.src")))
+  (let* ((filename (++ (filename:join "src" (lmud-const:name)) ".app.src"))
+         ((tuple 'ok (list app)) (file:consult filename)))
     app))
 
 (defun get-version ()
