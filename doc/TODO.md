@@ -1,5 +1,91 @@
-ErlyMUD TODO
-============
+New TODO
+========
+
+(See below for the old TODO.)
+
+Migration to LFE:
+ * include LFE as a dep
+ * all new functionality, write in LFE
+ * rename to lmud or λMUD
+ * use this ASCII:
+   ```
+          ___       ___           ___           ___
+         /\__\     /\__\         /\__\         /\  \
+        /:/  /    /::|  |       /:/  /        /::\  \
+       /:/  /    /:|:|  |      /:/  /        /:/\:\  \
+      /:/  /    /:/|:|__|__   /:/  /  ___   /:/  \:\__\
+     /:/__/    /:/ |::::\__\ /:/__/  /\__\ /:/__/ \:|__|
+     \:\  \    \/__/~~/:/  / \:\  \ /:/  / \:\  \ /:/  /
+      \:\  \         /:/  /   \:\  /:/  /   \:\  /:/  /
+       \:\  \       /:/  /     \:\/:/  /     \:\/:/  /
+        \:\__\     /:/  /       \::/  /       \::/__/
+         \/__/     \/__/         \/__/         ~~
+
+
+        __     M"""""`'"""`YM M""MMMMM""M M""""""'YMM
+        \ \    M  mm.  mm.  M M  MMMMM  M M  mmmm. `M
+         \ \   M  MMM  MMM  M M  MMMMM  M M  MMMMM  M
+          > \  M  MMM  MMM  M M  MMMMM  M M  MMMMM  M
+         / ^ \ M  MMM  MMM  M M  `MMM'  M M  MMMM' .M
+        /_/ \_\M  MMM  MMM  M Mb       dM M       .MM
+               MMMMMMMMMMMMMM MMMMMMMMMMM MMMMMMMMMMM
+
+
+
+        __     8""8""8 8   8 8""""8
+        \ \    8  8  8 8   8 8    8
+         \ \   8e 8  8 8e  8 8e   8
+          > \  88 8  8 88  8 88   8
+         / ^ \ 88 8  8 88  8 88   8
+        /_/ \_\88 8  8 88ee8 88eee8
+
+                              ....
+                            .'   ,:
+                          .'      \.___..
+                        .'      .-'   _.'
+                        '.\  \/...-''`\
+                          :.'   /   \  :
+                           :    () () /
+                           (_ .  '--' ':
+                             / |_'-- .'
+                             \   \  .'_\
+                            .|__  \/_/:
+                           /          :\.
+                          .' -./      .'{\|))
+        __       .        :    ...    ::::::::::-.
+        \ \      ;;,.    ;;;   ;;     ;;; ;;,   `';,
+         \ \     [[[[, ,[[[[, [['     [[[ `[[     [[
+          > \    $$$$$$$$"$$$ $$      $$$  $$,    $$
+         / ^ \ o_888 Y88" 888o88    .d888  888_,o8P'
+        /_/ \_\"MMMM  M'  "MMM "YmmMMMM""  MMMMP"`
+
+                              ....
+                            .'   ,:
+                          .'      \.___..
+                        .'      .-'   _.'
+                        '.\  \/...-''`\
+                          :.'   /   \  :
+                           :    () () /
+                           (_ .  '--' ':
+                             / |_'-- .'
+                             \   \  .'_\
+                            .|__  \/_/:
+                           /          :\.
+                          .' -./      .'{\|))
+        __     M"""""`'"""`YM M""MMMMM""M M""""""'YMM
+        \ \    M  mm.  mm.  M M  MMMMM  M M  mmmm. `M
+         \ \   M  MMM  MMM  M M  MMMMM  M M  MMMMM  M
+          > \  M  MMM  MMM  M M  MMMMM  M M  MMMMM  M
+         / ^ \ M  MMM  MMM  M M  `MMM'  M M  MMMM' .M
+        /_/ \_\M  MMM  MMM  M Mb       dM M       .MM
+               MMMMMMMMMMMMMM MMMMMMMMMMM MMMMMMMMMMM
+
+
+   ```
+
+
+Old TODO
+========
 
 0.3.4
 -----
