@@ -1,19 +1,24 @@
-# ErlyMUD
+# λMUD
 
-ErlyMUD is a rather minimalistic MUD server, written in Erlang and making
-use of the excellent OTP libraries. The aim is to have solid support for
-exploration and roleplaying, within a highly fault-tolerant environment
-where system crashes or reboots are more of an exotic curiosity than a
-commonplace thing.
+λMUD (pronounded "L-MUD" or "el-MUD") is a rather minimalistic MUD server,
+written in Erlang and LFE, making use of the excellent OTP libraries.
+
+The aim is to have solid support for exploration, roleplaying, and in-game
+economies deployed on a highly fault-tolerant environment (which supports
+hot-code loads) where system crashes or reboots are more of an exotic
+curiosity than a commonplace thing.
 
 Erlang/OTP is an excellent match for MUD development, with strong support
 for concurrency through light-weight processes, hot code upgrades, near-
 transparent mechanisms for distributed computing, etc.
 
-This project started out as a way for me to learn Erlang/OTP, within a
-context that I knew something about. Since those early days three weeks
-ago, it's actually developed into something marginally usable. We'll see
-where this goes.
+This project has dual ancestry: originally based on the
+[ErlyMUD](https://bitbucket.org/jwarlander/erlymud) code, it
+derives much of its new MUDness from
+[TinyMUD](http://en.wikipedia.org/wiki/TinyMUD) servers like
+[TinyMUSH](http://en.wikipedia.org/wiki/TinyMUSH),
+[PennMUSH](http://www.pennmush.org/),
+etc.
 
 
 ## Getting Started
@@ -24,17 +29,17 @@ that taken care of, follow these steps:
   1. Download the latest:
 
      ```sh
-     $ git clone https://github.com/lfex/erlymud.git
+     $ git clone https://github.com/lfex/lmud.git
      ```
 
   1. Change directory, compile the source, and make a release:
 
      ```sh
-     $ cd erlymud
+     $ cd lmud
      $ make rel
      ```
 
-  1. Start up ErlyMUD:
+  1. Start up λMUD:
 
      ```sh
      $ make run
@@ -51,7 +56,7 @@ that taken care of, follow these steps:
 
 ## Current Status
 
-ErlyMUD presents what's currently at least a minimally playable environment.
+λMUD presents what's currently at least a minimally playable environment.
 It's possible to connect, create a password-protected user account, and log
 in to the game. Once there, you can communicate with other players, walk
 around between rooms, and handle items.
