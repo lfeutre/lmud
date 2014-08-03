@@ -24,7 +24,8 @@
 -spec welcome(em_conn:conn_pid()) -> ok.
 welcome(Conn) ->
   em_conn:print(Conn, "\nWelcome to:\n"
-    ++ 'lmud-config':'banner1'() ++ "\nAn ErlyMUD Server, v"
+    ++ 'lmud-config':'get-banner'() ++ "\nAn "
+    ++ 'lmud-util':'get-desc'() ++ ", v"
     ++ 'lmud-util':'get-version'() ++ "\n\n"
     ++ 'lmud-config':'login-instructions'() ++ "\n\n"),
   em_conn:print(Conn, "Login: ").
