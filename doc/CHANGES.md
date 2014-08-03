@@ -2,6 +2,11 @@ ErlyMUD Change Log
 ==================
 
 
+0.4.0
+-----
+* Renamed project tp λMUD ("El-MUD").
+
+
 0.3.5
 -----
 * Added login banner support.

@@ -466,7 +466,7 @@ cmd_help(["privileges"], Req) ->
   {ok, Req};
 cmd_help(_Args, Req) ->
   print(
-  "Welcome to ErlyMud!\n\n"
+  "\n" ++ 'lmud-config':'simple-welcome'() ++ "\n\n"
   "The following commands, more or less, are available right now:\n\n"
   "  drop <item>             Drop an item from your inventory.\n"
   "  get <item>              Pick up an item in the room.\n"

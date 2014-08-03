@@ -2,3 +2,5 @@
   (export all))
 
 (defun name () 'lmud)
+
+(defun display-name () '"El-MUD")

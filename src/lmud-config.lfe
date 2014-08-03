@@ -95,20 +95,25 @@
 
 (defun login-instructions ()
 '"
-*** If you are loging in for the first time, enter the character name
-*** you would like to have (case insensitive) at the \"Login\" prompt.
+------------------------------------------------------------------------------
+  If you are loging in for the first time, enter the character name
+  you would like to have (case insensitive) at the \"Login\" prompt.
+------------------------------------------------------------------------------
 ")
 
 (defun post-login-msg ()
 '"
 
-You have logged into the server.
+You are now logged into the game server.
 
 ------------------------------------------------------------------------------
-  \"WHO\" tells you who is logged in to the game.
+  \"WHO\"  tells you who is logged in to the game.
   \"NEWS\" informs you about recent program changes and items of interest.
   \"HELP\" gives help on the commands, \"help commands\" for a list.
   \"QUIT\" saves your character exits the game.
 ------------------------------------------------------------------------------
 
 ")
+
+(defun simple-welcome ()
+  (++ "Welcome to " (lmud-const:display-name) "!"))
