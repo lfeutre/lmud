@@ -17,3 +17,5 @@ rel/erlymud
 .rebar/
 data/*
 deps/*
+ebin/*.app
+ebin/*.beam
