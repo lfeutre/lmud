@@ -16,14 +16,14 @@
 -define(DUMMY_PRINTER, fun(_) -> throw(missing_printer_fun) end).
 
 %% Records
--record(telopt, {current='NO' :: telopt_state(), 
+-record(telopt, {current='NO' :: telopt_state(),
                  queue='EMPTY' :: telopt_queue()}).
--record(nvt, {enable = ?WILL :: telnet_enable_opt(), 
-              disable = ?WONT :: telnet_disable_opt(), 
+-record(nvt, {enable = ?WILL :: telnet_enable_opt(),
+              disable = ?WONT :: telnet_disable_opt(),
               opts = orddict:new() :: telnet_options()}).
--record(telnet, {socket::socket(), mode = text :: parse_mode(), 
-                 buffer = "" :: string(), 
-                 printer = ?DUMMY_PRINTER :: telnet_printer_fun(), 
+-record(telnet, {socket::socket(), mode = text :: parse_mode(),
+                 buffer = "" :: string(),
+                 printer = ?DUMMY_PRINTER :: telnet_printer_fun(),
                  local::#nvt{}, remote::#nvt{}}).
 
 
@@ -45,7 +45,7 @@
 -type telnet_disable_opt() :: ?WONT|?DONT.
 -type telnet_option() :: byte().
 -type telnet_options() :: orddict(telnet_option(), #telopt{}).
--type telnet_printer_fun() :: fun((string()) -> ok). 
+-type telnet_printer_fun() :: fun((string()) -> ok).
 
 
 %% ==========================================================================
@@ -57,7 +57,7 @@
 new(Socket, PrintFun) ->
   Local = #nvt{enable=?WILL, disable=?WONT, opts=orddict:new()},
   Remote = #nvt{enable=?DO, disable=?DONT, opts=orddict:new()},
-  #telnet{socket=Socket, mode=text, buffer="", printer=PrintFun, 
+  #telnet{socket=Socket, mode=text, buffer="", printer=PrintFun,
           local=Local, remote=Remote}.
 
 %% @doc Parse an incoming chunk of data. Handle telnet commands, buffer
@@ -143,7 +143,7 @@ process_data([?IAC,?SE|Data], #telnet{mode=sub}=Session) ->
 %% --------------------------------------------------------------------------
 %% @doc Handle incoming option command
 %% --------------------------------------------------------------------------
--spec telopt_recv(telnet_opt_neg(), telnet_option(), #telnet{}) -> 
+-spec telopt_recv(telnet_opt_neg(), telnet_option(), #telnet{}) ->
         {ok, #telnet{}}.
 telopt_recv(?WILL, Opt, #telnet{remote=Remote}=Session) ->
   ?DEBUG_PRINT("telnet: RECV WILL ~w\n", [Opt]),
@@ -165,7 +165,7 @@ telopt_recv(?DONT, Opt, #telnet{local=Local}=Session) ->
 %% --------------------------------------------------------------------------
 %% @doc Handle outgoing option command
 %% --------------------------------------------------------------------------
--spec telopt_send(telnet_opt_neg(), telnet_option(), #telnet{}) -> 
+-spec telopt_send(telnet_opt_neg(), telnet_option(), #telnet{}) ->
         {ok, #telnet{}}.
 telopt_send(?WILL, Opt, #telnet{local=Local}=Session) ->
   ?DEBUG_PRINT("telnet: SEND WILL ~w?\n", [Opt]),
