@@ -1,13 +1,82 @@
-New TODO
-========
+TODO
+====
 
-(See below for the old TODO.)
+This is the new TODO list. See the bottom of this document for the
+old TODO.
 
-Migration to LFE:
- * include LFE as a dep
- * all new functionality, write in LFE
- * rename to lmud or λMUD
- * use this ASCII:
+
+Breakout and dependencies
+-------------------------
+
+* move mud_parser into its own repo/project
+  * add as a dependency
+* add erlang color as a dep:
+  * https://github.com/julianduque/erlang-color
+  * replace custom color macros
+* Look at using a plugin system
+  * Heinz has written one here: https://github.com/Licenser/eplugin
+    * this uses different mechanisms than the one that lfetool defines
+  * port to LFE as lplug?
+    * provide the option of either using ETS tables like eplugin, or
+    * use behaviors and ``beam_lib`` calls
+* Move lib/erlymud into top-level dir
+* Remote shell generalization
+  * Move telnet shell into own project
+  * is there another telnet shell we could use a dependency?
+  * add support for an SSH MUD server via ssh_sshd?
+    * what would it take to modify ssh_sshd?
+
+
+
+Game Data
+---------
+
+* Game data is currently written to files
+* Migrate game data to ETS table(s), or better yet, Mnesia
+
+
+Permissions
+-----------
+
+For a massive MUD, there will likely need to be a greater number of
+permissions. Possible permission levels:
+
+* complete world control:
+  * creating rooms/tunnels/open spaces/etc,
+  * creating creatures
+  * name: Deva? Valar? Aesir?
+  * command prefix: d@- ?
+* world-modification and defying laws of physics:
+  * creating things, teleporting people/things, changing rooms/etc.
+  * name: wizard
+  * command prefix: w@- ?
+* control over worlds' commodities, goods, money, markets:
+  * name: Asura?
+  * command prefix: a@- ?
+* NPC
+* Player
+
+
+Command Separation
+------------------
+
+* split up wizard commands and regular commands
+* add commands for setting up finance, markets, trade, auctions, etc.
+
+Support TinyMUD Commands
+------------------------
+*
+
+Migration to LFE
+----------------
+
+* include LFE as a dep
+* all new functionality, write in LFE
+  * port newly-added em_util to lmud-util
+* rename to lmud or λMUD
+* continue to use em_* Erlang modules (as legacy)
+  * slowly port these to LFE, as time and interest allows
+* use this ASCII:
    ```
           ___       ___           ___           ___
          /\__\     /\__\         /\__\         /\  \
@@ -83,15 +152,42 @@ Migration to LFE:
 
    ```
 
+Mapping Areas
+-------------
+
+TBD
+
+
+Creating Buildings
+------------------
+
+TBD
+
+
+World Items
+-----------
+
+TBD
+
+
+In-Game Trade
+-------------
+
+TBD
+
+
+
 
 Old TODO
 ========
+
 
 0.3.4
 -----
 * Add typespecs, documentation for (at least) API functions
   -status: continue with em_room
 * Write some tests?
+
 
 0.3.5
 -----
@@ -105,6 +201,7 @@ Old TODO
   - '/" for say, : for emote
   - nod/smile/grin/shrug/..
 * Idle timer in 'who' list
+
 
 Future
 ------
