@@ -8,19 +8,19 @@ old TODO.
 Breakout and dependencies
 -------------------------
 
-* move mud_parser into its own repo/project
+* [ ] move mud_parser into its own repo/project
   * add as a dependency
-* add erlang color as a dep:
+* [ ] add erlang color as a dep:
   * https://github.com/julianduque/erlang-color
   * replace custom color macros
-* Look at using a plugin system
+* [ ] Look at using a plugin system
   * Heinz has written one here: https://github.com/Licenser/eplugin
     * this uses different mechanisms than the one that lfetool defines
   * port to LFE as lplug?
     * provide the option of either using ETS tables like eplugin, or
     * use behaviors and ``beam_lib`` calls
-* Move lib/erlymud into top-level dir
-* Remote shell generalization
+* [ ] Move lib/erlymud into top-level dir
+* [ ] Remote shell generalization
   * Move telnet shell into own project
   * is there another telnet shell we could use a dependency?
   * add support for an SSH MUD server via ssh_sshd?
@@ -70,13 +70,13 @@ Support TinyMUD Commands
 Migration to LFE
 ----------------
 
-* include LFE as a dep
-* all new functionality, write in LFE
+* [ ] include LFE as a dep
+* [ ] all new functionality, write in LFE
   * port newly-added em_util to lmud-util
-* rename to lmud or λMUD
+* [ ] rename to lmud or λMUD
 * continue to use em_* Erlang modules (as legacy)
   * slowly port these to LFE, as time and interest allows
-* use this ASCII:
+* [ ] use this ASCII:
    ```
           ___       ___           ___           ___
          /\__\     /\__\         /\__\         /\  \
