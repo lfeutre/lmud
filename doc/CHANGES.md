@@ -1,11 +1,20 @@
 ErlyMUD Change Log
 ==================
 
+
 0.3.5
 -----
 * Added login banner support.
 * Added get_version function.
 * Minor code cleanup/formatting.
+* Updated QUIT to also call SAVE.
+* Added better login message (from TinyMUSH).
+* Added NEWS command.
+* Added ME and EM as aliases for EMOTE (taken from IRC and WoW,
+  respectively).
+* Added TinyMUSH aliases POSE, WHISPER.
+* Added TinyMUSH THINK.
+
 
 0.3.2
 -----
@@ -20,11 +29,14 @@ ErlyMUD Change Log
 * Documented what a successful login sequence looks like, see the file
   doc/LoginSequence.html (which renders using websequencediagrams.com)
 
+
 0.3.1
 -----
 * Initial 'public' release
 
+
 0.2.3
 -----
-* Will now hide password during entry, as long as client complies to IAC WILL/WONT ECHO
+* Will now hide password during entry, as long as client complies to
+  IAC WILL/WONT ECHO
 
