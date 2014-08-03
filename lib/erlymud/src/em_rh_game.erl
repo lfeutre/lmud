@@ -13,9 +13,10 @@
 
 %% game commands
 -export([cmd_look/2, cmd_north/2, cmd_east/2, cmd_south/2, cmd_west/2,
-         cmd_go/2, cmd_quit/2, cmd_emote/2, cmd_say/2, cmd_tell/2,
+         cmd_go/2, cmd_quit/2,
+         cmd_emote/2, cmd_em/2, cmd_me/2, cmd_say/2, cmd_tell/2, cmd_think/2,
          cmd_who/2, cmd_get/2, cmd_drop/2, cmd_inv/2, cmd_glance/2,
-         cmd_save/2, cmd_setlong/2, cmd_help/2,
+         cmd_save/2, cmd_setlong/2, cmd_help/2, cmd_news/2,
          cmd_redit/2, cmd_addexit/2,
          cmd_cast/2]).
 
@@ -34,7 +35,7 @@
 %% ==========================================================================
 
 -spec parse(string(), req()) -> req_any().
-parse(Line, Req) -> 
+parse(Line, Req) ->
   case string:tokens(Line, " ") of
     [] ->
       print("\n> ", Req),
@@ -59,7 +60,7 @@ parse_cmd(Cmd, Args, Line, Req) ->
             print(Reason, Req),
             ?req_next(parse);
           Other ->
-            print("Error occurred while processing '~s':~n~p~n", 
+            print("Error occurred while processing '~s':~n~p~n",
               [Line, Other], Req),
             ?req_next(parse)
         end
@@ -126,7 +127,7 @@ do_drop(Ob, #req{living=Liv}=Req) ->
   Room = em_living:get_room(Liv),
   AShort = em_object:a_short(Ob),
   TheShort = em_object:the_short(Ob),
-  try 
+  try
     ok = em_living:move_object(Liv, Ob, {to_room, Room}),
     print("You drop ~s.\n", [TheShort], Req),
     em_room:print_except(Room, Liv, "~s drops ~s.~n", [Name, AShort])
@@ -166,7 +167,8 @@ do_get(Id, [Ob|Obs], #req{living=Liv}=Req) ->
 
 %% Quit
 -spec cmd_quit([string()], req()) -> cmd_stop().
-cmd_quit(_Args, #req{user=User, living=Liv}=Req) ->
+cmd_quit(Args, #req{user=User, living=Liv}=Req) ->
+  cmd_save(Args, Req),
   print("Goodbye!\n", Req),
   Name = em_living:get_name(Liv),
   Room = em_living:get_room(Liv),
@@ -192,7 +194,7 @@ cmd_look([Id|_Args], #req{living=Liv}=Req) ->
   Obs = em_room:get_objects(Room),
   case do_look_ob(string:to_lower(Id), Obs, Req) of
     ok -> {ok, Req};
-    {error, not_found} -> 
+    {error, not_found} ->
       People = lists:delete(Liv, em_room:get_people(Room)),
       case do_look_liv(string:to_lower(Id), People, Req) of
         ok -> {ok, Req};
@@ -228,7 +230,7 @@ do_look_liv(Id, [Liv|People], Req) ->
       do_look_liv(Id, People, Req)
   end.
 
-% Go / North / East / South / West 
+% Go / North / East / South / West
 -spec cmd_north([string()], req()) -> cmd_ok().
 cmd_north(_Args, Req) ->
   cmd_go(["north"], Req).
@@ -245,7 +247,7 @@ cmd_west(_Args, Req) ->
 -spec cmd_go([string()], req()) -> cmd_ok().
 cmd_go([Dir|_Args], #req{living=Liv}=Req) ->
   Room = em_living:get_room(Liv),
-  do_go(em_room:get_exit(Room, Dir), Req), 
+  do_go(em_room:get_exit(Room, Dir), Req),
   {ok, Req}.
 
 -spec do_go({error, not_found}, req()) -> ok
@@ -273,6 +275,21 @@ cmd_emote(Args, #req{living=Liv}=Req) ->
   em_room:print_except(Room, Liv, "~s ~s~n", [Name, Text]),
   print("~s ~s~n", [Name, Text], Req),
   {ok, Req}.
+cmd_em(Args, Req) -> % alias for emote; used in WoW
+  cmd_emote(Args, Req).
+cmd_me(Args, Req) -> % alias for emote; used on IRC
+  cmd_emote(Args, Req).
+cmd_pose(Args, Req) -> % alias for emote; used in TinyMUSH
+  cmd_emote(Args, Req).
+
+%% Think
+cmd_think(Args, #req{living=Liv}=Req) ->
+  Text = em_grammar:punctuate(string:join(Args, " ")),
+  Name = em_living:get_name(Liv),
+  Room = em_living:get_room(Liv),
+  em_room:print_except(Room, Liv, "~s is pondering.~n", [Name]),
+  print("~s thinks ~s~n", [Name, Text], Req),
+  {ok, Req}.
 
 %% Say
 -spec cmd_say([string()], req()) -> cmd_ok().
@@ -299,12 +316,20 @@ cmd_tell([Who,FirstWord|Rest], #req{user=User}=Req) ->
       print("You tell ~s, \"~s\"~n", [OtherName, Text], Req)
   end,
   {ok, Req}.
+cmd_whisper(Args, Req) -> % alias for tell; used in TinyMUSH
+  cmd_tell(Args, Req).
 
 %% Who
 -spec cmd_who([string()], req()) -> cmd_ok().
 cmd_who(_Args, Req) ->
   print(["Users:\n",
     [[" ", Name, "\n"] || {Name, _Pid} <- em_game:get_users()]], Req),
+  {ok, Req}.
+
+%% News
+cmd_news(_Args, Req) ->
+  print(["\nHeadlines\n---------\n\n",
+         "There is no new news. Which, of course, is good news.\n"], Req),
   {ok, Req}.
 
 %% Save
@@ -400,10 +425,10 @@ cmd_redit(_Args, Req) ->
 cmd_cast(["ward"], #req{living=Liv}=Req) ->
   Room = em_living:get_room(Liv),
   Name = em_living:get_name(Liv),
-  em_living:print(Liv, 
+  em_living:print(Liv,
     "As you quietly vocalize your chosen mnemonics, "
     "the spell takes shape.\n"),
-  em_room:print_except(Room, Liv, 
+  em_room:print_except(Room, Liv,
     "~s starts muttering something incomprehensible.\n", [Name]),
   em_spell_ward:start(Liv, Room),
   {ok, Req};
@@ -468,6 +493,7 @@ cmd_help(_Args, Req) ->
   "  setlong <desc>          Set the description others see when they\n"
   "                            look at you.\n"
   "  who                     Display all logged in users.\n"
+  "  news                    Display info about latest server changes, etc..\n"
   "  ----------------------------------------------------------------------\n"
   "  cast <spell>            Cast a spell. Try 'cast' for more info.\n"
   "  ----------------------------------------------------------------------\n"
@@ -487,4 +513,4 @@ print(Format, Req) ->
 -spec print(iolist(), list(), req()) -> ok.
 print(Format, Args, #req{conn=Conn}) ->
   em_conn:print(Conn, Format, Args).
-    
+
