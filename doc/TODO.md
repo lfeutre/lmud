@@ -10,9 +10,9 @@ Breakout and dependencies
 
 * [x] move mud_parser into its own repo/project
   * add as a dependency
-* [ ] add erlang color as a dep:
+* [x] add erlang color as a dep:
   * https://github.com/julianduque/erlang-color
-  * replace custom color macros
+  * [ ] replace custom color macros
 * [ ] Look at using a plugin system
   * Heinz has written one here: https://github.com/Licenser/eplugin
     * this uses different mechanisms than the one that lfetool defines
@@ -23,8 +23,20 @@ Breakout and dependencies
 * [ ] Remote shell generalization
   * Move telnet shell into own project
   * is there another telnet shell we could use a dependency?
+    * otp /lib/common_test/test/telnet_server.erl?
   * add support for an SSH MUD server via ssh_sshd?
     * what would it take to modify ssh_sshd?
+
+
+Colorizing
+----------
+
+Update outputs with the following colors:
+* [ ] Notification -> blue
+* [ ] Wall -> red
+* [ ] Yelling -> red (bold)
+* [ ] whisper -> green
+* [ ] say -> yellow
 
 
 Game Data
