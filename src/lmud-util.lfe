@@ -6,11 +6,19 @@
          ((tuple 'ok (list app)) (file:consult filename)))
     app))
 
+(defun get-sys-cfg ()
+  (let* (((tuple 'ok (list (list _ (tuple 'lmud cfg))))
+            (file:consult "sys.config")))
+    cfg))
+
 (defun get-version ()
   (proplists:get_value 'vsn (element 3 (get-app-src))))
 
 (defun get-name ()
   (element 2 (get-app-src)))
+
+(defun get-port ()
+  (proplists:get_value 'port (get-sys-cfg)))
 
 (defun get-desc ()
   (proplists:get_value 'description (element 3 (get-app-src))))

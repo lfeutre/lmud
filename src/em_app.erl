@@ -12,7 +12,7 @@
 %% Application callbacks
 -export([start/2, stop/1]).
 
--define(DEFAULT_PORT, 2155).
+-define(DEFAULT_PORT, 'lmud-util':'get-port'()).
 -define(DEFAULT_ACCEPTORS, 1).
 
 
