@@ -12,7 +12,6 @@
 %% Application callbacks
 -export([start/2, stop/1]).
 
--define(DEFAULT_PORT, 'lmud-util':'get-port'()).
 -define(DEFAULT_ACCEPTORS, 1).
 
 
@@ -25,7 +24,7 @@ start(_StartType, _StartArgs) ->
       {ok, Pid} ->
         Port = case application:get_env(port) of
                  {ok, P} -> P;
-                 undefined -> ?DEFAULT_PORT
+                 undefined -> 'lmud-util':'get-port'()
                end,
         Acceptors = case application:get_env(acceptors) of
                       {ok, A} -> A;
