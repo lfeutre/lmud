@@ -47,7 +47,7 @@ start() ->
 %% @doc Return path to the data directory.
 -spec data_dir() -> file_path().
 data_dir() ->
-  filename:join([code:lib_dir(erlymud), "..", "..", "data"]).
+  filename:join(["data"]).
 
 %% @doc Return a list of {Name, UserPid} tuples with all logged in users.
 -spec get_users() -> users().

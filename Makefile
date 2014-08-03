@@ -3,7 +3,7 @@ compile:
 	rebar compile
 
 rel: compile
-	erl -pa lib/erlymud/ebin/ \
+	erl -pa ebin/ \
 	-noshell \
 	-eval "systools:make_script(\"erlymud-0.3.5\", [local])." \
 	-s erlang halt
