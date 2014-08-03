@@ -2,7 +2,7 @@
 
 <a href="https://raw.github.com/lfex/lmud/master/resources/images/El-Mud.png"><img src="resources/images/El-Mud.png"/></a><br/>
 
-λMUD (pronounded "L-MUD" or "el-MUD") is a rather minimalistic MUD server,
+λMUD (pronounded "L-MUD" or "El-MUD") is a rather minimalistic MUD server,
 written in Erlang and LFE, making use of the excellent OTP libraries.
 
 The aim is to have solid support for exploration, roleplaying, and in-game
@@ -47,7 +47,7 @@ that taken care of, follow these steps:
      $ make run
      ```
 
-  1. From another terminal, connect to the game and create a user:
+  1. From another terminal, connect to the game:
 
      ```sh
      $ telnet localhost 2155
@@ -93,6 +93,8 @@ that taken care of, follow these steps:
 
       Login:
      ```
+
+  1. Create a user.
 
   1. Have fun!
 
