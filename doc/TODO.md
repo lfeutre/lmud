@@ -27,7 +27,6 @@ Breakout and dependencies
     * what would it take to modify ssh_sshd?
 
 
-
 Game Data
 ---------
 
@@ -63,9 +62,35 @@ Command Separation
 * split up wizard commands and regular commands
 * add commands for setting up finance, markets, trade, auctions, etc.
 
+
 Support TinyMUD Commands
 ------------------------
 *
+
+
+Mapping Areas
+-------------
+
+TBD
+
+
+Creating Buildings
+------------------
+
+TBD
+
+
+World Items
+-----------
+
+TBD
+
+
+In-Game Trade
+-------------
+
+TBD
+
 
 Migration to LFE
 ----------------
@@ -151,31 +176,6 @@ Migration to LFE
 
 
    ```
-
-Mapping Areas
--------------
-
-TBD
-
-
-Creating Buildings
-------------------
-
-TBD
-
-
-World Items
------------
-
-TBD
-
-
-In-Game Trade
--------------
-
-TBD
-
-
 
 
 Old TODO
