@@ -53,6 +53,47 @@ that taken care of, follow these steps:
      $ telnet localhost 2155
      ```
 
+     At which point you should see something like this:
+
+     ```
+      $ telnet localhost 2155
+      Trying 127.0.0.1...
+      Connected to localhost.
+      Escape character is '^]'.
+
+      Welcome to:
+
+                                    ....
+                                  .'   ,:
+                                .'      \.___..
+                              .'      .-'   _.'
+                              '.\  \/...-''`\
+                                :.'   /   \  :
+                                 :    () () /
+                                 (_ .  '--' ':
+                                   / |_'-- .'
+                                   \   \  .'_\
+                                  .|__  \/_/:
+                                 /          :\.
+                                .' -./      .'{\|))
+              __        .        :    ...    ::::::::::-.
+              \ \       ;;,.    ;;;   ;;     ;;; ;;,   `';,
+               \ \      [[[[, ,[[[[, [['     [[[ `[[     [[
+                > \     $$$$$$$$"$$$ $$      $$$  $$,    $$
+               / ^ \  o_888 Y88" 888o88    .d888  888_,o8P'
+              /_/ \_\ "MMMM  M'  "MMM "YmmMMMM""  MMMMP"`
+
+
+      An El-MUD Game Server, v0.4.0
+
+
+      *** If you are loging in for the first time, enter the character name
+      *** you would like to have (case insensitive) at the "Login" prompt.
+
+
+      Login:
+     ```
+
   1. Have fun!
 
 
