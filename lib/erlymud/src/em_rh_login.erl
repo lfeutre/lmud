@@ -57,8 +57,22 @@ banner3() ->
 
 login_instructions() ->
 "
-*** If you are loging in for the first time, enter the user name
-*** you would like to have for your account (case insensitive).
+*** If you are loging in for the first time, enter the character name
+*** you would like to have (case insensitive) at the \"Login\" prompt.
+".
+
+post_login_msg () ->
+"
+
+You have logged into the server.
+
+------------------------------------------------------------------------------
+  \"WHO\" tells you who is logged in to the game.
+  \"NEWS\" informs you about recent program changes and items of interest.
+  \"HELP\" gives help on the commands, \"help commands\" for a list.
+  \"QUIT\" saves your character exits the game.
+------------------------------------------------------------------------------
+
 ".
 
 -spec welcome(em_conn:conn_pid()) -> ok.
@@ -168,8 +182,7 @@ do_login(Name, #req{conn=Conn}=Req) ->
 -spec do_incarnate(req()) -> {ok, req()}.
 do_incarnate(#req{conn=Conn, living=Living}=Req) ->
   ok = em_game:incarnate(Living),
-  em_conn:print(Conn, "\nType \"help\" to get some basic information about\n"
-                      "available commands, etc.\n\n"),
+  em_conn:print(Conn, post_login_msg()),
   em_rh_game:cmd_glance([], Req),
   em_conn:print(Conn, "\n> "),
   {ok, Req}.
