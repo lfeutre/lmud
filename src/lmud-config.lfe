@@ -87,7 +87,11 @@
 ")
 
 (defun get-banner ()
-  (banner-5))
+  (let ((func-name
+          (list_to_atom
+            (++ "banner-" (integer_to_list
+                            (lmud-util:rand-int 1 5))))))
+    (call (MODULE) func-name)))
 
 (defun login-instructions ()
 '"
