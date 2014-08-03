@@ -79,7 +79,7 @@ You have logged into the server.
 welcome(Conn) ->
   em_conn:print(Conn, "\nWelcome to:\n"
     ++ banner1() ++ "\nAn ErlyMUD Server, v"
-    ++ em_util:get_version() ++ "\n\n"
+    ++ 'lmud-util':'get-version'() ++ "\n\n"
     ++ login_instructions() ++ "\n\n"),
   em_conn:print(Conn, "Login: ").
 
