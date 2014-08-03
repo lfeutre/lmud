@@ -8,6 +8,9 @@
 (defun get-version ()
   (proplists:get_value 'vsn (element 3 (get-app-src))))
 
+(defun get-name ()
+  (element 2 (get-app-src)))
+
 (defun get-desc ()
   (proplists:get_value 'description (element 3 (get-app-src))))
 
