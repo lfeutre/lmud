@@ -40,7 +40,7 @@ init([]) ->
   SessionSup = ?CHILD(em_session_sup, supervisor),
   ReqSup = ?CHILD(em_req_sup, supervisor),
   ConnSup = ?CHILD(em_conn_sup, supervisor),
-  AcceptorSup = ?CHILD(em_acceptor_sup, supervisor),
+  AcceptorSup = ?CHILD('lmud-acceptor-sup', supervisor),
   Children = [GameServer, SpellSup, RoomSup, LivingSup, UserSup,
               ReqSup, SessionSup, ConnSup, AcceptorSup],
   RestartStrategy = {one_for_one, 5, 10},

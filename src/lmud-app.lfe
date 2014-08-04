@@ -12,7 +12,7 @@
     ((tuple 'ok pid)
       (let ((port (lmud-util:get-env 'port (lmud-util:get-port)))
             (acceptors (lmud-util:get-env 'acceptors (lmud-const:default-acceptors))))
-        (em_acceptor_sup:start_listener port acceptors)
+        (lmud-acceptor-sup:start_listener port acceptors)
         `#(ok ,pid)))
     (other `#(error ,other))))
 

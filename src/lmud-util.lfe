@@ -69,3 +69,19 @@
   (case (application:get_env key)
     ((tuple 'ok value) value)
     ('undefined fallback)))
+
+(defun supervisor-child (supervisor type)
+  `#(,supervisor
+    #(,supervisor start_link ())
+    permanent
+    5000
+    ,type
+    (,supervisor)))
+
+(defun supervisor-child (supervisor args type)
+  `#(,supervisor
+    #(,supervisor start_link ,args)
+    permanent
+    5000
+    ,type
+    (,supervisor)))
