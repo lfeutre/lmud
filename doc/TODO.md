@@ -35,6 +35,42 @@ Breakout and dependencies
 * [x] Move lib/erlymud into top-level dir
 
 
+NPCs
+----
+
+* [ ] add NCP abstraction
+* [ ] add simple conversation to NPCs
+* [ ] add Elizabot "AI" to NPCs
+* [ ] add support for specialized NPCs
+* Add specialized NPCs:
+  * [ ] add banker
+  * [ ] add shopkeeper
+  * [ ] add auctioneer
+
+
+Channels
+--------
+
+* [ ] Add public channel
+* Add support for Guilds
+  * [ ] come up with a mechanism for players to create guilds
+  * [ ] put guild in "petition" queue
+  * [ ] with enough signatures by people who *aren't* currently in a guild,
+        move to "approved" queue
+  * [ ] provide a means of wizards overriding the guild status and moving
+        to a different queue or moving to "active" status
+
+
+Talking
+-------
+
+* [ ] Add support for WALL
+* [ ] Add support for YELL (nearest rooms only)
+* [ ] Add support for EMIT/MSG
+* [ ] Add support for talking on a guild channel
+* [ ] Add support for talking on a public channel
+
+
 Colorizing
 ----------
 
@@ -54,8 +90,12 @@ Update outputs with the following colors:
 Game Data
 ---------
 
-* Game data is currently written to files
-* Migrate game data to ETS table(s), or better yet, Mnesia
+Game data is currently written to files
+* [ ] Migrate game data to ETS table(s)
+* [ ] Add support to flushing to disk (DETS)
+* [ ] Add support for Mnesia
+* [ ] Add support for creating rooms that get written to the DB
+* [ ] Load rooms on start from DB
 
 
 Permissions
