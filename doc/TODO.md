@@ -20,7 +20,6 @@ Breakout and dependencies
   * port to LFE as lplug?
     * provide the option of either using ETS tables like eplugin, or
     * use behaviors and ``beam_lib`` calls
-
 * [ ] Remote shell generalization
   * Move telnet shell into own project
   * is there another telnet shell we could use a dependency?
@@ -35,40 +34,15 @@ Breakout and dependencies
 * [x] Move lib/erlymud into top-level dir
 
 
-NPCs
-----
-
-* [ ] add NCP abstraction
-* [ ] add simple conversation to NPCs
-* [ ] add Elizabot "AI" to NPCs
-* [ ] add support for specialized NPCs
-* Add specialized NPCs:
-  * [ ] add banker
-  * [ ] add shopkeeper
-  * [ ] add auctioneer
-
-
-Channels
+Commands
 --------
 
-* [ ] Add public channel
-* Add support for Guilds
-  * [ ] come up with a mechanism for players to create guilds
-  * [ ] put guild in "petition" queue
-  * [ ] with enough signatures by people who *aren't* currently in a guild,
-        move to "approved" queue
-  * [ ] provide a means of wizards overriding the guild status and moving
-        to a different queue or moving to "active" status
-
-
-Talking
--------
-
-* [ ] Add support for WALL
-* [ ] Add support for YELL (nearest rooms only)
-* [ ] Add support for EMIT/MSG
-* [ ] Add support for talking on a guild channel
-* [ ] Add support for talking on a public channel
+* [ ] split up wizard commands and regular commands
+* add commands for:
+  [ ] setting up finance
+  [ ] markets
+  [ ] trade
+  [ ] auctions
 
 
 Colorizing
@@ -98,6 +72,31 @@ Game data is currently written to files
 * [ ] Load rooms on start from DB
 
 
+Talking
+-------
+
+* [ ] Add support for WALL
+* [ ] Add support for YELL (nearest rooms only)
+* [ ] Add support for EMIT/MSG
+* [ ] Add public channel
+* [ ] Add support for talking on a public channel
+* [ ] Add channel for every guild
+* [ ] Add support for talking on a guild channel
+
+
+NPCs
+----
+
+* [ ] add NCP abstraction
+* [ ] add simple conversation to NPCs
+* [ ] add Elizabot "AI" to NPCs
+* [ ] add support for specialized NPCs
+* Add specialized NPCs:
+  * [ ] add banker
+  * [ ] add shopkeeper
+  * [ ] add auctioneer
+
+
 Permissions
 -----------
 
@@ -120,16 +119,16 @@ permissions. Possible permission levels:
 * Player
 
 
-Command Separation
-------------------
+Groups
+------
 
-* split up wizard commands and regular commands
-* add commands for setting up finance, markets, trade, auctions, etc.
-
-
-Support TinyMUD Commands
-------------------------
-*
+* Add support for Guilds
+  * [ ] come up with a mechanism for players to create guilds
+  * [ ] put guild in "petition" queue
+  * [ ] with enough signatures by people who *aren't* currently in a guild,
+        move to "approved" queue
+  * [ ] provide a means of wizards overriding the guild status and moving
+        to a different queue or moving to "active" status
 
 
 Mapping Areas
