@@ -20,4 +20,4 @@
 (defun init
   (('())
      `#(ok #(#(one_for_all 5 10)
-              (,(lmud-util:supervisor-child 'em_acceptor_pool 'supervisor))))))
+              (,(lmud-util:supervisor-child 'lmud-acceptor-pool 'supervisor))))))

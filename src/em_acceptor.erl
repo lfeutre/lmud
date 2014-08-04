@@ -39,7 +39,7 @@ start_link(LSock) ->
 %% ==========================================================================
 
 %% @doc Set up local state, then return with a timeout. We use a 0 timeout to
-%% allow the em_acceptor_pool to go on with its business, while we start an
+%% allow the lmud-acceptor-pool to go on with its business, while we start an
 %% accept call to wait for a connection.
 -spec init([socket()]) -> {ok, #state{}, integer()}.
 init([LSock]) ->

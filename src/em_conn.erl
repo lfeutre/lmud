@@ -78,7 +78,7 @@ handle_info(timeout, #state{socket=Socket}=State) ->
   link(Session),
   PrintFun = fun(Line) -> em_session:receive_line(Session, Line) end,
   TelnetSession = em_telnet:new(Socket, PrintFun),
-  {noreply, State#state{socket=Socket, session=Session, 
+  {noreply, State#state{socket=Socket, session=Session,
                         telnet_session=TelnetSession}}.
 
 terminate(_Reason, _State) ->

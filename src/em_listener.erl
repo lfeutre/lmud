@@ -2,7 +2,7 @@
 %%% @author Johan Warlander <johan@snowflake.nu>
 %%% @copyright 2010-2011 Johan Warlander
 %%% @doc Listen for new TCP connections.
-%%% This gen_server will open a listening port for incoming TCP connections, 
+%%% This gen_server will open a listening port for incoming TCP connections,
 %%% then start a number of acceptors in the acceptor pool.
 %%% @end
 %%% =========================================================================
@@ -18,7 +18,7 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
--record(state, {lsock :: socket(), port :: inet_port(), 
+-record(state, {lsock :: socket(), port :: inet_port(),
                 acceptors :: count()}).
 
 -define(SERVER, ?MODULE).
@@ -61,7 +61,7 @@ handle_info(_Info, State) ->
 
 terminate(_Reason, State) ->
   case State#state.lsock of
-    undefined -> 
+    undefined ->
       ok;
     LSock ->
       gen_tcp:close(LSock),
@@ -77,5 +77,5 @@ code_change(_OldVsn, State, _Extra) ->
 -spec start_acceptors(socket(), count()) -> ok.
 start_acceptors(_LSock, 0) -> ok;
 start_acceptors(LSock, Acceptors) when is_integer(Acceptors), Acceptors > 0 ->
-  em_acceptor_pool:start_child(LSock),
+  'lmud-acceptor-pool':start_child(LSock),
   start_acceptors(LSock, Acceptors-1).
