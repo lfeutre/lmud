@@ -8,25 +8,25 @@ old TODO.
 Breakout and dependencies
 -------------------------
 
-* [x] move mud_parser into its own repo/project
-  * add as a dependency
-* [x] add erlang color as a dep:
-  * https://github.com/julianduque/erlang-color
-  * [ ] replace custom color macros
 * [ ] Look at using a plugin system
   * Heinz has written one here: https://github.com/Licenser/eplugin
     * this uses different mechanisms than the one that lfetool defines
   * port to LFE as lplug?
     * provide the option of either using ETS tables like eplugin, or
     * use behaviors and ``beam_lib`` calls
-* [x] Move lib/erlymud into top-level dir
+
 * [ ] Remote shell generalization
   * Move telnet shell into own project
   * is there another telnet shell we could use a dependency?
     * otp /lib/common_test/test/telnet_server.erl?
   * add support for an SSH MUD server via ssh_sshd?
     * what would it take to modify ssh_sshd?
-
+* [x] move mud_parser into its own repo/project
+  * add as a dependency
+* [x] add erlang color as a dep:
+  * https://github.com/julianduque/erlang-color
+  * [x] replace custom color macros
+* [x] Move lib/erlymud into top-level dir
 
 Colorizing
 ----------
@@ -37,6 +37,8 @@ Update outputs with the following colors:
 * [ ] Yelling -> red (bold)
 * [ ] whisper -> green
 * [ ] say -> yellow
+* [ ] think -> ?
+* [x] room title -> green (bold)
 
 
 Game Data

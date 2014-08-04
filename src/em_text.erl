@@ -2,16 +2,15 @@
 %%% @author Johan Warlander <johan@snowflake.nu>
 %%% @copyright 2010-2011 Johan Warlander
 %%% @doc Text processing module.
-%%% Provide utility functions for basic text processing like capitalizing,
-%%% colorizing text, etc.
+%%% Provide utility functions for basic text processing like capitalizing
+%%% text, etc.
 %%% @end
 %%% =========================================================================
 -module(em_text).
 -include_lib("eunit/include/eunit.hrl").
--include("telnetcolors.hrl").
 
 %% API
--export([capitalize/1, colorize/1, title_caps/1, wrap/2, wrapline/2]).
+-export([capitalize/1, title_caps/1, wrap/2, wrapline/2]).
 
 %% Type Specifications
 -include("types.hrl").
@@ -32,38 +31,6 @@ capitalize([H|T]) ->
 title_caps(S) ->
   F = fun([H|T]) -> [string:to_upper(H) | string:to_lower(T)] end,
   string:join(lists:map(F, string:tokens(S, " ")), " ").
-
-%% @doc Colorize the given string by replacing special color tags with ANSI
-%% color codes. The tags look like %^MY_TAG%^, and have to be defined below.
-%% @todo Move color tags into a gen_server where it's possible to register
-%% new tags dynamically, and save/load the mappings.
--spec colorize(iolist()) -> iolist().
-colorize(Input) ->
-  colorize(text, lists:flatten(Input), []).
-
--spec colorize(text|parse, string(), iolist()) -> iolist().
-% plain text; collect output
-colorize(text, [], Output) ->
-  lists:reverse(Output) ++ ?RESET;
-colorize(text, [$%,$^|Input], Output) ->
-  colorize(parse, Input, Output, []);
-colorize(text, [Ch|Input], Output) ->
-  colorize(text, Input, [Ch|Output]).
-
-% parse a color code
-colorize(parse, [], Output, _Code) ->
-  lists:reverse(Output) ++ ?RESET;
-colorize(parse, [$%,$^|Input], Output, Code) ->
-  Color = color_lookup(lists:reverse(Code)),
-  colorize(text, Input, [Color|Output]);
-colorize(parse, [Ch|Input], Output, Code) ->
-  colorize(parse, Input, Output, [Ch|Code]).
-
--spec color_lookup(string()) -> string().
-color_lookup("ROOM_TITLE")    -> ?F_RED;
-color_lookup("ROOM_EXITS")    -> ?F_GREY;
-color_lookup("RESET")         -> ?RESET;
-color_lookup(Code)            -> ["<<MISSING_COLOR:",Code,">>"].
 
 %% @doc Wrap a string at the specified length, inserting newline characters.
 -spec wrapline(iolist(), count()) -> string().

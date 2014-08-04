@@ -97,5 +97,5 @@ write(Socket, Format, Args) ->
 
 -spec process_output(iolist(), list()) -> string().
 process_output(Format, Args) ->
-  Data = em_text:colorize(io_lib:format(Format, Args)),
+  Data = io_lib:format(Format, Args),
   re:replace(Data, "\n", "\r\n", [global, {return, list}]).
