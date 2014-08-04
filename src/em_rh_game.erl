@@ -58,9 +58,9 @@ parse_cmd(":", Args, Line, Req) ->
   parse_cmd("emote", Args, Line, Req);
 parse_cmd(";", Args, Line, Req) ->
   parse_cmd("emote_ns", Args, Line, Req);
-parse_cmd("'", Args, Line, Req) ->
+parse_cmd("'", Args=[_,_|_], Line, Req) ->
   parse_cmd("tell", Args, Line, Req);
-parse_cmd("\\\\", Args, Line, Req) ->
+parse_cmd("\\\\", Args=[_,_|_], Line, Req) ->
   parse_cmd("tell", Args, Line, Req);
 parse_cmd(Cmd, Args, Line, Req) ->
   try list_to_existing_atom("cmd_" ++ string:to_lower(Cmd)) of
