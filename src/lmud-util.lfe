@@ -49,7 +49,7 @@
   `#(release
     #("lmud" ,(get-version))
     #(erts ,(erlang:system_info 'version))
-    (#(kernel ,(erlang:system_info 'driver_version))
+    (#(kernel ,(cadr (string:tokens (get-lib-dir 'kernel) "-")))
      #(stdlib ,(cadr (string:tokens (get-lib-dir 'stdlib) "-")))
      #(sasl ,(cadr (string:tokens (get-lib-dir 'sasl) "-")))
      #(eunit ,(cadr (string:tokens (get-lib-dir 'eunit) "-")))
