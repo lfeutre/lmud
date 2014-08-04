@@ -14,7 +14,9 @@
 %% game commands
 -export([cmd_look/2, cmd_north/2, cmd_east/2, cmd_south/2, cmd_west/2,
          cmd_go/2, cmd_quit/2,
-         cmd_emote/2, cmd_em/2, cmd_me/2, cmd_say/2, cmd_tell/2, cmd_think/2,
+         cmd_emote/2, cmd_em/2, cmd_me/2, cmd_pose/2, cmd_emote_ns/2,
+         cmd_say/2, cmd_tell/2, cmd_whisper/2, cmd_page/2,
+         cmd_think/2,
          cmd_who/2, cmd_get/2, cmd_drop/2, cmd_inv/2, cmd_glance/2,
          cmd_save/2, cmd_setlong/2, cmd_help/2, cmd_news/2,
          cmd_redit/2, cmd_addexit/2,
@@ -47,6 +49,19 @@ parse(Line, Req) ->
   end.
 
 -spec parse_cmd(string(), [string()], string(), req()) -> req_any().
+%% Below are TinyMUSH aliases/shortcuts for commands.
+parse_cmd("\"", Args, Line, Req) ->
+  parse_cmd("say", Args, Line, Req);
+parse_cmd("/me", Args, Line, Req) ->
+  parse_cmd("emote", Args, Line, Req);
+parse_cmd(":", Args, Line, Req) ->
+  parse_cmd("emote", Args, Line, Req);
+parse_cmd(";", Args, Line, Req) ->
+  parse_cmd("emote_ns", Args, Line, Req);
+parse_cmd("'", Args, Line, Req) ->
+  parse_cmd("tell", Args, Line, Req);
+parse_cmd("\\\\", Args, Line, Req) ->
+  parse_cmd("tell", Args, Line, Req);
 parse_cmd(Cmd, Args, Line, Req) ->
   try list_to_existing_atom("cmd_" ++ string:to_lower(Cmd)) of
     Fun ->
@@ -259,21 +274,21 @@ do_go({ok, {Dir, Dest}}, #req{living=Liv}=Req) ->
   print("You leave " ++ Dir ++ ".\n\n", Req),
   Name = em_living:get_name(Liv),
   Room = em_living:get_room(Liv),
-  em_room:print_except(Room, Liv, "~s leaves ~s.~n", [Name, Dir]),
+  em_room:print_except(yellowb, Room, Liv, "~s leaves ~s.~n", [Name, Dir]),
   em_room:leave(Room, Liv),
   em_living:set_room(Liv, DestRoom),
   em_room:enter(DestRoom, Liv),
-  em_room:print_except(DestRoom, Liv, "~s arrives.~n", [Name]),
+  em_room:print_except(yellowb, DestRoom, Liv, "~s arrives.~n", [Name]),
   cmd_glance([], Req).
 
-%% Emote
+%% Emote/Pose
 -spec cmd_emote([string()], req()) -> cmd_ok().
 cmd_emote(Args, #req{living=Liv}=Req) ->
   Text = em_grammar:punctuate(string:join(Args, " ")),
   Name = em_living:get_name(Liv),
   Room = em_living:get_room(Liv),
-  em_room:print_except(Room, Liv, "~s ~s~n", [Name, Text]),
-  print("~s ~s~n", [Name, Text], Req),
+  em_room:print_except(yellowb, Room, Liv, "~s ~s~n", [Name, Text]),
+  print(yellowb, "~s ~s~n", [Name, Text], Req),
   {ok, Req}.
 cmd_em(Args, Req) -> % alias for emote; used in WoW
   cmd_emote(Args, Req).
@@ -282,13 +297,22 @@ cmd_me(Args, Req) -> % alias for emote; used on IRC
 cmd_pose(Args, Req) -> % alias for emote; used in TinyMUSH
   cmd_emote(Args, Req).
 
+%% Emote/Pose (no space)
+cmd_emote_ns(Args, #req{living=Liv}=Req) ->
+  Text = em_grammar:punctuate(string:join(Args, " ")),
+  Name = em_living:get_name(Liv),
+  Room = em_living:get_room(Liv),
+  em_room:print_except(yellowb, Room, Liv, "~s~s~n", [Name, Text]),
+  print(yellowb, "~s~s~n", [Name, Text], Req),
+  {ok, Req}.
+
 %% Think
 cmd_think(Args, #req{living=Liv}=Req) ->
   Text = em_grammar:punctuate(string:join(Args, " ")),
   Name = em_living:get_name(Liv),
   Room = em_living:get_room(Liv),
-  em_room:print_except(Room, Liv, "~s is pondering.~n", [Name]),
-  print("~s thinks ~s~n", [Name, Text], Req),
+  em_room:print_except(blackb, Room, Liv, "~s is pondering.~n", [Name]),
+  print(blackb, "~s thinks ~s~n", [Name, Text], Req),
   {ok, Req}.
 
 %% Say
@@ -297,11 +321,11 @@ cmd_say([FirstWord|Rest], #req{living=Liv}=Req) ->
   Text = string:join([em_text:capitalize(FirstWord)|Rest], " "),
   Name = em_living:get_name(Liv),
   Room = em_living:get_room(Liv),
-  em_room:print_except(Room, Liv, "~s says, \"~s\"~n", [Name, Text]),
-  print("You say, \"~s\"~n", [Text], Req),
+  em_room:print_except(yellowb, Room, Liv, "~s says, \"~s\"~n", [Name, Text]),
+  print(yellowb, "You say, \"~s\"~n", [Text], Req),
   {ok, Req}.
 
-%% Tell
+%% Tell/Whisper/Page
 -spec cmd_tell([string()], req()) -> cmd_ok().
 cmd_tell([Who,FirstWord|Rest], #req{user=User}=Req) ->
   Name = em_user:get_name(User),
@@ -312,11 +336,16 @@ cmd_tell([Who,FirstWord|Rest], #req{user=User}=Req) ->
       print("Talking to yourself, huh?\n", Req);
     {ok, {OtherName, OtherUser}} ->
       Text = string:join([em_text:capitalize(FirstWord)|Rest], " "),
-      em_user:print(OtherUser, "~s tells you, \"~s\"~n", [Name, Text]),
-      print("You tell ~s, \"~s\"~n", [OtherName, Text], Req)
+      em_user:print(OtherUser,
+                    color:magenta("[Whisper] ") ++
+                    "~s tells you, \"~s\"~n", [Name, Text]),
+      print(color:magenta("[Whisper] ") ++
+            "You tell ~s, \"~s\"~n", [OtherName, Text], Req)
   end,
   {ok, Req}.
 cmd_whisper(Args, Req) -> % alias for tell; used in TinyMUSH
+  cmd_tell(Args, Req).
+cmd_page(Args, Req) -> % alias for tell; used in TinyMUSH
   cmd_tell(Args, Req).
 
 %% Who
@@ -335,7 +364,7 @@ cmd_news(_Args, Req) ->
 %% Save
 -spec cmd_save([string()], req()) -> cmd_ok().
 cmd_save(_Args, #req{living=Liv}=Req) ->
-  print("Saving..\n", Req),
+  print("Saving...\n", Req),
   case em_living:save(Liv) of
     ok ->
       {ok, Req};
@@ -514,3 +543,5 @@ print(Format, Req) ->
 print(Format, Args, #req{conn=Conn}) ->
   em_conn:print(Conn, Format, Args).
 
+print(Color, Format, Args, #req{conn=Conn}) ->
+  em_conn:print(Conn, 'lmud-util':'format-color'(Color, Format), Args).

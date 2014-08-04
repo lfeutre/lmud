@@ -163,7 +163,7 @@ do_login(User, #state{users=Users}=State) ->
       {{error, user_exists}, State};
     false ->
       link(User),
-      do_print_except(Users, User, "[Notice] ~s has logged in.~n", [Name]),
+      do_print_except(Users, User, color:blue("[Notice]") ++ " ~s has logged in.~n", [Name]),
       {ok, State#state{users=[{Name, User}|Users]}}
   end.
 
@@ -179,7 +179,7 @@ do_incarnate(Living, State) ->
              LoadedRoom
          end,
   em_room:enter(Room, Living),
-  em_room:print_except(Room, Living, "~s arrives.~n", [Name]),
+  em_room:print_except(yellowb, Room, Living, "~n~s arrives.~n", [Name]),
   {ok, State}.
 
 %% @doc Log out a user. Do NOT actually touch the User process here, it might

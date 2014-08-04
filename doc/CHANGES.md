@@ -5,6 +5,11 @@ ErlyMUD Change Log
 0.4.0
 -----
 * Renamed project tp λMUD ("El-MUD").
+* Removed custom color management and used @julianduque's erlang-color.
+* Added support for TinyMUSH emote/pose with no space after the name.
+* Added TinyMUSH aliases for :, ;, \\ and ".
+* Added ' and PAGE as aliases for WHISPER/TELL.
+* Added color output to most of the talk and emote functions.
 
 
 0.3.5

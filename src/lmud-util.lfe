@@ -43,7 +43,7 @@
 (defun get-lib-dir (mod)
   (filename:basename (code:lib_dir mod)))
 
-;; XXX move this into lutil library
+;; XXX move part of this into lutil library?
 (defun get-release-data ()
   "A function for generating the data needed by the .rel file."
   `#(release
@@ -57,3 +57,10 @@
 
 (defun print-release-data ()
   (io:format "~p.~n" (list (get-release-data))))
+
+(defun format-color (color text)
+  (lists:flatten
+    (lists:map
+      (lambda (x)
+        (binary_to_list x))
+      (call 'color color (list_to_binary text)))))

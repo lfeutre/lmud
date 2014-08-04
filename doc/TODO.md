@@ -5,6 +5,12 @@ This is the new TODO list. See the bottom of this document for the
 old TODO.
 
 
+Usability
+---------
+
+* [ ] Add readline support.
+
+
 Breakout and dependencies
 -------------------------
 
@@ -28,16 +34,20 @@ Breakout and dependencies
   * [x] replace custom color macros
 * [x] Move lib/erlymud into top-level dir
 
+
 Colorizing
 ----------
 
 Update outputs with the following colors:
-* [ ] Notification -> blue
+
 * [ ] Wall -> red
 * [ ] Yelling -> red (bold)
-* [ ] whisper -> green
-* [ ] say -> yellow
-* [ ] think -> ?
+* [x] Notification -> blue
+* [x] whisper -> magenta
+* [x] say -> yellow
+* [x] emote -> yellow (bold)
+* [x] leave & arrive messages -> yellow (bold)
+* [x] think -> black (bold); really grey
 * [x] room title -> green (bold)
 
 

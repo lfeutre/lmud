@@ -18,7 +18,7 @@
          remove_object/2,
          describe/1, describe_except/2, looking/2,
          enter/2, leave/2,
-         print_except/4, print_while/4,
+         print_except/4, print_except/5, print_while/4,
          save/1]).
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
@@ -81,6 +81,9 @@ leave(Room, Who) ->
 print_except(Room, User, Format, Args) ->
   Pred = fun(L) -> User =/= L end,
   print_while(Room, Pred, Format, Args).
+
+print_except(Color, Room, User, Format, Args) ->
+  print_except(Room, User, 'lmud-util':'format-color'(Color, Format), Args).
 
 print_while(Room, Pred, Format, Args) ->
   gen_server:call(Room, {print_while, Pred, Format, Args}).
