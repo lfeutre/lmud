@@ -18,11 +18,11 @@ compile:
 $(REL_FILE):
 	$(REL_CONTENT_CMD) > $(REL_FILE)
 
-rel: compile $(REL_FILE)
+rel: compile clean $(REL_FILE)
 	$(MK_REL_CMD)
 
 run:
-	erl -boot ./$(REL)
+	erl -pa ./deps/color/ebin -boot ./$(REL)
 
 clean:
-	rm $(REL_FILE)  $(REL).boot $(REL).script
+	-rm $(REL_FILE) $(REL).boot $(REL).script
