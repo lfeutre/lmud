@@ -11,13 +11,13 @@
 -behaviour(gen_server).
 
 %% API
--export([start_link/0, start/0, 
+-export([start_link/0, start/0,
          data_dir/0,
          get_users/0, lookup_user/1, lookup_user_pid/1,
          login/1, incarnate/1, logout/1,
          print_except/3, print_while/3]).
 
--export([init/1, handle_call/3, handle_cast/2, handle_info/2, 
+-export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
 -record(state, {users=[]::users()}).
@@ -110,14 +110,14 @@ handle_call({incarnate, Living}, _From, State) ->
 handle_call({logout, User}, _From, State) ->
   {Result, NewState} = do_logout(User, State),
   {reply, Result, NewState};
-handle_call({lookup_user, Name}, _From, #state{users=Users}=State) 
+handle_call({lookup_user, Name}, _From, #state{users=Users}=State)
     when is_list(Name) ->
   Result = case lists:keyfind(em_text:capitalize(Name), 1, Users) of
              false -> {error, not_found};
              UserTuple -> {ok, UserTuple}
            end,
   {reply, Result, State};
-handle_call({lookup_user_pid, Pid}, _From, #state{users=Users}=State) 
+handle_call({lookup_user_pid, Pid}, _From, #state{users=Users}=State)
     when is_pid(Pid) ->
   Result = do_lookup_user_pid(Pid, Users),
   {reply, Result, State};
@@ -154,7 +154,7 @@ code_change(_OldVsn, State, _Extra) ->
 
 %% User Handling
 
--spec do_login(em_user:user_pid(), #state{}) -> 
+-spec do_login(em_user:user_pid(), #state{}) ->
         {ok, #state{}}|{{error, user_exists}, #state{}}.
 do_login(User, #state{users=Users}=State) ->
   Name = em_user:get_name(User),
@@ -182,9 +182,9 @@ do_incarnate(Living, State) ->
   em_room:print_except(Room, Living, "~s arrives.~n", [Name]),
   {ok, State}.
 
-%% @doc Log out a user. Do NOT actually touch the User process here, it might 
+%% @doc Log out a user. Do NOT actually touch the User process here, it might
 %% have crashed when we call do_logout(). Or could it really, since we link?!
--spec do_logout(em_user:user_pid(), #state{}) -> 
+-spec do_logout(em_user:user_pid(), #state{}) ->
   {ok, #state{}}|{{error, not_found}, #state{}}.
 do_logout(User, #state{users=Users}=State) ->
   case lists:keyfind(User, 2, Users) of
@@ -196,7 +196,7 @@ do_logout(User, #state{users=Users}=State) ->
       {{error, not_found}, State}
   end.
 
--spec do_lookup_user_pid(em_user:user_pid(), users()) -> 
+-spec do_lookup_user_pid(em_user:user_pid(), users()) ->
         {ok, user()}|{error, not_found}.
 do_lookup_user_pid(Pid, Users) ->
   case lists:keyfind(Pid, 2, Users) of
