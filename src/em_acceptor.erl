@@ -28,7 +28,7 @@
 %% ==========================================================================
 
 %% @doc Start an acceptor process and return the pid.
--spec start_link(socket()) -> 
+-spec start_link(socket()) ->
   {ok, pid()} | {error, term()} | ignore.
 start_link(LSock) ->
   gen_server:start_link(?MODULE, [LSock], []).
@@ -38,7 +38,7 @@ start_link(LSock) ->
 %% gen_server callbacks
 %% ==========================================================================
 
-%% @doc Set up local state, then return with a timeout. We use a 0 timeout to 
+%% @doc Set up local state, then return with a timeout. We use a 0 timeout to
 %% allow the em_acceptor_pool to go on with its business, while we start an
 %% accept call to wait for a connection.
 -spec init([socket()]) -> {ok, #state{}, integer()}.

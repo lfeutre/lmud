@@ -64,3 +64,8 @@
       (lambda (x)
         (binary_to_list x))
       (call 'color color (list_to_binary text)))))
+
+(defun get-env (key fallback)
+  (case (application:get_env key)
+    ((tuple 'ok value) value)
+    ('undefined fallback)))

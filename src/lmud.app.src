@@ -10,6 +10,6 @@
                   stdlib,
                   sasl, eunit
                  ]},
-  {mod, {em_app, []}},
+  {mod, {'lmud-app', []}},
   {env, []}
  ]}.
