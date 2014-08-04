@@ -11,22 +11,22 @@
 -behaviour(gen_server).
 -behaviour(em_event_source).
 
--export([start_link/3, 
+-export([start_link/3,
          add_exit/3, add_object/2, add_reset/2,
          get_exit/2, get_exits/1, get_name/1, get_objects/1, get_people/1,
          set_title/2, set_brief/2, set_long/2,
          remove_object/2,
          describe/1, describe_except/2, looking/2,
-         enter/2, leave/2, 
+         enter/2, leave/2,
          print_except/4, print_while/4,
          save/1]).
 
--export([init/1, handle_call/3, handle_cast/2, handle_info/2, 
+-export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
 -export([add_event_listener/2, notify/2]).
 
--record(state, {name, title, desc, long, people=[], exits=[], objects=[], 
+-record(state, {name, title, desc, long, people=[], exits=[], objects=[],
                 resets=[], event_listeners=[]}).
 
 -type room_name() :: string().
@@ -196,8 +196,8 @@ do_notify(Event, [{Mod, Args}|Rest], Remaining) ->
   do_notify(Event, Rest, [{Mod, Args}|Remaining]).
 
 do_describe(#state{title=Title, desc=Desc, people=People, exits=Exits, objects=Objects}) ->
-  ["%^ROOM_TITLE%^", Title, "%^RESET%^\n", em_text:wrapline(Desc, 78), "\n", 
-   "%^ROOM_EXITS%^[Exits: ", list_exits(Exits), "]%^RESET%^\n",
+  ["\n", color:greenb(Title), "\n\n", em_text:wrapline(Desc, 78), "\n\n",
+   color:blackb("[Exits: " ++ list_exits(Exits) ++ "]"), "\n\n",
     list_objects(Objects),
     list_people(People)].
 
