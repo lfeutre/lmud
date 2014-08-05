@@ -9,7 +9,7 @@
 -module(em_room).
 
 -behaviour(gen_server).
--behaviour(em_event_source).
+-behaviour('lmud-event-source').
 
 -export([start_link/3,
          add_exit/3, add_object/2, add_reset/2,
@@ -179,7 +179,7 @@ terminate(_Reason, _State) ->
 code_change(_OldVsn, State, _Extra) ->
   {ok, State}.
 
-%% em_event_source
+%% lmud-event-source
 
 add_event_listener(Room, Listener) ->
   gen_server:cast(Room, {add_event_listener, Listener}).

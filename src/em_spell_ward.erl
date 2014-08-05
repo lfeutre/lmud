@@ -1,6 +1,6 @@
 -module(em_spell_ward).
 -behaviour(em_spell).
--behaviour(em_event_listener).
+-behaviour('lmud-event-listener').
 
 %% API
 -export([start/2]).
@@ -8,7 +8,7 @@
 %% em_spell exports
 -export([init/1, handle_cast/2, handle_info/2, terminate/2]).
 
-%% em_event_listener exports
+%% lmud-event-listener exports
 -export([handle_event/1]).
 
 -record(state, {caster, room}).
@@ -33,7 +33,7 @@ handle_info(timeout, State) ->
 terminate(_Reason, _State) ->
   ok.
 
-%% em_event_listener exports
+%% lmud-event-listener exports
 
 handle_event([Pid, Event]) ->
   gen_server:cast(Pid, {handle_event, Event}).
