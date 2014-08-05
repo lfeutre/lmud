@@ -35,7 +35,7 @@ init([]) ->
   GameServer = ?CHILD(em_game, worker),
   SpellSup = ?CHILD(em_spell_sup, supervisor),
   RoomSup = ?CHILD(em_room_sup, supervisor),
-  LivingSup = ?CHILD(em_living_sup, supervisor),
+  LivingSup = ?CHILD('lmud-living-sup', supervisor),
   UserSup = ?CHILD(em_user_sup, supervisor),
   SessionSup = ?CHILD(em_session_sup, supervisor),
   ReqSup = ?CHILD(em_req_sup, supervisor),

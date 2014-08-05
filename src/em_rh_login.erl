@@ -111,7 +111,7 @@ do_login(Name, #req{conn=Conn}=Req) ->
   ok = em_user:load(User),
   case em_game:login(User) of
     ok ->
-      {ok, Living} = em_living_sup:start_child(Name, {User, Conn}),
+      {ok, Living} = 'lmud-living-sup':start_child(Name, {User, Conn}),
       link(Living),
       ok = em_living:load(Living),
       {ok, NewReq} = do_incarnate(Req#req{user=User, living=Living}),
