@@ -8,7 +8,6 @@
 
 (defun server () (MODULE))
 
-
 (defun start_link ()
   (supervisor:start_link `#(local ,(server)) (MODULE) '()))
 
@@ -20,4 +19,6 @@
 (defun init
   (('())
      `#(ok #(#(one_for_all 5 10)
-              (,(lmud-util:supervisor-child 'lmud-acceptor-pool 'supervisor))))))
+              (,(lmud-util:supervisor-child
+                  'lmud-acceptor-pool
+                  'supervisor))))))

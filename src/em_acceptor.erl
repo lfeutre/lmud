@@ -62,7 +62,7 @@ handle_cast(_Msg, State) ->
 handle_info(timeout, #state{lsock=LSock}=State) ->
   case gen_tcp:accept(LSock) of
     {ok, Socket} ->
-      {ok, Conn} = em_conn_sup:start_child(Socket),
+      {ok, Conn} = 'lmud-conn-sup':start_child(Socket),
       case gen_tcp:controlling_process(Socket, Conn) of
         ok ->
           ok;

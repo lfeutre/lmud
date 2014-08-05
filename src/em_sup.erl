@@ -39,7 +39,7 @@ init([]) ->
   UserSup = ?CHILD(em_user_sup, supervisor),
   SessionSup = ?CHILD(em_session_sup, supervisor),
   ReqSup = ?CHILD(em_req_sup, supervisor),
-  ConnSup = ?CHILD(em_conn_sup, supervisor),
+  ConnSup = ?CHILD('lmud-conn-sup', supervisor),
   AcceptorSup = ?CHILD('lmud-acceptor-sup', supervisor),
   Children = [GameServer, SpellSup, RoomSup, LivingSup, UserSup,
               ReqSup, SessionSup, ConnSup, AcceptorSup],
