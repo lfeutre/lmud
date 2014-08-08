@@ -1,52 +1,30 @@
-%%% =========================================================================
-%%% @author Johan Warlander <johan@snowflake.nu>
-%%% @copyright 2010-2011 Johan Warlander
-%%% @doc Launch a request, collect the result, and kill it.
-%%% @end
-%%% =========================================================================
--module(em_req_sup).
+;;;; Launch a request, collect the result, and kill it.
+(defmodule lmud-req-sup
+  (behaviour supervisor)
+  (export all))
 
--behaviour(supervisor).
+(defun server () (MODULE))
 
-%% API
--export([start_link/0, start_child/1, request/1]).
+(include-file "include/types.hrl")
 
-%% Supervisor callbacks
--export([init/1]).
+(defun start_link ()
+  (supervisor:start_link `#(local ,(server)) (MODULE) '()))
 
--define(SERVER, ?MODULE).
+(defun start_child (mfa)
+  (supervisor:start_child (server) `(,mfa)))
 
-%% Type Specifications
--include("types.hrl").
+(defun request (mfa)
+  (let* (((tuple 'ok req) (start_child mfa))
+         (result (em_req:run req)))
+    (exit req 'normal)
+    result))
 
-
-%% ==========================================================================
-%% API
-%% ==========================================================================
-
-start_link() ->
-  supervisor:start_link({local, ?SERVER}, ?MODULE, []).
-
--spec start_child(mfargs()) -> any().
-start_child(MFA) ->
-  supervisor:start_child(?SERVER, [MFA]).
-
--spec request(mfargs()) -> any().
-request(MFA) ->
-  {ok, Req} = start_child(MFA),
-  Result = em_req:run(Req),
-  exit(Req, normal),
-  Result.
-
-
-%% ==========================================================================
-%% Supervisor callbacks
-%% ==========================================================================
-
-init([]) ->
-  Request = {em_req, {em_req, start_link, []},
-             temporary, brutal_kill, worker, [em_req]},
-  Children = [Request],
-  RestartStrategy = {simple_one_for_one, 0, 1},
-  {ok, {RestartStrategy, Children}}.
-
+(defun init
+  (('())
+     `#(ok #(#(simple_one_for_one 0 1)
+              (#(em_req
+               #(em_req start_link ())
+               temporary
+               brutal_kill
+               worker
+               (em_req)))))))

@@ -4,7 +4,7 @@
 %%% @doc Process a single request.
 %%% This gen_server is initiated with an MFA to call, and will do so when
 %%% the run() function is evaluated. Intended to be called only from the
-%%% request supervisor, em_req_sup:request(), which will spawn us as a
+%%% request supervisor, 'lmud-req-sup':request(), which will spawn us as a
 %%% process, evaluate run(), and then kill the process.
 %%% @end
 %%% =========================================================================

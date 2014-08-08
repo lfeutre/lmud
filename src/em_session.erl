@@ -26,9 +26,9 @@
 start_link(Conn) ->
   gen_server:start_link(?MODULE, [Conn], []).
 
-%% @doc Push received data onto our queue and return with a timeout; 
-%%      this will allow the calling process to proceed while we do our work, 
-%%      while still maintaining order of input (which isn't guaranteed if 
+%% @doc Push received data onto our queue and return with a timeout;
+%%      this will allow the calling process to proceed while we do our work,
+%%      while still maintaining order of input (which isn't guaranteed if
 %%      using cast).
 %% @end
 receive_line(Pid, Data) ->
@@ -80,18 +80,18 @@ handle_data(RawData, State) ->
   Data = strip_linefeed(RawData),
   [Handler | Rest] = State#req.handlers,
   {M, F, A} = Handler,
-  case em_req_sup:request({M, F, A ++ [Data, State]}) of
-    {done, NewState} -> 
+  case 'lmud-req-sup':request({M, F, A ++ [Data, State]}) of
+    {done, NewState} ->
       {ok, NewState#req{handlers = Rest}};
-    {link, NewMFA, NewState} -> 
+    {link, NewMFA, NewState} ->
       link(NewState#req.user),
       link(NewState#req.living),
       {ok, NewState#req{handlers = [NewMFA | Rest]}};
-    {ok, NewMFA, NewState} -> 
+    {ok, NewMFA, NewState} ->
       {ok, NewState#req{handlers = [NewMFA | Rest]}};
-    {push, NewMFA, NewState} -> 
+    {push, NewMFA, NewState} ->
       {ok, NewState#req{handlers = [NewMFA, {M, F, A} | Rest]}};
-    Other -> 
+    Other ->
       {error, Other}
   end.
 
