@@ -1,8 +1,10 @@
+%%% XXX rename this module to em_english.erl.
+%%%
 %%% =========================================================================
 %%% @author Johan Warlander <johan@snowflake.nu>
 %%% @copyright 2010-2011 Johan Warlander
 %%% @doc Grammar support.
-%%% Handle common tasks like articles, pluralization etc for output 
+%%% Handle common tasks like articles, pluralization etc for output
 %%% functions, item name manipulation and so on.
 %%% @end
 %%% =========================================================================
