@@ -16,7 +16,7 @@
 %% API
 
 start(Caster, Room) ->
-  em_spell_sup:start_child(?MODULE, [Caster, Room]).
+  'lmud-spell-sup':start_child(?MODULE, [Caster, Room]).
 
 %% em_spell exports
 

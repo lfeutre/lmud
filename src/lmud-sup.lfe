@@ -13,7 +13,7 @@
   (('())
      `#(ok #(#(one_for_one 5 10)
               (,(lmud-util:make-child 'em_game 'worker)
-               ,(lmud-util:make-child 'em_spell_sup 'supervisor)
+               ,(lmud-util:make-child 'lmud-spell-sup 'supervisor)
                ,(lmud-util:make-child 'lmud-room-sup 'supervisor)
                ,(lmud-util:make-child 'lmud-living-sup 'supervisor)
                ,(lmud-util:make-child 'lmud-user-sup 'supervisor)
