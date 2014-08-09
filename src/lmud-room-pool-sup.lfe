@@ -25,11 +25,3 @@
                  brutal_kill
                  worker
                  (em_room)))))))
-
-; init([]) ->
-;   Room = {em_room, {em_room, start_link, []},
-;           temporary, brutal_kill, worker, [em_room]},
-;   Children = [Room],
-;   RestartStrategy = {simple_one_for_one, 0, 1},
-;   {ok, {RestartStrategy, Children}}.
-
