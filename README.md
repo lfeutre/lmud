@@ -34,17 +34,15 @@ that taken care of, follow these steps:
      $ git clone https://github.com/lfex/lmud.git
      ```
 
-  1. Change directory, compile the source, and make a release:
+  1. Change directory, compile the source, make a release, and start up λMUD:
 
      ```sh
      $ cd lmud
-     $ make rel
+     $ make run
      ```
 
-  1. Start up λMUD:
-
-     ```sh
-     $ make run
+     Note that ``make run`` compiles the source and makes a release
+     implicitly.
      ```
 
   1. From another terminal, connect to the game:
@@ -87,8 +85,10 @@ that taken care of, follow these steps:
       An El-MUD Game Server, v0.4.0
 
 
-      *** If you are loging in for the first time, enter the character name
-      *** you would like to have (case insensitive) at the "Login" prompt.
+------------------------------------------------------------------------------
+  If you are loging in for the first time, enter the character name
+  you would like to have (case insensitive) at the "Login" prompt.
+------------------------------------------------------------------------------
 
 
       Login:
