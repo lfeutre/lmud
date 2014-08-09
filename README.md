@@ -50,13 +50,22 @@ that taken care of, follow these steps:
   1. From another terminal, connect to the game:
 
      ```sh
-     $ telnet localhost 2155
+     $ rlwrap telnet localhost 2155
+     ```
+     Note that ``rlwrap`` gives you readline support in telnet, allowing you
+     to use a command history like with your system shell (including such
+     things as searching the command history with ``^r``).
+
+     If your other terminal session is in the ``lmud`` working dir, you can
+     use thr following convenience ``make`` target:
+
+     ```sh
+     $ make connect
      ```
 
      At which point you should see something like this:
 
      ```
-      $ telnet localhost 2155
       Trying 127.0.0.1...
       Connected to localhost.
       Escape character is '^]'.
