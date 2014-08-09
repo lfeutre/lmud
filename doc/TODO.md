@@ -8,7 +8,7 @@ old TODO.
 Usability
 ---------
 
-* [ ] Add readline support.
+* [x] Add readline support (done via rlwrap)
 
 
 Command Parsing
@@ -78,6 +78,8 @@ Breakout and dependencies
 Commands
 --------
 
+* [ ] add a god-level permission for granting god permissions in-game
+* [ ] add a wizard-level permission for granting wizard permissions in-game
 * [ ] split up wizard commands and regular commands
 * add commands for:
   [ ] setting up finance
