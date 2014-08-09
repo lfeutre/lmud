@@ -11,7 +11,7 @@
 
 -export([start_link/0, get_room/1, new_room/1]).
 
--export([init/1, handle_call/3, handle_cast/2, handle_info/2, 
+-export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
 -define(SERVER, ?MODULE).
@@ -103,7 +103,7 @@ refresh([{_, Room, worker, [em_room]}|Children]) ->
   refresh(Children).
 
 try_load_room(Name) ->
-  RoomFile = filename:join([em_game:data_dir(), "rooms", 
+  RoomFile = filename:join([em_game:data_dir(), "rooms",
                             Name ++ ".dat"]),
   load_room(RoomFile).
 
@@ -117,7 +117,7 @@ load_room(Filename) ->
     {error, _Reason} ->
       {error, not_found}
   end.
- 
+
 make_room(Filename, Data) ->
   Name = extract_name(string:tokens(Filename, "/")),
   {title, Title} = lists:keyfind(title, 1, Data),
