@@ -20,11 +20,3 @@
                brutal_kill
                supervisor
                (em_session)))))))
-
-; init([]) ->
-;   Session = {em_session, {em_session, start_link, []},
-;           temporary, brutal_kill, supervisor, [em_session]},
-;   Children = [Session],
-;   RestartStrategy = {simple_one_for_one, 0, 1},
-;   {ok, {RestartStrategy, Children}}.
-
