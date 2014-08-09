@@ -70,18 +70,16 @@
     ((tuple 'ok value) value)
     ('undefined fallback)))
 
+(defun make-child (module type)
+  "Helper funtion for declaring children of supervisor."
+  `#(,module #(,module start_link ()) permanent 5000 ,type (,module)))
+
+(defun make-child (module args type)
+  "Helper funtion for declaring children of supervisor."
+  `#(,module #(,module start_link ,args permanent 5000 ,type (,module))))
+
 (defun supervisor-child (supervisor type)
-  `#(,supervisor
-    #(,supervisor start_link ())
-    permanent
-    5000
-    ,type
-    (,supervisor)))
+  (make-child supervisor type))
 
 (defun supervisor-child (supervisor args type)
-  `#(,supervisor
-    #(,supervisor start_link ,args)
-    permanent
-    5000
-    ,type
-    (,supervisor)))
+  (make-child supervisor args type))
