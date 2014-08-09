@@ -24,14 +24,12 @@
          cmd_cast/2]).
 
 -include("request.hrl").
-
-%% Type Specifications
 -include("types.hrl").
+
 -type ob_list() :: [em_object:object()].
 -type liv_list() :: [em_living:living_pid()].
-
--type cmd_ok()     :: {ok, req()}.
--type cmd_stop()   :: {stop, req()}.
+-type cmd_ok() :: {ok, req()}.
+-type cmd_stop() :: {stop, req()}.
 
 %% ==========================================================================
 %% API functions
