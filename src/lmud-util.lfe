@@ -76,7 +76,7 @@
 
 (defun make-child (module args type)
   "Helper funtion for declaring children of supervisor."
-  `#(,module #(,module start_link ,args permanent 5000 ,type (,module))))
+  `#(,module #(,module start_link ,args) permanent 5000 ,type (,module)))
 
 (defun supervisor-child (supervisor type)
   (make-child supervisor type))
