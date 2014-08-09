@@ -1,0 +1,608 @@
+Basic Commands Edit
+
+/?, /h, /help
+    Displays some help about using various commands.
+
+/a, /assist [player]
+    Assists [player] or your current target by targeting what they are
+    targeting.
+
+/camp, /logout
+    Starts the logout progress, after which you will be returned to the
+    Character Select screen.
+
+/cast, /spell <spell>
+    Casts the spell or uses the ability <spell>.
+
+/combatlog
+    Toggles writing of the combat log to your hard disk.
+
+/dismount
+    Dismounts you.
+
+/mountspecial
+    Your mount will do a special emotion (not all mounts are capable of
+    doing this).
+
+/equip <item>
+    Equips any equip able item in your inventory.
+
+/exit, /quit
+    Starts the logout process, after which World of Warcraft will completely
+    exit.
+
+/f, /fol, /follow [player]
+    Starts automatically following [player] or your current target.
+
+/ins, /inspect [player]
+    Inspects [player] or your current target. Can be used across factions
+    since patch 2.4.
+
+/gm
+    Opens Knowledge Base
+
+/played
+    Displays the total amount of time played.
+
+/rand, /random, /rnd, /roll [minimum] [maximum]
+    Rolls a random number between [minimum] and [maximum], inclusive. If
+    only one number is given, then the range is defined as 1 to that number.
+    If no numbers are given, then 1 to 100 is used. This number is then
+    displayed to everyone in your party or raid group and to everybody
+    within /say range. The range you chose is also displayed.
+
+/tar, /target <target>
+    Attempts to target the player named by <target>. (See TargetByName for
+    details of how this works.)
+
+/time
+    Displays the current in game time. (This is the time displayed on the
+    clock tooltip.)
+
+/tr, /trade [player]
+    Brings up the trade dialog with [player] or your current target.
+
+/use [item]
+    uses the specified item (food, trinkets ect)
+
+/who [search]
+    Searches based on the given parameter, or runs a default search if no
+    search is specified. The results of the search will be listed in the
+    chat window. If no search is specified, the search dialog will be
+    displayed.
+
+/reload
+    Reload the user interface. May be usefull when an addon fails and must
+    be restarted, as you can do this with this command without having to
+    logout.
+
+Chat Commands Edit
+
+These commands are used to say things to other players. Unless otherwise
+noted, these channels are displayed in your current language. So, for
+example, if a Night Elf is currently speaking in Darnassian, Human players
+would not be able to understand them.
+
+/e, /em, /emote, /me <message>
+    Emotes <message> to all players in the general area, similar to /say,
+    except displayed as "Player <message>". So, for example, "/emote loves
+    the WOW Wiki." would be displayed as "Player loves the WOW Wiki." Unlike
+    other chat commands, this one does not use your current language. Across
+    faction boundaries it simply displays "Player makes some strange
+    gestures."
+
+/bg <message>
+    Displays <message> to all other raid members while in a PvP battleground.
+
+/c, /csay <channel> <message>
+    Sends <message> to all players in <channel>. This does not use your
+    current language. You can also use /# (where # is the channel number) to
+    send a message to <channel>.
+
+/g, /gc, /gu, /guild <message>
+    Displays <message> to all members in your guild.
+
+/o, /osay <message>
+    Displays <message> to all officers in your guild. (You must have the
+    'Officer Chat Speak' privilege to use this)
+
+/p, /party <message>
+    Displays <message> to all other party members. This does not include
+    other people in your raid group, use /raid for that.
+
+/r, /reply <message>
+    Replies to the last player to send you a /whisper
+
+/ra, /raid, /rsay <message>
+    Displays <message> to all other raid members. While in a PvP
+    battleground, use /bg instead.
+
+/s, /say <message>
+    Displays <message> to other players in the general area.
+
+/send, /t, /tell, /w, /whisper <player> <message>
+    Sends the private message <message> to <player>. No other players will
+    see the message.
+
+/sh, /shout, /y, /yell <message>
+    Displays <message> to other players in the area. The area of players
+    that will see the message is larger than the area when /say is used.
+
+/v <macro>
+    Plays the sound associated with the given voice macro <macro>.
+
+Online Status Edit
+
+/afk [message]
+    Toggles Away From Keyboard status. <AFK> status appears next to your
+    name. This command also forces an immediate exit from any PvP
+    battleground. If you enter a message, players sending you a /whisper
+    will be sent this message in addition to the standard <AFK> message.
+
+/dnd [message]
+    Toggles Do Not Disturb status. When DND is set, you cannot receive /
+    whisper messages. A player attempting to send a /whisper will be
+    notified that you have Do Not Disturb set. If you specify a message,
+    they will also be sent that message.
+
+Friends List Edit
+
+/friend, /friends [player]
+    Adds [player] or your current target to your friends list. If nothing is
+    targeted, your friend list will be displayed. See /remfriend.
+
+/ignore [player]
+    Ignore chat messages from [player] or your current target. Use /unignore
+    to undo this.
+
+/remfriend, /removefriend [player]
+    Removes [player] or your current target from your friends list. See /
+    friends.
+
+/unignore [player]
+    Remove [player] or your current target from your ignore list. See /
+    ignore.
+
+
+More Party / Raid Commands Edit
+
+/df
+    Dungeon Finder (the new lfg tool introduced in 3.3)
+
+/lfr
+    Looking For Raid (tool)
+
+/i, /inv, /invite [player]
+    Invites [player] or your current target.
+
+/leaveparty
+    Leaves the party or raid.
+
+/kick, /u, /un, /uninvite [player]
+    Removes [player] or your current target from the party.
+
+/pr, /promote [player]
+    Makes [player] or your current target the party leader if you are
+    currently the party leader.
+
+/split <money>
+    Divides <money> among your group. (Presumably this is an integer in
+    copper?) Removed in patch 1.9.1 because of several incidents where
+    people accidentally gave their money to others.
+
+/raidinfo
+    See Raid timer for more information; shows remaining time on saved raid
+    instances.
+    Also shows an instance ID to compare with other players (if you have the
+    same saved ID as them, you will go into the same instance).
+
+/rw
+    Send raid warning text. This is only available to raid leaders and
+    assistants. The message appears in large letters in the middle of the
+    screen of raid members, usually with a warning tone.
+
+/readycheck
+    A ready check sends an "Are you ready?" Yes/No dialog window to all
+    players in the raid. The raid leader will get feedback in 30 seconds on
+    all the players who were not ready or who did not respond. Only raid
+    leaders can do this.
+
+Looting Edit
+
+/ffa
+    Changes the looting method to Free For All if you are the party leader.
+
+/group
+    Changes the looting method to Group Loot if you are the party leader.
+
+/master [player]
+    Changes the looting method to Master Looter with [player] or your
+    current target if you are the party leader.
+
+/needbeforegreed
+    Changes the looting method to Need Before Greed if you are the party
+    leader.
+
+/roundrobin
+    Changes the looting method to Round Robin if you are currently the party
+    leader.
+
+Guild Commands Edit
+
+Guild commands are used to handle various guild functions such as inviting
+people to the guild, leaving the guild, promoting and demoting members, and
+other various functions.
+
+/gdisband, /guilddisband
+    Disbands the entire guild. You must be the guild leader to use this.
+
+/ghelp, /guildhelp
+    This command appears to have been removed, but it would display the
+    following:
+
+    For now, to create a guild type 'guildcreate <guild name>' in the
+    console.
+
+        '/ginfo' gives some basic information about your guild
+        '/g <message>' sends a chat message to all members of your guild
+        '/o <message>' sends a chat message to all officers in your guild
+        '/ginvite <player>' invites another player to join your guild
+        '/gremove <player>' removes a player from your guild
+        '/gpromote <player>' promotes a player one rank within your guild
+        '/gdemote <player>' demotes a player one rank within your guild
+        '/gmotd <message>' sets the guild's message of the day
+        '/gquit' removes you from your guild
+        '/groster' gives an entire guild roster
+        '/gleader <player>' sets another player as the guild leader
+        '/gdisband' disbands your guild
+
+/ginfo, /guildinfo
+    Gives basic information about your guild.
+
+/ginvite, /guildinvite [player]
+    Invites [player] or your current target into your guild. You must be an
+    officer to use this command.
+
+/gleader, /guildleader [player]
+    Changes the guild leader to [player] or your current target. The player
+    must already be a guild member. Only the guild leader can use this.
+
+    Note: The new guildleader does not need to be online at the moment you
+    want to give it, anymore (patch 4.0.6).
+
+/gquit, /guildquit
+    Leaves your current guild.
+
+/gmotd, /guildmotd <message>
+    Changes the guild Message of the Day to <message>. You must be an
+    officer to use this command.
+
+/gpromote, /guildpromote [player]
+    Promotes [player] or your current target.
+
+/gdemote, /guilddemote [player]
+    Demotes [player] or your current target.
+
+/groster, /guildroster
+    Displays the guild roster
+
+/gremove, /guildremove
+    Removes [player] or your current target from your guild. You must be an
+    officer to use this command.
+
+/saveguildroster
+    Saves a GuildRoster.txt (tsv dos file) in \World of Warcraft\Logs\
+    Name Level Class Location Rank Note Timestamp (0=online) in tab
+    separated format.
+
+Channel Commands Edit
+
+These are commands use to manipulate channels. Channels are very similar to
+IRC rooms. General, Trade, and LocalDefense are all examples of channels,
+but the /join command can be used to create arbitrary server-wide channels.
+
+<channel> below is a numeric channel number that is defined when you enter
+the channel. You can list current channel numbers using /chatlist. (You can
+also use the channel name?) <channelname> on the other hand is a named
+channel. Channels are unique to a given faction. Channel names cannot
+contain spaces.
+
+/ann, /announce <channel>
+    Toggles announcing when players enter or leave <channel>.
+
+/ban
+    Removes and prevents <player> from joining <channel>. See /unban for the
+    reverse. Only <channel&gt moderator and owner can do this.
+
+/c, /csay <channel> <message>
+    Sends <message> to all players in <channel>. This does not use your
+    current language. You can also use /# (where # is the channel number) to
+    send a message to <channel>.
+
+/chatinvite, /cinvite <channel> <player>
+    Invites <player> to <channel>?
+
+/chan, /channel, /join <channelname> [password]
+    Joins <channel>, with an optional password if the channel is password
+    protected.
+
+/chat, /chathelp
+    Displays the following information about the commands within this
+    section:
+
+        Chat commands:
+        /#, /c, /csay - Send text to channel # (E.G. /1 Hi!)
+        /chat, /chathelp - This help
+        /join, /channel, /chan - Join a channel
+        /leave, /chatleave, /chatexit [channel] - Leave a channel (or all
+            channels)
+        /chatlist, /chatwho, /chatinfo [channel] - List channels, or channel
+            members
+        /password, /pass <channel> <password> - Change password
+        /owner <channel> [player] - Display or change channel owner
+        /mod, /moderator, /unmod, /unmoderator <channel> <player> - change a
+            player's moderator status
+        /mute, /squelch, /unvoice, /unmute, /unsquelch, /voice <channel> <
+            player> - change a player's permission
+        /cinvite, /chatinvite <channel> <player> - invite a player to a
+            channel
+        /ckick <channel> <player> - kick a player off a channel
+        /ban, /unban <channel> <player> - ban/unban a player from a channel
+        /announcements, /ann <channel> - toggle join/leave announcements on
+            a channel
+        /moderate <channel> - toggle moderation on a channel
+        /afk, /dnd - Set your Away From Keyboard or Do Not Disturb flags
+
+/chatexit, /chatleave, /leave [channel]
+    Leaves all channels or only [channel] if specified.
+
+/chatinfo, /chatlist, /chatwho [channel]
+    Lists available channels, or players in [channel] if specified.
+
+/ckick <channel> <player>
+    Kicks <player> from <channel>. (You need to be a moderator to do this?)
+
+/mod, /moderator <channel> <player>
+    Grants <player> moderator status on <channel>. See /unmoderator for the
+    reverse. (You need to be channel owner to do this?)
+
+/mute, /squelch, /unvoice <channel> <player>
+    Prevent <player> from speaking in <channel>. See /unmute for the reverse.
+
+/owner <channel> [player]
+    Displays the owner of <channel> if [player] isn't given. If [player] is
+    given, then grants [player] ownership of <channel>? (You need to be
+    channel owner to do this?)
+
+/pass, /password <channel> <password>
+    Sets the password for <channel> to <password>
+
+/unban <channel> <player>
+    Allows <player> to join <channel>. See /ban for the reverse. (You need
+    to be a moderator to do this?)
+
+/unmod, /unmoderator <channel> <player>
+    Revokes <player>'s moderator status on <channel>. See /moderator for the
+    reverse. (You need to be channel owner to do this?)
+
+/unmute, /unsquelch, /voice <channel> <player>
+    Allow <player> to speak in <channel>. See /mute for the reverse. (You
+    need to be a moderator to do this?)
+
+PVP Edit
+
+/pvp
+    Activates the PvP Flag.
+
+/duel [player]
+    Attempts to start a duel with [player] or your current target. The
+    player will have to accept the duel before it is started.
+
+/concede, /forfeit, /yield
+    Cancels a duel that's currently in progress.
+
+/teamquit [2v2, 3v3, 5v5]
+    Leave Arena Team
+
+/teamdisband [2v2, 3v3, 5v5]
+    Disband Arena Team
+
+/teaminvite [2v2, 3v3, 5v5] [player]
+    Invite [player] to your Arena Team
+
+/teamremove [2v2, 3v3, 5v5] [player]
+    Kick [player] from your Arena Team
+
+/teamcaptain [2v2, 3v3, 5v5] [player]
+    Sets new team leader
+
+Console / Scripting / Macros Edit
+
+/console <command>
+    Attempts to run <command> within the console. See Console variables.
+
+/run, /script <script>
+    Runs <script> as Lua script. See the World of Warcraft API.
+
+/m, /macro [macro]
+    Displays the macro frame. At one point it would run [macro] if
+    specified, but that ability is currently disabled.
+
+/macrohelp
+    Displays some information on how to create macros.
+
+/timetest [flag]
+    /timetest is a command that can be run to provide information on game
+    performance. If [flag] is specified as 0, the command will be turned
+    off. When the command is issued, the next time a player uses a flight
+    master to travel, certain statistics will be measured and displayed at
+    the end of that flight. All weather effects and spawns are shutdown
+    during the test.
+
+Other Fun and Useful Slash Commands Edit
+
+/ach
+    Brings up the Achievement window.
+
+See Emotes for a more complete list.
+
+/angry
+/attacktarget [target]
+/bark
+/beckon [target]
+/beg [target]
+/bite [target]
+/blink
+/blood
+/blow
+/blush
+/boggle
+/bonk
+/bored
+/bow [target]
+/brb
+    Say you will "Be Right Back".
+/bye
+/cat
+/chicken [target]
+    Make a chicken bawking sound at someone.
+/charge
+/cheer [target]
+/chew
+/chuckle [target]
+/clap
+/cold
+/congratulate
+/comfort [target]
+/cough [target]
+/cower
+/cry [target]
+/curtsey [target]
+/dance [target]
+/drink
+/drool [target]
+/doh
+/doom [target]
+/eat
+/eye [target]
+/excited
+/facepalm
+/farewell
+/fart [target]
+/fear
+/flee
+/flirt [target]
+/flap [target]
+    Same concept to /chicken command.
+/flex
+/followme
+/gasp [target]
+/giggle
+/gloat [target]
+/golfclap [target]
+/goodbye
+/greet [target]
+/grin [target]
+/groan [target]
+/growl
+/guffaw [target]
+/happy [target]
+/healme
+/hello
+/helpme
+/hi
+/highfive [target]
+/hug [target]
+/jealous
+/kiss [target]
+/kneel [target]
+/laugh [target]
+/lay [target]
+    You lie down.
+
+/lick lips
+
+You lick your lips.
+
+/lie [target]
+    you lie down
+/lol
+/lost
+/love [target]
+/map
+/massage [target]
+/moan [target]
+/mock [target]
+/moo [target]
+    you moo
+/moon [target]
+/mourn [target]
+/no
+/nod
+/oom
+    out of mana (spoken and emoted)
+/pat
+/pet
+/pick [target]
+/played
+    tells you how long you have played in total and at your current level
+/plead
+/point [target]
+    point at something
+/poke [target]
+/ponder [target]
+/praise
+/pray
+/question
+/rasp
+    changes on what race and gender you are
+/rawr
+/roar [target]
+/rofl [target]
+/ruffle [target]
+/scratch [target]
+    /search [target]
+/sexy
+/shake
+/shindig [target]
+/shoo [target]
+/shrug
+/shy
+/sigh [target]
+/silly [target]
+    tell a joke
+/sing
+/sit
+    sit down
+/slap [target]
+/sleep
+/smile [target]
+/smirk [target]
+/sniff [target]
+/sorry [target]
+/spit [target]
+/stand
+    get up from '/kneel'
+/stink [target]
+/tap [target]
+/taunt [target]
+/tease
+/thank [target]
+/threaten [target]
+/tickle [target]
+/train
+    choo choo sounds
+/usetalents [spec number]
+    patch 3.1 dual spec. /usetalents 1 or /usetalents 2
+/victory [target]
+/violin [target]
+/wave [target]
+/wait [target]
+/wink [target]
+/welcome
+/woot
+    makes you cheer
+/wrath [target]
+/yawn [target]
+/yay
+/yes

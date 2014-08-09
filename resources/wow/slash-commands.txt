@@ -1,0 +1,536 @@
+PvP commands
+
+    Arena
+
+    teamcaptain - /teamcaptain,/tcaptain - Sets the captain of an arena team
+        you are in.
+    teamdisband - /teamdisband,/tdisband - Disbands an arena team you are in.
+    teaminvite - /teaminvite,/tinvite - Invites a member to your arena team.
+    teamquit - /teamquit,/tquit - Leaves an arena team you are in.
+    teamremove - /teamremove,/tremove - Removes a member of a team you are
+        in from that team.
+
+Battlegrounds
+
+    wargame - /wargame,/wg - Starts a War Game.
+
+Blizzard Interface commands
+
+    These functions open a part of the Blizzard Interface
+
+    achievements - /ach,/achieve,/achievement,/achievements - Opens the
+        Achievements interface.
+    calendar - Opens the Calendar interface.
+    guildfinder - /guildfinder,/gf - Opens the Guild Finder tool.
+    lfg - /lfg,/lfd,/df,/dungeonfinder - Opens the Dungeon Finder interface.
+    lfr - /lfr,/raidbrowser,/rb,/or,/otherraids - Opens the Raid Browser.
+    macro - /macro,/m - Opens the Macro interface.
+    stopwatch - /stopwatch,/timer,/sw - Opens the Stopwatch interface.
+
+Chat commands
+
+    afk - /afk,/away - Marks you as "Away From Keyboard".
+    announce - /announce,/ann - Toggle channel announcements.
+    ban - Bans a user from a user-created chat channel.
+    battleground - /battleground,/bg - Sends a chat message to your
+        battleground.
+    csay - /c,/csay - Sends chat text to a channel.
+    chatinvite - /cinvite,/chatinvite - Invite a user to a user-created chat
+        channel.
+    chatlist - /chatlist,/chatwho,/chatinfo - Displays a list of users in a
+        chat channel, or what channels you are currently a member of.
+    chatlog - Enables/disables chat logging.
+    combatlog - Enables/disables combat logging.
+    chathelp - /chat,/chathelp - Displays a list of commonly used chat
+        commands.
+    ckick - Kicks a user from a user-created chat channel.
+    emote - /emote,/em,/e,/me - Perform an emote with the given text.
+    dnd - /dnd,/busy - Marks you as "Do Not Disturb".
+    guild - /guild,/g,/gc - Sends a chat message to your guild.
+    instance - /instance,/i - Sends a chat message to the group of your
+        instance (raidfinder etc.)
+    join - /join,/channel,/chan - Joins or creates a user-created chat
+        channel.
+    leave - /leave,/chatleave,/chatexit - Leaves a user-created chat channel.
+    moderator - /mod,/moderator - Sets moderation in a user-created chat
+        channel.
+    mute - /mute,/squelch,/unvoice - Prevents a user from speaking (voice or
+        text) in a user-created chat channel.
+    officer - /officer,/o,/osay - Sends a chat message to your guild's
+        officer channel.
+    owner - Displays or changes the owner of a user-created chat channel.
+    password - /password,/pass - Sets or removes a password on a user-
+        created chat channel.
+    party - /party,/p - Sends a chat message to your party.
+    raid - /raid,/rsay - Sends a chat message to your raid.
+    raidwarning - /raidwarning,/rw - Sends a raid warning to your raid.
+    reply - /r,/reply - Replies to the last user to send you a whisper with
+        a message.
+    resetchat - /resetchat - Resets chat settings to default.
+    say - /say,/s - Sends a chat message to players in your immediate local
+        area.
+    unban - Unbans a user from a user-created chat channel.
+    unmoderator - /unmod,/unmoderator - Removes moderation from a user-
+        created chat channel.
+    unmute - /unmute,/unsquelch,/voice - Allows a user to speak (voice or
+        text) in a user-created chat channel.
+    whisper - /whisper,/w,/tell,/t,/send - Sends a private chat message to a
+        player in a whisper.
+    yell - /yell,/y,/sh,/shout - Sends a chat message to all players in your
+        zone.
+
+Character commands
+
+These commands affect your character's status, social interaction, movement,
+or actions
+
+    dismount - Dismounts your character
+    equip - /equip, /eq - Equip an item to its default slot.
+    equipset - /equipset - Change equipped items to a set stored in the
+        Equipment Manager
+    equipslot - Equip an item to a specific slot.
+    friend - /friend,/friends - Adds a player to your Friends list.
+    follow - /f,/follow,/fol - Set yourself to follow the selected target
+    ignore - Adds a player to your ignore list
+    inspect - /ins,/inspect - Opens the Inspection interface of the selected
+        target.
+    leavevehicle - Allows your character to exit their current vehicle.
+    randompet - Summons a random companion pet (non-combat pet).
+    removefriend - /removefriend,/remfriend - Removes a friend from your
+        friend list.
+    settitle - Sets the active title for your character.
+    trade - Opens the trade interface with your current target.
+    unignore - Removes a player from your ignore list
+    usetalents - Swap to a saved talent spec.
+
+Emotes
+
+These commands generally cause a character to 'act out' or emote.
+
+May be abreviated to any shorter length, so long as there is no other
+conflicting command name or abbreviated command name. For example '/
+congratulate' can be typed as '/cong'.
+Key: * does nothing, + has sound, % has unique animation, @ only when
+mounted (varies by mount)
+
+    absent
+    agree
+    amaze
+    angry, mad
+    apologize, sorry
+    %applaud, applause, bravo
+    arm
+    +attacktarget
+    awe
+    backpack
+    badfeeling, bad
+    bark
+    bashful
+    beckon
+    %beg
+    bite
+    blame
+    blank
+    bleed, blood
+    blink
+    blush
+    boggle
+    bonk, doh
+    bored
+    bounce
+    %bow
+    brandish
+    brb
+    breath
+    brow
+    burp, belch
+    +bye, goodbye, farewell
+    cackle
+    calm
+    challenge
+    +charge
+    charm
+    +cheer
+    %chicken, flap, strut
+    chuckle
+    chug
+    clap
+    cold
+    comfort
+    commend
+    confused
+    +grats, congrats
+    cough
+    coverears
+    crack, knuckles
+    cringe
+    crossarms
+    %cry, sob, weep
+    cuddle, spoon
+    curious
+    curtsey
+    %dance
+    ding
+    disagree
+    doubt
+    drink, shindig
+    drool
+    duck
+    %eat, chew, feast
+    embarrass
+    encourage
+    enemy
+    eye
+    eyebrow
+    facepalm, palm
+    faint
+    fart
+    %fear, cower
+    fidget, impatient
+    %flex, strong
+    +%flirt
+    flop
+    +followme
+    frown, disappointed
+    gasp
+    gaze
+    giggle
+    glare
+    gloat
+    glower
+    go
+    going
+    golfclap
+    greet, greetings
+    grin, wicked, wickedly
+    groan
+    grovel, peon
+    growl
+    guffaw
+    hail
+    happy, glad, yay
+    headache
+    +healme
+    +hello, hi
+    +helpme
+    hiccup
+    highfive
+    hiss
+    holdhand
+    hug
+    hungry, food, pizza
+    hurry
+    idea
+    +incoming, inc
+    insult
+    introduce
+    jealous
+    jk
+    %kiss, blow
+    %kneel
+    %laugh, lol
+    lavish, praise
+    laydown, liedown, lay, lie
+    lick
+    listen
+    look
+    lost
+    love
+    luck
+    map
+    massage
+    mercy
+    moan
+    mock
+    moo
+    moon
+    @mountspecial
+    mourn
+    mutter
+    nervous
+    +no
+    +nod, yes
+    nosepick, pick
+    object, holdit
+    offer
+    +oom
+    +openfire
+    pack
+    panic
+    pat
+    peer
+    pet
+    pinch
+    pity
+    plead
+    %point
+    poke
+    ponder
+    pounce
+    pout
+    pray
+    promise
+    proud
+    pulse
+    punch
+    purr
+    puzzled
+    raise, volunteer
+    +rasp
+    ready, rdy
+    regret
+    +retreat, flee
+    revenge
+    %roar, rawr
+    rofl
+    rolleyes, eyeroll
+    %rude
+    ruffle
+    sad
+    %salute
+    scared
+    scoff
+    scold
+    scowl
+    scratch, cat, catty
+    search
+    sexy
+    shake, rear
+    shakefist, fist
+    shifty
+    shimmy
+    %shindig
+    shiver
+    shoo, pest
+    shout, holler
+    shrug
+    shudder
+    %shy
+    sigh
+    signal
+    silence, shush
+    +silly
+    sing
+    %sit
+    slap
+    %sleep
+    smack
+    smile
+    smirk
+    snap
+    snarl
+    sneak
+    sneeze
+    snicker
+    sniff
+    snort
+    snub
+    soothe
+    spit
+    spoon
+    squeal
+    stand
+    stare
+    stink, smell
+    surprised
+    surrender
+    suspicious
+    sweat
+    %talk
+    talkex, excited
+    talkq, question
+    tap
+    taunt
+    tease
+    +thank, thanks, ty
+    think
+    thirsty
+    threaten, doom, wrath
+    tickle
+    tired
+    +train
+    truce
+    twiddle
+    *unused
+    veto
+    victory
+    violin
+    +wait
+    warn
+    %wave
+    +welcome
+    whine
+    whistle
+    wink
+    %woot
+    work
+    %yawn
+
+Combat commands
+
+These functions pertain to combat
+
+    cancelaura - Cancels (turns off) an aura you have.
+    cancelqueuedspell - /cancelqueuedspell,/cqs - Cancels casting of the
+        spell you have in the queue.
+    cancelform - Cancels your current shapeshift form.
+    cast - /cast,/spell,/use - Uses the given item or casts the given spell.
+    castglyph - Activates a glyph.
+    castrandom - /castrandom,/userandom - Casts a random spell from the
+        given list.
+    castsequence - Casts the given spells in sequential order.
+    changeactionbar - Changes your current action bar page.
+    duel - Challenge another player to a duel
+    forfeit - /forfeit,/yield,/concede - Forfeit a duel.
+    pvp - Sets whether or not you are attackable by other players.
+    startattack - Turns on auto-attack.
+    stopattack - Turns off auto-attack.
+    stopcasting - Stops casting or channeling.
+    swapactionbar - Swaps between two given action bars.
+
+Guild commands
+
+    guilddemote - /gdemote,/guilddemote - Demotes a guild-member.
+    guilddisband - /gdisband,/guilddisband - Disbands a guild.
+    guildinfo - /ginfo,/guildinfo - Displays information about your guild.
+    guildinvite - /ginvite,/guildinvite - Invites a player to join your
+        guild.
+    guildleader - /gleader,/guildleader - Makes another guild member the new
+        Guild Master.
+    guildquit - /gquit,/guildquit - Removes your character from your current
+        guild.
+    guildmotd - /gmotd,/guildmotd - Sets the guild Message of the Day.
+    guildpromote - /gpromote,/guildpromote - Promotes a guild member to the
+        next higher rank.
+    guildroster - /groster,/guildroster - Opens the Guild window.
+    guildremove - /guildremove,/gremove,/gkick - Removes a member of your
+        guild from your guild.
+
+Party and Raid commandsEdit
+
+    clearmainassist - /clearmainassist,/clearma,/mainassistoff,/maoff -
+        Clears the current Main Assist.
+    clearmaintank - /clearmaintank,/clearmt,/maintankoff,/mtoff - Clears the
+        current Main Tank.
+    clearworldmarker - /clearworldmarker,/cwm - Clears world markers
+    invite - /i,/inv,/invite - Invites a player to your party or raid.
+    ffa - Sets the loot method for your raid/party to Free-For-All.
+    group - Sets the loot method for your raid/party to Group Loot.
+    master - Sets the loot method for your raid/party to Master Loot.
+    mainassist - /mainassist,/ma - Set the main assist.
+    maintank - /maintank,/mt - Set the main tank.
+    needbeforegreed - Sets the loot method for your raid/party to Need
+        Before Greed.
+    promote - /pr,/promote - Promotes the given member to Party or Raid
+        leader.
+    raidinfo - Shows you what instances you are saved to, along with the
+        Instance ID.
+    readycheck - Performs a ready check in your raid or party.
+    roundrobin - Sets the loot method for your raid/party to Round Robin.
+    targetmarker - /targetmarker,/tm - Sets or clears a target marker from
+        your current target.
+    threshold - Sets the loot threshold to apply loot rules.
+    uninvite - /uninvite,/u,/un,/kick,/votekick - Removes a player from your
+        current party or raid.
+    worldmarker - /worldmarker,/wm - Allows placement of world markers.
+
+Pet commands
+
+    DISABLED petaggressive - Sets pet to aggressive mode. (deprecated in
+        version 4.2)
+    petassist - Sets pet to assist mode. (added in version 4.2)
+    petattack - Sends pet to attack currently selected target.
+    petautocastoff - Turn off autocast for a pet spell.
+    petautocaston - Turn on autocast for a pet spell.
+    petautocasttoggle - Toggle autocast for a pet spell.
+    petdefensive - Set pet to defensive.
+    petfollow - Set pet to follow you.
+    petmoveto - Set pet to move to and stay at a hover-targeted location.
+    petpassive - Set pet to passive mode.
+    petstay - Set pet to stay where it is at.
+
+System commands
+
+    console - Allows user to view or change global client-side options, or
+        perform certain system commands.
+    click - Simulate a mouse click on a button.
+    disableaddons - Disables all addons and reloads the UI.
+    dump - Displays the value of a given variable.
+    enableaddons - Enables all addons and reloads the UI.
+    eventtrace - /eventtrace,/etrace - Allows the user to trace events in-
+        game.
+    framestack - /framestack,/fstack - Allows the user to see all frames
+        under the cursor.
+    help - /h,/help,/? - Displays a help message with some basic commands.
+    logout - /camp,/logout - Logs your character out of the game, back to
+        the character selection screen.
+    macrohelp - Displays a help message with basic information about
+        creating and using macros.
+    played - Displays information about your character's time logged in.
+    quit - /quit,/exit - Exits the game.
+    random - /random,/rand,/rnd,/roll - Generates a random number from 1 to
+        100. "/random X" rolls a number from 1 to X, "/random X Y" rolls a
+        number from X though Y.
+    reload - Reloads the User Interface.
+    script - /script,/run - Runs a block of LUA code.
+    stopmacro - Stop processing the current macro.
+    time - Displays the current time
+    timetest - Used for benchmarking, also shows FPS.
+    who - Shows you a list of people matching filtering options.
+
+Targeting functionsEdit
+
+    assist - /assist,/a - Targets a player's target.
+    clearfocus - Clears the current focus target.
+    cleartarget - Clears the current target.
+    focus - Set a focus target
+    target - /target,/tar - Target the given unit by name.
+    targetenemy - Target the given hostile unit by name.
+    targetenemyplayer - Target the given hostile player by name.
+    targetexact - Target the unit by exact name match.
+    targetfriend - Target the friendly unit by name.
+    targetfriendplayer - Target the friendly player by name.
+    targetlastenemy - Target the last attackable unit you had selected.
+    targetlastfriend - Target the last friendly unit you had selected.
+    targetlasttarget - Target the target of the last unit you had selected.
+    targetparty - Target a party member by name.
+    targetraid - Target a raid member by name.
+
+Disabled commands
+
+The following commands are listed in the environment, except where noted,
+but appear to be disabled or deprecated. If you find differently, please
+move to the appropriate section and write a comment on it.
+
+    DISABLED gwho - /gwho,/whoguild,/glist - ? Either predates who command's
+        more advanced options, or was intended to list guilds. No handler is
+        defined for this.
+    DISABLED greplace - ? Possibly used by GMs to replace an inactive Guild
+        Leader
+    DISABLED guildhelp - /guildhelp,/ghelp - A help text for guild commands;
+        however, the SlashCmdList function is commented out in
+        FrameXML\ChatFrame.lua, so it is not active in-game.
+    REMOVED lfm - Opened the Looking For More interface prior to patch 3.3. (
+        removed completely in patch 4.0).
+    DISABLED moderate - ? Possibly used to set whether a channel was
+        moderated, this feature was moved into the /moderator command.
+    REMOVED mount - Deprecated in WotLK, use /cast now.
+    DISABLED petaggressive - aggressive AI was replaced with assist. (
+        deprecated in 4.2)
+    DISABLED saveguildroster - Saves the Guild Roster as a text file (
+        disabled in 3.2.2 due to the implementation of the Armory).
+    DISABLED token - /token,/tk - ? Not sure what this was intended to be
+    DISABLED v - ? Voice macro, possibly reserved for future use as a voice
+        command
+
+MetacommandsEdit
+
+Metacommands pass data to the WoW client to affect its appearance on the
+action bar. Metacommands are preceded by a "#" symbol. Unknown metacommands
+will be silently ignored.
+
+    show - Affects the button's icon on the Action Bar.
+    showtooltip - tooltip - Affects the button's icon and tooltip on the
+        Action Bar.
+    showcooldown - Affects the button's cooldown display on the Action Bar. (
+        not a real command, this executes as "#show")
