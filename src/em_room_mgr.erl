@@ -45,7 +45,7 @@ new_room(Name) ->
 
 init([]) ->
   ets:new(?TABLE_ID, [protected, named_table]),
-  refresh(em_room_pool_sup:which_children()),
+  refresh('lmud-room-pool-sup':which_children()),
   {ok, #state{}}.
 
 handle_call({get_room, Name}, _From, State) ->
@@ -89,7 +89,7 @@ do_new_room(Name) ->
 make_new_room(Name) ->
   Title = "A non-descript room",
   Brief = "This is a rather boring room, someone should fix that.",
-  {ok, Room} = em_room_pool_sup:start_child(Name, Title, Brief),
+  {ok, Room} = 'lmud-room-pool-sup':start_child(Name, Title, Brief),
   ets:insert(?TABLE_ID, {Name, Room}),
   {ok, Room}.
 
@@ -129,7 +129,7 @@ make_room(Filename, Data) ->
          end,
   Resets = proplists:get_value(objects, Data, []),
   Obs = em_object:load_obs(Resets),
-  {ok, Room} = em_room_pool_sup:start_child(Name, Title, Desc),
+  {ok, Room} = 'lmud-room-pool-sup':start_child(Name, Title, Desc),
   em_room:set_long(Room, Long),
   add_exits(Room, Exits),
   add_objects(Room, Obs),
