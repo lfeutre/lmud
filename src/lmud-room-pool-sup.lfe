@@ -18,13 +18,13 @@
 
 (defun init
   (('())
-     `#(ok #(#(one_for_one 5 10)
-              `(#(em_room
-                  #(em_room start_link ())
-                  temporary
-                  brutal_kill
-                  worker
-                  (em_room)))))))
+     `#(ok #(#(simple_one_for_one 0 1)
+              (#(em_room
+                 #(em_room start_link ())
+                 temporary
+                 brutal_kill
+                 worker
+                 (em_room)))))))
 
 ; init([]) ->
 ;   Room = {em_room, {em_room, start_link, []},
