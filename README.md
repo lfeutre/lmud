@@ -87,10 +87,10 @@ that taken care of, follow these steps:
       An El-MUD Game Server, v0.4.0
 
 
-------------------------------------------------------------------------------
-  If you are loging in for the first time, enter the character name
-  you would like to have (case insensitive) at the "Login" prompt.
-------------------------------------------------------------------------------
+      ------------------------------------------------------------------------------
+        If you are loging in for the first time, enter the character name
+        you would like to have (case insensitive) at the "Login" prompt.
+      ------------------------------------------------------------------------------
 
 
       Login:
