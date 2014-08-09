@@ -10,6 +10,7 @@ ErlyMUD Change Log
 * Added TinyMUSH aliases for :, ;, \\ and ".
 * Added ' and PAGE as aliases for WHISPER/TELL.
 * Added color output to most of the talk and emote functions.
+* Converted many of the smaller Erlang modules to LFE.
 
 
 0.3.5
