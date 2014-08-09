@@ -11,6 +11,47 @@ Usability
 * [ ] Add readline support.
 
 
+Command Parsing
+---------------
+
+Support the following usage workflow:
+
+1. [ ] Enter a command in the MUD
+1. [ ] The command is checked against a list of aliases
+1. [ ] If matched, the actual command is used instead of the alias
+1. [ ] Command and args are parsed
+1. [ ] Appropriate mod:finc + args is called
+1. [ ] Results of call are printed to terminal session
+
+Support the following development workflow:
+
+* [ ] Base commands as well as aliases have metadata for which group of
+      commands they belong to (useful for printing help and extended help
+      for commands)
+* [ ] A base module exists which has a list of all supported commands +
+      help text + mod:func they dispatch to
+* [ ] A new module is created with a list of aliases + actual command names
+* [ ] A data amalgamation function is updated to include calling the data
+      function of the new module, adding its aliases/commands to the list of
+      command data
+* [ ] A parsing function pulls in the base commands as well as all the
+      defined aliases in the alias modules and the aliases are mapped to
+      actual mod:func
+* [ ] parse_cmd checks the passed command (from user input) against this data
+      structure to see if alias, if base command, which mod:func to call
+
+Support the following command-related commands
+
+* [ ] help (and aliases) - display base commands only
+* [ ] help aliases - display all aliases, grouped by type (e.g., IRC, WoW,
+      etc.)
+* [ ] help commands - display aliases as well as base commands
+* [ ] a function will be needed to list the command, it's help, its
+      destination module, it's destination function, the lowest permission
+      role allowed in order to call it, and maybe its aliases as well ...
+* [ ] possibly an is-alias function?
+
+
 Breakout and dependencies
 -------------------------
 
