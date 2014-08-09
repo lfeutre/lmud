@@ -42,6 +42,6 @@ run:
 clean: $(LMUD_UTIL)
 clean: REL=$(shell $(GET_NAME_CMD))-$(shell $(GET_VERSION_CMD))
 clean:
-	-rm $(REL).rel $(REL).boot $(REL).script erl_crash.dump
+	-rm $(REL).rel $(REL).boot $(REL).script erl_crash.dump $(EBIN)/*.beam
 
 clean-run: clean rel run
