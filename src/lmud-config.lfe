@@ -1,6 +1,8 @@
 (defmodule lmud-config
   (export all))
 
+(defun wrap-width () 64)
+
 (defun banner-1 ()
 '"
           ___       ___           ___           ___
