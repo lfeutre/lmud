@@ -9,6 +9,7 @@ ERL_START=erl -pa $(EBIN) -pa $(LFE_DEPS) -noshell -eval
 ERL_END=-s erlang halt
 
 GET_NAME_CMD=$(ERL_START) "'lmud-util':'print-name'()." $(ERL_END)
+GET_PORT_CMD=$(ERL_START) "'lmud-util':'print-port'()." $(ERL_END)
 GET_VERSION_CMD=$(ERL_START) "'lmud-util':'print-version'()." $(ERL_END)
 REL_CONTENT_CMD=$(ERL_START) "'lmud-util':'print-release-data'()." $(ERL_END)
 
@@ -45,3 +46,6 @@ clean:
 	-rm $(REL).rel $(REL).boot $(REL).script erl_crash.dump $(EBIN)/*.beam
 
 clean-run: clean rel run
+
+connect:
+	rlwrap telnet localhost $(shell $(GET_PORT_CMD))
