@@ -26,6 +26,9 @@
 (defun get-port ()
   (proplists:get_value 'port (get-sys-cfg)))
 
+(defun print-port ()
+  (io:format "~p~n" (list (get-port))))
+
 (defun get-desc ()
   (proplists:get_value 'description (element 3 (get-app-src))))
 
