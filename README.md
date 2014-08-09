@@ -34,15 +34,18 @@ that taken care of, follow these steps:
      $ git clone https://github.com/lfex/lmud.git
      ```
 
-  1. Change directory, compile the source, make a release, and start up λMUD:
+  1. Change directory, compile the source, and make a release:
 
      ```sh
      $ cd lmud
-     $ make run
+     $ make rel
      ```
 
-     Note that ``make run`` compiles the source and makes a release
-     implicitly.
+  1. Start up λMUD:
+
+     ```sh
+     $ make run
+     ```
 
   1. From another terminal, connect to the game:
 
