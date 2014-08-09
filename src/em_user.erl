@@ -9,9 +9,9 @@
 
 -behaviour(gen_server).
 
--export([start_link/2, 
+-export([start_link/2,
          has_privilege/2,
-         get_name/1, 
+         get_name/1,
          print/2, print/3,
          load/1]).
 
