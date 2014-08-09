@@ -43,7 +43,6 @@ that taken care of, follow these steps:
 
      Note that ``make run`` compiles the source and makes a release
      implicitly.
-     ```
 
   1. From another terminal, connect to the game:
 
