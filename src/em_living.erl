@@ -11,8 +11,8 @@
 -behaviour(gen_server).
 
 %% API
--export([start_link/2, start/2, stop/1, 
-         get_name/1, 
+-export([start_link/2, start/2, stop/1,
+         get_name/1,
          get_room/1, set_room/2,
          add_object/2, move_object/3, get_objects/1, remove_object/2,
          set_long/2, long/1,
@@ -20,11 +20,11 @@
          load/1, save/1]).
 
 %% gen_server
--export([init/1, handle_call/3, handle_cast/2, handle_info/2, 
+-export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
--record(state, {name="noname" :: living_name(), room::em_room:room_pid(), 
-                client::client(), long="" :: string(), 
+-record(state, {name="noname" :: living_name(), room::em_room:room_pid(),
+                client::client(), long="" :: string(),
                 objects=[] :: [em_object:object()]}).
 
 %% ==========================================================================
@@ -62,7 +62,7 @@ get_room(Pid) ->
 add_object(Pid, Ob) ->
   gen_server:call(Pid, {add_object, Ob}).
 
--spec move_object(living_pid(), em_object:object(), 
+-spec move_object(living_pid(), em_object:object(),
                   {to_room, em_room:room_pid()}) -> ok.
 move_object(Pid, Ob, Dest) ->
   gen_server:call(Pid, {move_object, Ob, Dest}).
@@ -183,24 +183,24 @@ code_change(_OldVsn, State, _Extra) ->
 %% Internal functions
 %% ==========================================================================
 
--spec do_move_object(em_object:object(), {to_room, em_room:room_pid()}, 
+-spec do_move_object(em_object:object(), {to_room, em_room:room_pid()},
                      #state{}) -> {ok, #state{}}.
 do_move_object(Ob, {to_room, Room}, #state{objects=Obs}=State) ->
   case lists:member(Ob, Obs) of
     false -> throw(not_found);
-    true -> 
+    true ->
       NewObs = lists:delete(Ob, Obs),
       ok = em_room:add_object(Room, Ob),
       {ok, State#state{objects = NewObs}}
   end.
 
--spec do_remove_object(em_object:object(), #state{}) -> 
+-spec do_remove_object(em_object:object(), #state{}) ->
         {ok, #state{}} | {{error, not_found}, #state{}}.
 do_remove_object(Ob, #state{objects=Obs}=State) ->
   do_remove_object(Ob, State, Obs, []).
 
 -spec do_remove_object(em_object:object(), #state{}, [em_object:object()],
-                       [em_object:object()]) -> 
+                       [em_object:object()]) ->
         {ok, #state{}} | {{error, not_found}, #state{}}.
 do_remove_object(_Ob, State, [], _Searched) ->
   {{error, not_found}, State};
@@ -220,7 +220,7 @@ do_load(#state{name=Name}=State) ->
 make_filename(Name) ->
   filename:join([em_game:data_dir(), "livings", Name ++ ".dat"]).
 
--spec load_living(file_path(), #state{}) -> 
+-spec load_living(file_path(), #state{}) ->
         {ok, #state{}} | {error, not_found}.
 load_living(Filename, State) ->
   io:format("loading living: ~s~n", [Filename]),
@@ -274,4 +274,4 @@ save_objects(State) ->
 -spec save_stringlist([string()]) -> iolist().
 save_stringlist(List) ->
   ["[", string:join([["\"",Str,"\""]||Str <- List], ", "), "]"].
-  
+
