@@ -1,28 +1,51 @@
-ERL_START=erl -pa ebin -noshell -eval
+EBIN=./ebin
+LFE_DEPS=./deps/lfe/ebin
+LFEC=./deps/lfe/bin/lfec -pa $(LFE_DEPS) -o $(EBIN)
+LFE_LIB=$(LFE_DEPS)/lfe_lib.beam
+CUSTOM_BEHAVES=$(EBIN)/lmud-event-listener.beam
+LMUD_UTIL=$(EBIN)/lmud-util.beam
+
+ERL_START=erl -pa $(EBIN) -pa $(LFE_DEPS) -noshell -eval
 ERL_END=-s erlang halt
+
 GET_NAME_CMD=$(ERL_START) "'lmud-util':'print-name'()." $(ERL_END)
 GET_VERSION_CMD=$(ERL_START) "'lmud-util':'print-version'()." $(ERL_END)
 REL_CONTENT_CMD=$(ERL_START) "'lmud-util':'print-release-data'()." $(ERL_END)
 
-PROJ_NAME=$(shell $(GET_NAME_CMD))
-VERSION=$(shell $(GET_VERSION_CMD))
-REL=$(PROJ_NAME)-$(VERSION)
-REL_FILE=$(REL).rel
 
-MK_REL_CMD=$(ERL_START) "systools:make_script(\"$(REL)\", [local])." $(ERL_END)
-
-compile:
+$(LFE_LIB):
 	rebar get-deps
+	@cp src/*.app.src ./ebin/ && mv ./ebin/*.app.src \
+	`ls -1 src/*.app.src|sed -e 's/\.src//g'|sed -e 's/src\//ebin\//g'`
+	cd deps/lfe && make compile
+
+$(LMUD_UTIL): $(LFE_LIB)
+	$(LFEC) src/{lmud-util,lmud-const}.lfe
+
+$(CUSTOM_BEHAVES): $(LFE_LIB)
+	$(LFEC) src/{lmud-event-source,lmud-event-listener}.lfe
+
+compile: $(CUSTOM_BEHAVES)
 	rebar compile
 
-$(REL_FILE):
-	$(REL_CONTENT_CMD) > $(REL_FILE)
+rel: $(LMUD_UTIL)
+rel: REL=$(shell $(GET_NAME_CMD))-$(shell $(GET_VERSION_CMD))
+rel: compile
+	$(REL_CONTENT_CMD) > $(REL).rel
+	$(ERL_START) "systools:make_script(\"$(REL)\", [local])." $(ERL_END)
 
-rel: compile clean $(REL_FILE)
-	$(MK_REL_CMD)
-
-run:
+run: $(LMUD_UTIL)
+run: REL=$(shell $(GET_NAME_CMD))-$(shell $(GET_VERSION_CMD))
+run: rel
 	erl -pa ./deps/color/ebin -boot ./$(REL)
 
+clean: $(LMUD_UTIL)
+clean: REL=$(shell $(GET_NAME_CMD))-$(shell $(GET_VERSION_CMD))
 clean:
-	-rm $(REL_FILE) $(REL).boot $(REL).script
+	-rm $(REL).rel $(REL).boot $(REL).script erl_crash.dump
+
+test: $(LMUD_UTIL)
+test: REL=$(shell $(GET_NAME_CMD))-$(shell $(GET_VERSION_CMD))
+test:
+	echo $(LMUD_UTIL)
+	echo $(REL)
