@@ -17,7 +17,7 @@
                ,(lmud-util:make-child 'lmud-room-sup 'supervisor)
                ,(lmud-util:make-child 'lmud-living-sup 'supervisor)
                ,(lmud-util:make-child 'em_user_sup 'supervisor)
-               ,(lmud-util:make-child 'em_session_sup 'supervisor)
+               ,(lmud-util:make-child 'lmud-session-sup 'supervisor)
                ,(lmud-util:make-child 'lmud-req-sup 'supervisor)
                ,(lmud-util:make-child 'lmud-conn-sup 'supervisor)
                ,(lmud-util:make-child 'lmud-acceptor-sup 'supervisor))))))

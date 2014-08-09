@@ -74,7 +74,7 @@ handle_info({tcp, Socket, RawData}, State) ->
 handle_info({tcp_closed, _Socket}, State) ->
   {stop, tcp_closed, State};
 handle_info(timeout, #state{socket=Socket}=State) ->
-  {ok, Session} = em_session_sup:start_child(self()),
+  {ok, Session} = 'lmud-session-sup':start_child(self()),
   link(Session),
   PrintFun = fun(Line) -> em_session:receive_line(Session, Line) end,
   TelnetSession = em_telnet:new(Socket, PrintFun),
