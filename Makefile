@@ -36,7 +36,7 @@ rel: compile
 
 run: $(LMUD_UTIL)
 run: REL=$(shell $(GET_NAME_CMD))-$(shell $(GET_VERSION_CMD))
-run: rel
+run:
 	erl -pa ./deps/color/ebin -boot ./$(REL)
 
 clean: $(LMUD_UTIL)
@@ -44,8 +44,4 @@ clean: REL=$(shell $(GET_NAME_CMD))-$(shell $(GET_VERSION_CMD))
 clean:
 	-rm $(REL).rel $(REL).boot $(REL).script erl_crash.dump
 
-test: $(LMUD_UTIL)
-test: REL=$(shell $(GET_NAME_CMD))-$(shell $(GET_VERSION_CMD))
-test:
-	echo $(LMUD_UTIL)
-	echo $(REL)
+clean-run: clean rel run
