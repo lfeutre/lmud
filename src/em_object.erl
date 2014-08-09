@@ -13,7 +13,7 @@
          add_id/2, add_primary_id/2, %add_plural/2,
          add_adj/2, add_primary_adj/2,
          set_name/2, % set_proper_name/2, set_plural/1, set_unique/1,
-         set_long/2,
+         set_desc/2,
          a_short/1, the_short/1,
 %         short/1, the_short/1, a_short/1, plural_short/1,
          long/1, show_in_room/1,
@@ -88,7 +88,7 @@ make_object([{primary_adj, Adj}|Data], Ob) ->
 make_object([{show_in_room, Desc}|Data], Ob) ->
   make_object(Data, set_show_in_room(Ob, Desc));
 make_object([{long, Long}|Data], Ob) ->
-  make_object(Data, set_long(Ob, Long));
+  make_object(Data, set_desc(Ob, Long));
 make_object([{is_attached, Flag}|Data], Ob) ->
   make_object(Data, set_attached(Ob, Flag));
 make_object([_Other|Data], Ob) ->
@@ -161,8 +161,8 @@ set_name(Ob, [LastToken], Ids, Adjs) ->
 set_name(Ob, [Token|Toks], Ids, Adjs) ->
   set_name(Ob, Toks, Ids, Adjs ++ [Token]).
 
--spec set_long(object(), string()) -> object().
-set_long(Ob, Long) ->
+-spec set_desc(object(), string()) -> object().
+set_desc(Ob, Long) ->
   Ob#object{long=Long}.
 
 -spec set_show_in_room(object(), string()) -> object().

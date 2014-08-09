@@ -130,7 +130,7 @@ make_room(Filename, Data) ->
   Resets = proplists:get_value(objects, Data, []),
   Obs = em_object:load_obs(Resets),
   {ok, Room} = 'lmud-room-pool-sup':start_child(Name, Title, Desc),
-  em_room:set_long(Room, Long),
+  em_room:set_desc(Room, Long),
   add_exits(Room, Exits),
   add_objects(Room, Obs),
   add_resets(Room, Resets),

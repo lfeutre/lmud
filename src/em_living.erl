@@ -15,7 +15,7 @@
          get_name/1,
          get_room/1, set_room/2,
          add_object/2, move_object/3, get_objects/1, remove_object/2,
-         set_long/2, long/1,
+         set_desc/2, long/1,
          cmd/2, print/2, print/3,
          load/1, save/1]).
 
@@ -23,8 +23,10 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
--record(state, {name="noname" :: living_name(), room::em_room:room_pid(),
-                client::client(), long="" :: string(),
+-record(state, {name="noname" :: living_name(),
+                room::em_room:room_pid(),
+                client::client(),
+                long="" :: string(),
                 objects=[] :: [em_object:object()]}).
 
 %% ==========================================================================
@@ -81,9 +83,9 @@ set_room(Pid, Room) when is_pid(Room) ->
 set_room(Pid, Room) when is_list(Room) ->
   gen_server:call(Pid, {set_room_str, Room}).
 
--spec set_long(living_pid(), string()) -> ok.
-set_long(Pid, Long) ->
-  gen_server:call(Pid, {set_long, Long}).
+-spec set_desc(living_pid(), string()) -> ok.
+set_desc(Pid, Long) ->
+  gen_server:call(Pid, {set_desc, Long}).
 
 -spec long(living_pid()) -> string().
 long(Pid) ->
@@ -140,7 +142,7 @@ handle_call({set_room_pid, Room}, _From, State) ->
 handle_call({set_room_str, RoomStr}, _From, State) ->
   {ok, Room} = em_room_mgr:get_room(RoomStr),
   {reply, ok, State#state{room=Room}};
-handle_call({set_long, Long}, _From, State) ->
+handle_call({set_desc, Long}, _From, State) ->
   {reply, ok, State#state{long=Long}};
 handle_call(long, _From, #state{long=Long}=State) ->
   {reply, Long, State};
@@ -260,7 +262,7 @@ do_save(#state{name=Name}=State) ->
 save_living(State) ->
   lists:flatten([
     "{version, 1}.\n",
-    "{long, \"", State#state.long, "\"}.\n",
+    "{long, ", State#state.long, "}.\n",
     "{room, \"", em_room:get_name(State#state.room), "\"}.\n",
     "{objects, ", save_objects(State), "}.\n"
   ]).

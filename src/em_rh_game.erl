@@ -17,8 +17,9 @@
          cmd_emote/2, cmd_em/2, cmd_me/2, cmd_pose/2, cmd_emote_ns/2,
          cmd_say/2, cmd_tell/2, cmd_whisper/2, cmd_page/2,
          cmd_think/2,
-         cmd_who/2, cmd_get/2, cmd_drop/2, cmd_inv/2, cmd_glance/2,
-         cmd_save/2, cmd_setlong/2, cmd_help/2, cmd_news/2,
+         cmd_who/2,
+         cmd_take/2, cmd_drop/2, cmd_inv/2, cmd_glance/2,
+         cmd_save/2, cmd_setdesc/2, cmd_help/2, cmd_news/2,
          cmd_redit/2, cmd_addexit/2,
          cmd_cast/2]).
 
@@ -62,6 +63,8 @@ parse_cmd("'", Args=[_,_|_], Line, Req) ->
   parse_cmd("tell", Args, Line, Req);
 parse_cmd("\\\\", Args=[_,_|_], Line, Req) ->
   parse_cmd("tell", Args, Line, Req);
+parse_cmd("get", Args, Line, Req) ->
+  parse_cmd("take", Args, Line, Req);
 parse_cmd(Cmd, Args, Line, Req) ->
   try list_to_existing_atom("cmd_" ++ string:to_lower(Cmd)) of
     Fun ->
@@ -152,21 +155,21 @@ do_drop(Ob, #req{living=Liv}=Req) ->
   end.
 
 %% Get
--spec cmd_get([string()], req()) -> cmd_ok().
-cmd_get([], Req) ->
-  print("Get what?\n", Req),
+-spec cmd_take([string()], req()) -> cmd_ok().
+cmd_take([], Req) ->
+  print("Take what?\n", Req),
   {ok, Req};
-cmd_get([Id|_Args], #req{living=Liv}=Req) ->
+cmd_take([Id|_Args], #req{living=Liv}=Req) ->
   Room = em_living:get_room(Liv),
   Obs = lists:filter(fun(Ob) -> not em_object:is_attached(Ob) end,
                      em_room:get_objects(Room)),
-  do_get(Id, Obs, Req),
+  do_take(Id, Obs, Req),
   {ok, Req}.
 
--spec do_get(string(), ob_list(), req()) -> ok.
-do_get(_Id, [], Req) ->
+-spec do_take(string(), ob_list(), req()) -> ok.
+do_take(_Id, [], Req) ->
   print("There's no such thing here.\n", Req);
-do_get(Id, [Ob|Obs], #req{living=Liv}=Req) ->
+do_take(Id, [Ob|Obs], #req{living=Liv}=Req) ->
   case em_object:has_id(Ob, Id) of
     true ->
       Name = em_living:get_name(Liv),
@@ -177,7 +180,7 @@ do_get(Id, [Ob|Obs], #req{living=Liv}=Req) ->
       em_room:print_except(Room, Liv, "~s takes ~s.~n", [Name, TheShort]),
       em_living:add_object(Liv, Ob);
     false ->
-      do_get(Id, Obs, Req)
+      do_take(Id, Obs, Req)
   end.
 
 %% Quit
@@ -226,7 +229,7 @@ do_look_ob(Id, [Ob|Obs], Req) ->
   case em_object:has_id(Ob, Id) of
     true ->
       Long = em_object:long(Ob),
-      print("~s\n", [em_text:wrapline(Long, 78)], Req),
+      print("~s\n", [em_text:wrapline(Long, 'lmud-config':'wrap-width'())], Req),
       ok;
     false ->
       do_look_ob(Id, Obs, Req)
@@ -239,7 +242,9 @@ do_look_liv(Id, [Liv|People], Req) ->
   case string:to_lower(em_living:get_name(Liv)) of
     Id ->
       Long = em_living:long(Liv),
-      print("~s\n", [em_text:wrapline(Long, 78)], Req),
+      Wrapped = em_text:wrapline(Long, 'lmud-config':'wrap-width'()),
+      print(Wrapped ++ "\n", [], Req),
+      %print("~s\n", [Long], Req),
       ok;
     _Other ->
       do_look_liv(Id, People, Req)
@@ -373,10 +378,10 @@ cmd_save(_Args, #req{living=Liv}=Req) ->
       {ok, Req}
   end.
 
-%% Setlong
--spec cmd_setlong([string()], req()) -> cmd_ok().
-cmd_setlong(Args, #req{living=Liv}=Req) ->
-  em_living:set_long(Liv, string:join(Args, " ")),
+%% setdesc
+-spec cmd_setdesc([string()], req()) -> cmd_ok().
+cmd_setdesc(Args, #req{living=Liv}=Req) ->
+  em_living:set_desc(Liv, io_lib:format("~p", [string:join(Args, " ")])),
   {ok, Req}.
 
 %% addexit
@@ -434,7 +439,7 @@ cmd_redit(["long", What|Rest], #req{living=Liv}=Req) ->
   ok = verify_privilege(admin, Req),
   Room = em_living:get_room(Liv),
   Long = string:join([What|Rest], " "),
-  em_room:set_long(Room, Long),
+  em_room:set_desc(Room, Long),
   ok = em_room:save(Room),
   {ok, Req};
 cmd_redit(_Args, Req) ->
@@ -498,7 +503,7 @@ cmd_help(_Args, Req) ->
   "\n" ++ 'lmud-config':'simple-welcome'() ++ "\n\n"
   "The following commands, more or less, are available right now:\n\n"
   "  drop <item>             Drop an item from your inventory.\n"
-  "  get <item>              Pick up an item in the room.\n"
+  "  take <item>             Pick up an item in the room.\n"
   "  glance                  View the brief description of the room.\n"
   "  look                    View the long description of the room.\n"
   "  look [person|item]      View description of person/item.\n"
@@ -519,7 +524,7 @@ cmd_help(_Args, Req) ->
   "  inv                     Show your inventory.\n"
   "  save                    Save your character, will remember your\n"
   "                            location and inventory for next login.\n"
-  "  setlong <desc>          Set the description others see when they\n"
+  "  setdesc <desc>          Set the description others see when they\n"
   "                            look at you.\n"
   "  who                     Display all logged in users.\n"
   "  news                    Display info about latest server changes, etc..\n"

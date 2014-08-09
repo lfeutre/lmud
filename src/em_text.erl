@@ -44,7 +44,7 @@ wrap(StrList, Len) ->
   Str = lists:flatten(StrList),
   Tokens = string:tokens(Str, " "),
   lists:reverse(wrap(Len, Tokens, [])).
-wrap(_Len, [], Result) ->
+wrap(_, [], Result) ->
   Result;
 wrap(Len, [Word|Rest], []) ->
   wrap(Len, Rest, [Word]);
@@ -52,7 +52,7 @@ wrap(Len, [Word|Rest], [Line|Result]) when length(Word) + length(Line) < Len ->
   wrap(Len, Rest, [string:join([Line, Word], " ")|Result]);
 wrap(Len, [Word|Rest], Result) ->
   wrap(Len, Rest, [Word|Result]).
-  
+
 
 %% ==========================================================================
 %% Tests
@@ -63,12 +63,12 @@ title_caps_test_() ->
    ?_assertMatch("Cats And Dogs", title_caps("cats and dogs"))
   ].
 
-wrap_test_() -> 
+wrap_test_() ->
   [?_assertMatch([], wrap("", 10)),
    ?_assertMatch(["cat"], wrap("cat", 10)),
-   ?_assertMatch(["the cat is", "chasing", "the dog"], 
+   ?_assertMatch(["the cat is", "chasing", "the dog"],
       wrap("the cat is chasing the dog", 10)),
-   ?_assertMatch(["the cat is", "chasing", "the dog"], 
+   ?_assertMatch(["the cat is", "chasing", "the dog"],
       wrap([["the "], ["cat is ", ["chasing the dog"]]], 10))
   ].
 

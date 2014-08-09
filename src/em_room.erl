@@ -14,7 +14,7 @@
 -export([start_link/3,
          add_exit/3, add_object/2, add_reset/2,
          get_exit/2, get_exits/1, get_name/1, get_objects/1, get_people/1,
-         set_title/2, set_brief/2, set_long/2,
+         set_title/2, set_brief/2, set_desc/2,
          remove_object/2,
          describe/1, describe_except/2, looking/2,
          enter/2, leave/2,
@@ -94,8 +94,8 @@ set_title(Room, Title) ->
 set_brief(Room, Brief) ->
   gen_server:call(Room, {set_brief, Brief}).
 
-set_long(Room, Long) ->
-  gen_server:call(Room, {set_long, Long}).
+set_desc(Room, Long) ->
+  gen_server:call(Room, {set_desc, Long}).
 
 save(Room) ->
   gen_server:call(Room, save).
@@ -150,7 +150,7 @@ handle_call({set_title, Title}, _From, State) ->
   {reply, ok, State#state{title=Title}};
 handle_call({set_brief, Brief}, _From, State) ->
   {reply, ok, State#state{desc=Brief}};
-handle_call({set_long, Long}, _From, State) ->
+handle_call({set_desc, Long}, _From, State) ->
   {reply, ok, State#state{long=Long}};
 handle_call(save, _From, State) ->
   {ok, NewState} = do_save(State),
@@ -199,10 +199,11 @@ do_notify(Event, [{Mod, Args}|Rest], Remaining) ->
   do_notify(Event, Rest, [{Mod, Args}|Remaining]).
 
 do_describe(#state{title=Title, desc=Desc, people=People, exits=Exits, objects=Objects}) ->
-  ["\n", color:greenb(Title), "\n\n", em_text:wrapline(Desc, 78), "\n\n",
+  ["\n", color:greenb(Title), "\n\n",
+   em_text:wrapline(Desc, 'lmud-config':'wrap-width'()), "\n\n",
    color:blackb("[Exits: " ++ list_exits(Exits) ++ "]"), "\n\n",
-    list_objects(Objects),
-    list_people(People)].
+   list_objects(Objects),
+   list_people(People)].
 
 do_describe_except(User, #state{people=People}=State) ->
   do_describe(State#state{people = People -- [User]}).
