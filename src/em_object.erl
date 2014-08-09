@@ -2,7 +2,7 @@
 %%% @author Johan Warlander <johan@snowflake.nu>
 %%% @copyright 2010-2011 Johan Warlander
 %%% @doc Interface for dealing with objects in the game.
-%%% Here we define the things that are common for all types of items in the 
+%%% Here we define the things that are common for all types of items in the
 %%% game - plain items, weapons, NPCs, PCs etc.
 %%% @end
 %%% =========================================================================
@@ -21,15 +21,15 @@
          get_template/1
         ]).
 
--record(object, {ids=[]::id_list(), plurals=[]::id_list(), 
-                 adjs=[]::adj_list(), 
+-record(object, {ids=[]::id_list(), plurals=[]::id_list(),
+                 adjs=[]::adj_list(),
                  primary_id=""::id(), primary_adj=""::adj(),
-                 short="nondescript thing"::string(), long=""::string(), 
+                 short="nondescript thing"::string(), long=""::string(),
                  show_in_room = ""::string(),
                  proper_name = ""::string(),
                  quantity = 0::count(),
-                 is_attached=false::boolean(), 
-                 is_plural=false::boolean(), 
+                 is_attached=false::boolean(),
+                 is_plural=false::boolean(),
                  is_unique=false::boolean(),
                  template="dummy"::string()}).
 
@@ -48,9 +48,9 @@
 %% API Functions
 %% ===========================================================================
 
-%% @doc Create new object with 'short desc' string; we yank out adjs and an 
+%% @doc Create new object with 'short desc' string; we yank out adjs and an
 %%      id from there.
-%%      Example: 
+%%      Example:
 %%        "small wooden table" -> adjs=["small", "wooden"], ids=["table"]
 -spec new(name()) -> object().
 new(Name) ->
