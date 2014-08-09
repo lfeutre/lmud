@@ -96,6 +96,7 @@ Update outputs with the following colors:
 * [ ] Wall -> red
 * [ ] Yelling -> red (bold)
 * [x] Notification -> blue
+  * [ ] one of the "notice" messages isn't getting coloured (logging out)
 * [x] whisper -> magenta
 * [x] say -> yellow
 * [x] emote -> yellow (bold)
@@ -107,7 +108,20 @@ Update outputs with the following colors:
 Game Data
 ---------
 
-Game data is currently written to files
+Game data is currently written to files; we should moved to a database
+instead. Before doing that, though, it might be nice to put all data
+read/write functions in a common module:
+
+* [x] create a new filestore module
+* [x] update "living" code to use it
+* [x] update login code to use it
+* [ ] update object code to use it
+* [ ] update room code to use it
+* [ ] update user code to use it
+
+With the read/write code abstracted out to a sigle module, it will be easier
+to swap out with something in the future. Perhaps along these lines:
+
 * [ ] Migrate game data to ETS table(s)
 * [ ] Add support to flushing to disk (DETS)
 * [ ] Add support for Mnesia
