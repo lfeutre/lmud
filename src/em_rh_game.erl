@@ -306,7 +306,7 @@ do_go({ok, {Dir, Dest}}, #req{living=Liv}=Req) ->
 %% Emote/Pose
 -spec cmd_emote([string()], req()) -> cmd_ok().
 cmd_emote(Args, #req{living=Liv}=Req) ->
-  Text = em_grammar:punctuate(string:join(Args, " ")),
+  Text = em_english:punctuate(string:join(Args, " ")),
   Name = em_living:get_name(Liv),
   Room = em_living:get_room(Liv),
   em_room:print_except(yellowb, Room, Liv, "~s ~s~n", [Name, Text]),
@@ -321,7 +321,7 @@ cmd_pose(Args, Req) -> % alias for emote; used in TinyMUSH
 
 %% Emote/Pose (no space)
 cmd_emote_ns(Args, #req{living=Liv}=Req) ->
-  Text = em_grammar:punctuate(string:join(Args, " ")),
+  Text = em_english:punctuate(string:join(Args, " ")),
   Name = em_living:get_name(Liv),
   Room = em_living:get_room(Liv),
   em_room:print_except(yellowb, Room, Liv, "~s~s~n", [Name, Text]),
@@ -330,7 +330,7 @@ cmd_emote_ns(Args, #req{living=Liv}=Req) ->
 
 %% Think
 cmd_think(Args, #req{living=Liv}=Req) ->
-  Text = em_grammar:punctuate(string:join(Args, " ")),
+  Text = em_english:punctuate(string:join(Args, " ")),
   Name = em_living:get_name(Liv),
   Room = em_living:get_room(Liv),
   em_room:print_except(blackb, Room, Liv, "~s is pondering.~n", [Name]),

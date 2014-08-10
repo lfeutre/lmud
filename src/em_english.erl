@@ -8,7 +8,7 @@
 %%% functions, item name manipulation and so on.
 %%% @end
 %%% =========================================================================
--module(em_grammar).
+-module(em_english).
 
 %% API
 -export([add_article/1, number_of/2, number_word/1, pluralize/1, punctuate/1]).
