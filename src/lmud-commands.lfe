@@ -96,6 +96,12 @@
         ))
   ))
 
+(defun wizard ()
+  )
+
+(defun god ()
+  )
+
 (defun all ()
   (lists:merge
     (list (base))

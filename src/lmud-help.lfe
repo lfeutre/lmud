@@ -10,6 +10,12 @@
 (defun get-base-help ()
   (get-groups-help "BASE HELP" (lmud-commands:base)))
 
+(defun get-wizard-help ()
+  (get-groups-help "WIZARD HELP" (lmud-commands:wizard)))
+
+(defun get-god-help ()
+  (get-groups-help "GOD HELP" (lmud-commands:god)))
+
 (defun get-groups-help (name prop-list)
   (++ "\n" name "\n"
       (lists:map
