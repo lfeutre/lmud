@@ -103,23 +103,20 @@ refresh([{_, Room, worker, [em_room]}|Children]) ->
   refresh(Children).
 
 try_load_room(Name) ->
-  RoomFile = filename:join([em_game:data_dir(), "rooms",
-                            Name ++ ".dat"]),
-  load_room(RoomFile).
+  load_room(Name).
 
-load_room(Filename) ->
-  io:format("loading: ~s~n", [Filename]),
-  case file:consult(Filename) of
+load_room(Name) ->
+  io:format("loading: ~s~n", ['lmud-filestore':'get-room-file'(Name)]),
+  case 'lmud-filestore':read("rooms", Name) of
     {ok, Data} ->
-      {Name, Room} = make_room(Filename, Data),
+      Room = make_room(Name, Data),
       ets:insert(?TABLE_ID, {Name, Room}),
       {ok, Room};
     {error, _Reason} ->
       {error, not_found}
   end.
 
-make_room(Filename, Data) ->
-  Name = extract_name(string:tokens(Filename, "/")),
+make_room(Name, Data) ->
   {title, Title} = lists:keyfind(title, 1, Data),
   {desc, Desc} = lists:keyfind(desc, 1, Data),
   {exits, Exits} = lists:keyfind(exits, 1, Data),
@@ -134,7 +131,7 @@ make_room(Filename, Data) ->
   add_exits(Room, Exits),
   add_objects(Room, Obs),
   add_resets(Room, Resets),
-  {Name, Room}.
+  Room.
 
 add_objects(Room, []) ->
   Room;

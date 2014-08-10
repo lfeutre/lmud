@@ -11,6 +11,8 @@ ErlyMUD Change Log
 * Added ' and PAGE as aliases for WHISPER/TELL.
 * Added color output to most of the talk and emote functions.
 * Converted many of the smaller Erlang modules to LFE.
+* Added module for reading data from and writing data to game files (all
+  game data IO now happens by calling this module).
 
 
 0.3.5

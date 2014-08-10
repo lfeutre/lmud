@@ -84,15 +84,11 @@ code_change(_OldVsn, State, _Extra) ->
 %% Load
 
 do_load(#state{name=Name}=State) ->
-  File = make_filename(Name),
-  load_user(File, State).
+  load_user(Name, State).
 
-make_filename(Name) ->
-  filename:join([em_game:data_dir(), "users", Name ++ ".dat"]).
-
-load_user(Filename, State) ->
-  io:format("loading user: ~s~n", [Filename]),
-  case file:consult(Filename) of
+load_user(Name, State) ->
+  io:format("loading user: ~s~n", ['lmud-filestore':'get-user-file'(Name)]),
+  case 'lmud-filestore':read("users", Name) of
     {ok, Data} ->
       NewState = update_user(Data, State),
       {ok, NewState};

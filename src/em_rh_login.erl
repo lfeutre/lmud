@@ -38,9 +38,7 @@ login(got_user, "", #req{conn=Conn}=Req) ->
   ?req_next(login, [got_user]);
 login(got_user, Name, #req{conn=Conn}=Req) ->
   UserName = em_text:capitalize(string:to_lower(Name)),
-  UserFile = filename:join([em_game:data_dir(), "users",
-                            [UserName, ".dat"]]),
-  case file:consult(UserFile) of
+  case 'lmud-filestore':read("users", UserName) of
     {ok, Settings} ->
       em_conn:print(Conn, "Password: "),
       em_conn:echo_off(Conn),
@@ -72,13 +70,13 @@ login({new_user_pw, Name}, Password, #req{conn=Conn}=Req) ->
 %% Confirm the password
 login({new_user_pw_confirm, Name, Password}, Password, #req{conn=Conn}=Req) ->
   em_conn:echo_on(Conn),
-  UserFile = filename:join([em_game:data_dir(), "users", [Name, ".dat"]]),
   CryptPw = base64:encode_to_string(em_util_sha2:hexdigest256(Password)),
-  file:write_file(UserFile, lists:flatten([
+  'lmud-filestore':write("users", Name,
+    lists:flatten([
     "{version, 1}.\n",
     "{password, \"", CryptPw, "\"}.\n"])),
-  LivFile = filename:join([em_game:data_dir(), "livings", [Name, ".dat"]]),
-  file:write_file(LivFile, lists:flatten([
+  'lmud-filestore':write("livings", Name,
+    lists:flatten([
     "{version, 1}.\n",
     "{long, \"", Name, " looks pretty ordinary.\"}.\n"])),
   em_conn:print(Conn, ["\nWelcome, ", Name, "!\n\n"]),

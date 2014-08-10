@@ -9,6 +9,7 @@ Usability
 ---------
 
 * [x] Add readline support (done via rlwrap)
+* [ ] Convert stdout messages to log messages, conditional on debug setting
 
 
 Command Parsing
@@ -52,9 +53,10 @@ Support the following command-related commands
 * [ ] possibly an is-alias function?
 
 
-Breakout and dependencies
+Breakout and Dependencies
 -------------------------
 
+* [ ] Add lager for use in debugging
 * [ ] Look at using a plugin system
   * Heinz has written one here: https://github.com/Licenser/eplugin
     * this uses different mechanisms than the one that lfetool defines
@@ -115,9 +117,14 @@ read/write functions in a common module:
 * [x] create a new filestore module
 * [x] update "living" code to use it
 * [x] update login code to use it
-* [ ] update object code to use it
-* [ ] update room code to use it
-* [ ] update user code to use it
+* [x] update object code to use it
+* [x] update room code to use it
+* [x] update user code to use it
+
+Desired features for existing code:
+
+* [ ] Add support for saving room state (dropping things in a room and then
+      restaring the game causes the dropped items to be lost).
 
 With the read/write code abstracted out to a sigle module, it will be easier
 to swap out with something in the future. Perhaps along these lines:

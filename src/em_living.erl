@@ -215,18 +215,14 @@ do_remove_object(Ob, State, [NoMatch|Obs], Searched) ->
 
 -spec do_load(#state{}) -> {ok, #state{}} | {error, not_found}.
 do_load(#state{name=Name}=State) ->
-  File = make_filename(Name),
-  load_living(File, State).
-
--spec make_filename(string()) -> file_path().
-make_filename(Name) ->
-  filename:join([em_game:data_dir(), "livings", Name ++ ".dat"]).
+  load_living(Name, State).
 
 -spec load_living(file_path(), #state{}) ->
         {ok, #state{}} | {error, not_found}.
-load_living(Filename, State) ->
-  io:format("loading living: ~s~n", [Filename]),
-  case file:consult(Filename) of
+load_living(Name, State) ->
+  io:format("loading living: ~s~n",
+            ['lmud-filestore':'get-living-file'(Name)]),
+  case 'lmud-filestore':'read'("livings", Name) of
     {ok, Data} ->
       NewState = update_living(Data, State),
       {ok, NewState};
@@ -250,8 +246,7 @@ update_living([_Other|Data], State) ->
 -spec do_save(#state{}) -> {ok, #state{}} | {error, any()}.
 do_save(#state{name=Name}=State) ->
   Data = save_living(State),
-  File = make_filename(Name),
-  case file:write_file(File, Data) of
+  case 'lmud-filestore':write("livings", Name, Data) of
     ok ->
       {ok, State};
     {error, Reason} ->
@@ -262,7 +257,7 @@ do_save(#state{name=Name}=State) ->
 save_living(State) ->
   lists:flatten([
     "{version, 1}.\n",
-    "{long, ", State#state.long, "}.\n",
+    "{long, ", io_lib:format("~p", [State#state.long]), "}.\n",
     "{room, \"", em_room:get_name(State#state.room), "\"}.\n",
     "{objects, ", save_objects(State), "}.\n"
   ]).

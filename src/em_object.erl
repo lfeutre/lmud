@@ -63,14 +63,8 @@ new(Ids, Adjs) ->
 
 -spec load(name()) -> {ok, object()} | {error, not_found}.
 load(Name) ->
-  File = filename:join([em_game:data_dir(), "objects",
-                        Name ++ ".dat"]),
-  load_object(Name, File).
-
--spec load_object(name(), file_path()) -> {ok, object()} | {error, not_found}.
-load_object(Name, Filename) ->
-  io:format("loading object: ~s~n", [Filename]),
-  case file:consult(Filename) of
+  io:format("loading object: ~s~n", ['lmud-filestore':'get-object-file'(Name)]),
+  case 'lmud-filestore':read("objects", Name) of
     {ok, Data} ->
       Ob = make_object(Data, #object{template=Name}),
       {ok, Ob};

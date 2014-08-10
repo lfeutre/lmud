@@ -243,14 +243,12 @@ list_people(People) ->
 
 %% Save
 
-make_filename(Name) ->
-  filename:join([em_game:data_dir(), "rooms", Name ++ ".dat"]).
-
 do_save(State) ->
   Data = save_room(State),
-  File = make_filename(State#state.name),
-  io:format("saving room: ~s~n~p~n", [File, Data]),
-  case file:write_file(File, Data) of
+  Name = State#state.name,
+  io:format("saving room: ~s~n~p~n",
+            ['lmud-filestore':'get-room-file'(Name), Data]),
+  case 'lmud-filestore':write("rooms", Name, Data) of
     ok ->
       {ok, State};
     {error, Reason} ->
