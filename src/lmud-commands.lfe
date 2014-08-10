@@ -55,6 +55,12 @@
                      "one's character."))
          #(mod em_rh_game)
          #(func cmd_emote))
+        (#(name "emote-ns")
+         #(desc ,(++ "Indicate an action taking place, as performed by "
+                     "one's character, but with no space (useful for "
+                     "suffixes like apostrophes)."))
+         #(mod em_rh_game)
+         #(func cmd_emote_ns))
         (#(name "whisper")
          #(desc "Send a private message to another player.")
          #(mod em_rh_game)
