@@ -517,8 +517,9 @@ cmd_help(["privileges"], Req) ->
   {ok, Req};
 cmd_help(_Args, Req) ->
   print(
-  "\n" ++ 'lmud-config':'simple-welcome'() ++ "\n" ++
-  'lmud-help':'get-base-help'(),Req),
+    "\n" ++ 'lmud-config':'simple-welcome'() ++
+    "\n" ++ 'lmud-help':'get-base-help'(),
+    Req),
   {ok, Req}.
 
 %% Utility functions
