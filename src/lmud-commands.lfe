@@ -1,8 +1,6 @@
 (defmodule lmud-commands
   (export all))
 
-(include-file "include/commands.lfe")
-
 (defun base ()
   `(
     #("Game Command Group"
@@ -64,7 +62,13 @@
         (#(name "whisper")
          #(desc "Send a private message to another player.")
          #(mod em_rh_game)
-         #(func cmd_whisper))))
+         #(func cmd_whisper))
+        (#(name "think")
+         #(desc ,(++ "Ponder something. Others notice as an emote, but with "
+                      "no details."))
+         #(mod em_rh_game)
+         #(func cmd_think))
+        ))
     #("Magic Command Group"
        ((#(name "cast")
          #(desc "Cast a spell. \"help cast\" will display available spells.")
@@ -92,20 +96,12 @@
         ))
   ))
 
-(defun aliases-wow ()
-  'noop)
-
-(defun aliases-irc ()
-  'noop)
-
-(defun aliases-tinymud ()
-  'noop)
-
 (defun all ()
-  `(#(commands ,(base))
-    #(aliases ,(++ (aliases-tinymud)
-                   (aliases-irc)
-                   (aliases-wow)))))
+  (lists:merge
+    (list (base))
+          (lmud-aliases:tinymud)
+          (lmud-aliases:irc)
+          (lmud-aliases:wow)))
 
 (defun get-groups-names (prop-list)
   (proplists:get_keys prop-list))
