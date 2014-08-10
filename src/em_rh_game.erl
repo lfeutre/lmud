@@ -12,11 +12,10 @@
 -export([parse/2]).
 
 %% game commands
--export([cmd_look/2, cmd_north/2, cmd_east/2, cmd_south/2, cmd_west/2,
+-export([cmd_look/2,
          cmd_go/2, cmd_quit/2,
-         cmd_emote/2, cmd_em/2, cmd_me/2, cmd_pose/2, cmd_emote_ns/2,
-         cmd_say/2, cmd_tell/2, cmd_whisper/2, cmd_page/2,
-         cmd_think/2,
+         cmd_emote/2, cmd_emote_ns/2,
+         cmd_say/2, cmd_tell/2, cmd_think/2,
          cmd_who/2,
          cmd_take/2, cmd_drop/2, cmd_inv/2, cmd_glance/2,
          cmd_save/2, cmd_setdesc/2, cmd_help/2, cmd_news/2,
@@ -239,20 +238,6 @@ do_look_liv(Id, [Liv|People], Req) ->
       do_look_liv(Id, People, Req)
   end.
 
-% Go / North / East / South / West
--spec cmd_north([string()], req()) -> cmd_ok().
-cmd_north(_Args, Req) ->
-  cmd_go(["north"], Req).
--spec cmd_east([string()], req()) -> cmd_ok().
-cmd_east(_Args, Req) ->
-  cmd_go(["east"], Req).
--spec cmd_south([string()], req()) -> cmd_ok().
-cmd_south(_Args, Req) ->
-  cmd_go(["south"], Req).
--spec cmd_west([string()], req()) -> cmd_ok().
-cmd_west(_Args, Req) ->
-  cmd_go(["west"], Req).
-
 -spec cmd_go([string()], req()) -> cmd_ok().
 cmd_go([Dir|_Args], #req{living=Liv}=Req) ->
   Room = em_living:get_room(Liv),
@@ -284,12 +269,6 @@ cmd_emote(Args, #req{living=Liv}=Req) ->
   em_room:print_except(yellowb, Room, Liv, "~s ~s~n", [Name, Text]),
   print(yellowb, "~s ~s~n", [Name, Text], Req),
   {ok, Req}.
-cmd_em(Args, Req) -> % alias for emote; used in WoW
-  cmd_emote(Args, Req).
-cmd_me(Args, Req) -> % alias for emote; used on IRC
-  cmd_emote(Args, Req).
-cmd_pose(Args, Req) -> % alias for emote; used in TinyMUSH
-  cmd_emote(Args, Req).
 
 %% Emote/Pose (no space)
 cmd_emote_ns(Args, #req{living=Liv}=Req) ->
@@ -337,10 +316,6 @@ cmd_tell([Who,FirstWord|Rest], #req{user=User}=Req) ->
             "You tell ~s, \"~s\"~n", [OtherName, Text], Req)
   end,
   {ok, Req}.
-cmd_whisper(Args, Req) -> % alias for tell; used in TinyMUSH
-  cmd_tell(Args, Req).
-cmd_page(Args, Req) -> % alias for tell; used in TinyMUSH
-  cmd_tell(Args, Req).
 
 %% Who
 -spec cmd_who([string()], req()) -> cmd_ok().
