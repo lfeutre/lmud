@@ -3,6 +3,8 @@
 
 (defun wrap-width () 64)
 
+(defun divider () (string:copies "-" 78))
+
 (defun banner-1 ()
 '"
           ___       ___           ___           ___
@@ -96,26 +98,28 @@
     (color:yellow (call (MODULE) func-name))))
 
 (defun login-instructions ()
-'"
-------------------------------------------------------------------------------
+  (++ (divider)
+"
   If you are loging in for the first time, enter the character name
   you would like to have (case insensitive) at the \"Login\" prompt.
-------------------------------------------------------------------------------
-")
+"
+  (divider)))
 
 (defun post-login-msg ()
-'"
+  (++
+"
 
 You are now logged into the game server.
 
-------------------------------------------------------------------------------
+"
+    (divider)
+"
   \"WHO\"  tells you who is logged in to the game.
   \"NEWS\" informs you about recent program changes and items of interest.
   \"HELP\" gives help on the commands, \"help commands\" for a list.
   \"QUIT\" saves your character exits the game.
-------------------------------------------------------------------------------
-
-")
+"
+    (divider) "\n"))
 
 (defun simple-welcome ()
   (++ "Welcome to " (lmud-const:display-name) "!"))
