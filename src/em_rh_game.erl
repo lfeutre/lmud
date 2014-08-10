@@ -83,29 +83,35 @@ parse_cmd("\\\\", Args=[_,_|_], Line, Req) ->
 parse_cmd("get", Args, Line, Req) ->
   parse_cmd("take", Args, Line, Req);
 parse_cmd(Cmd, Args, Line, Req) ->
-  try list_to_existing_atom("cmd_" ++ string:to_lower(Cmd)) of
-    Fun ->
-      try
-        case apply(?MODULE, Fun, [Args, Req]) of
-          {ok, Req} ->
-            ?req_next(parse);
-          {stop, Req} ->
-            ?req_done;
-          {error, Reason} ->
-            print(Reason, Req),
-            ?req_next(parse);
-          Other ->
-            print("Error occurred while processing '~s':~n~p~n",
-              [Line, Other], Req),
+  LowerCmd = string:to_lower(Cmd),
+  try
+    case 'lmud-commands':'get-command'(LowerCmd, 'lmud-commands':'base'()) of
+      [[_,_,{mod,Mod},{func,Func}]] ->
+        try
+          case apply(Mod, Func, [Args, Req]) of
+            {ok, Req} ->
+              ?req_next(parse);
+            {stop, Req} ->
+              ?req_done;
+            {error, Reason} ->
+              print(Reason, Req),
+              ?req_next(parse);
+            Other ->
+              print("Error occurred while processing '~s':~n~p~n",
+                [Line, Other], Req),
+              ?req_next(parse)
+          end
+        catch
+          throw:not_allowed ->
+            print("You're not allowed to use the '~s' command.~n", [Line], Req),
             ?req_next(parse)
-        end
-      catch
-        throw:not_allowed ->
-          print("You're not allowed to use the '~s' command.~n", [Line], Req),
-          ?req_next(parse)
-      end
+        end;
+      _ ->
+        print("I don't understand what you mean by '~s'~n", [Line], Req),
+        ?req_next(parse)
+    end
   catch
-    error:badarg ->
+    _ ->
       print("I don't understand what you mean by '~s'~n", [Line], Req),
       ?req_next(parse)
   end.
