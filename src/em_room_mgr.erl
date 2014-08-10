@@ -150,8 +150,3 @@ add_resets(Room, []) ->
 add_resets(Room, [Reset|Resets]) ->
   em_room:add_reset(Room, Reset),
   add_resets(Room, Resets).
-
-extract_name([Basename]) ->
-  re:replace(Basename, "\.dat$", "", [{return, list}]);
-extract_name([_|T]) ->
-  extract_name(T).
