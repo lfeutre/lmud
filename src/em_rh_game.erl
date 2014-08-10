@@ -299,7 +299,10 @@ cmd_say([FirstWord|Rest], #req{living=Liv}=Req) ->
   {ok, Req}.
 
 %% Tell/Whisper/Page
--spec cmd_tell([string()], req()) -> cmd_ok().
+-spec cmd_tell([], req()) -> cmd_ok().
+cmd_tell([], Req) ->
+  print("Tell whom what?", Req),
+  {ok, Req};
 cmd_tell([Who,FirstWord|Rest], #req{user=User}=Req) ->
   Name = em_user:get_name(User),
   case em_game:lookup_user(Who) of
@@ -315,7 +318,11 @@ cmd_tell([Who,FirstWord|Rest], #req{user=User}=Req) ->
       print(color:magenta("[Whisper] ") ++
             "You tell ~s, \"~s\"~n", [OtherName, Text], Req)
   end,
+  {ok, Req};
+cmd_tell([Who], Req) ->
+  print("Tell " ++ Who ++ " what?", Req),
   {ok, Req}.
+
 
 %% Who
 -spec cmd_who([string()], req()) -> cmd_ok().

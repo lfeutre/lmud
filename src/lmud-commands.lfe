@@ -62,7 +62,7 @@
         (#(name "whisper")
          #(desc "Send a private message to another player.")
          #(mod em_rh_game)
-         #(func cmd_whisper))
+         #(func cmd_tell))
         (#(name "think")
          #(desc ,(++ "Ponder something. Others notice as an emote, but with "
                       "no details."))
