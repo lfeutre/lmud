@@ -107,14 +107,30 @@
 (defun get-group (name prop-list)
   (proplists:get_value name prop-list))
 
+(defun get-command (name prop-list)
+  (lists:filter
+    (lambda (x)
+      (=/= x 'false))
+    (check-command name prop-list)))
+
+(defun check-command (name prop-list)
+  (lists:map
+    (lambda (x)
+      (if (== (proplists:get_value 'name x) name) x))
+    (get-commands prop-list)))
+
+(defun get-commands (prop-list)
+  (lists:merge
+    (lists:map
+      (lambda (x)
+        (element 2 x))
+      prop-list)))
+
 (defun get-command-names (prop-list)
   (proplists:get_all_values
     'name
     (lists:flatten
-      (lists:map
-        (lambda (x)
-          (element 2 x))
-        prop-list))))
+      (get-commands prop-list))))
 
 (defun get-longest-command-length (prop-list)
   (lists:max
