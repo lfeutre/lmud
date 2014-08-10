@@ -517,42 +517,8 @@ cmd_help(["privileges"], Req) ->
   {ok, Req};
 cmd_help(_Args, Req) ->
   print(
-  "\n" ++ 'lmud-config':'simple-welcome'() ++ "\n\n"
-  "The following commands, more or less, are available right now:\n\n"
-  "  drop <item>             Drop an item from your inventory.\n"
-  "  take <item>             Pick up an item in the room.\n"
-  "  glance                  View the brief description of the room.\n"
-  "  look                    View the long description of the room.\n"
-  "  look [person|item]      View description of person/item.\n"
-  "  ----------------------------------------------------------------------\n"
-  "  go <dir>                Leave in the specified direction.\n"
-  "  north                     - shortcut for 'go north'\n"
-  "  east                      - shortcut for 'go east'\n"
-  "  south                     - shortcut for 'go south'\n"
-  "  west                      - shortcut for 'go west'\n"
-  "  ----------------------------------------------------------------------\n"
-  "  say <what>              Say something, all in room will see it:\n"
-  "                            Jack says, \"Hello there!\"\n"
-  "  emote <what>            Emote, for roleplaying:\n"
-  "                            'emote grumpily kicks at a small rock'\n"
-  "                            -> Jack grumpily kicks at a small rock.\n"
-  "  tell <person> <what>    Send a private message to another user.\n"
-  "  ----------------------------------------------------------------------\n"
-  "  inv                     Show your inventory.\n"
-  "  save                    Save your character, will remember your\n"
-  "                            location and inventory for next login.\n"
-  "  setdesc <desc>          Set the description others see when they\n"
-  "                            look at you.\n"
-  "  who                     Display all logged in users.\n"
-  "  news                    Display info about latest server changes, etc..\n"
-  "  ----------------------------------------------------------------------\n"
-  "  cast <spell>            Cast a spell. Try 'cast' for more info.\n"
-  "  ----------------------------------------------------------------------\n"
-  "  addexit <dir> <room>    Add an exit to an existing room. (*)\n"
-  "  redit <cmd> <args>      Edit / create rooms. Try 'redit' for info. (*)\n"
-  "\n"
-  "(*) Privileged command, see 'help privileges'.\n"
-  ,Req),
+  "\n" ++ 'lmud-config':'simple-welcome'() ++ "\n" ++
+  'lmud-help':'get-base-help'(),Req),
   {ok, Req}.
 
 %% Utility functions
