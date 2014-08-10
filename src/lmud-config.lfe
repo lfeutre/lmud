@@ -2,8 +2,9 @@
   (export all))
 
 (defun wrap-width () 64)
-
-(defun divider () (string:copies "-" 78))
+(defun divider-char () '"-")
+(defun divider () (string:copies (divider-char) (wrap-width)))
+(defun help-pad-cmd () 20)
 
 (defun banner-1 ()
 '"
