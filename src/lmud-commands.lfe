@@ -1,6 +1,13 @@
 (defmodule lmud-commands
   (export all))
 
+(defun all ()
+  (lists:merge
+    (list (base)
+          ; (wizard)
+          ; (god)
+          (lmud-aliases:all))))
+
 (defun base ()
   `(#("Game Command Group" ,(game-commands))
     #("Interaction Command Group" ,(interaction-commands))
@@ -20,7 +27,8 @@
      #(mod em_rh_game)
      #(func cmd_help)
      #(args ("aliases")))
-    ;; XXX help commands
+    ;; XXX help @wzard
+    ;; XXX help @god
     ;; XXX help @commands
     (#(name "help all")
      #(desc "Display all help info.")
@@ -136,13 +144,6 @@
 
 (defun god ()
   `(()))
-
-(defun all ()
-  (lists:merge
-    (list (base)
-          ; (wizard)
-          ; (god)
-          (lmud-aliases:all))))
 
 (defun get-groups-names (prop-list)
   (proplists:get_keys prop-list))

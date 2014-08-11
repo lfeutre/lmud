@@ -24,6 +24,8 @@
 
 (defun get-all-help ()
   (++ (get-base-help)
+      ; (get-god-help)
+      ; (get-wizard-help)
       (get-aliases-help)))
 
 (defun get-groups-help (name prop-list)

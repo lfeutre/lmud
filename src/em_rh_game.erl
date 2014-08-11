@@ -53,6 +53,11 @@ parse_cmd(Cmd, PassedArgs, Line, Req) ->
     case 'lmud-commands':'get-command-or-alias'(LowerCmd, 'lmud-commands':'base'()) of
       [[_,_,{mod,Mod},{func,Func},{args,DefinedArgs}]] ->
         Args = lists:merge([DefinedArgs,PassedArgs]),
+        % io:format("PassedArgs: ~p~n",[PassedArgs]),
+        % io:format("DefinedArgs: ~p~n",[DefinedArgs]),
+        % io:format("Mod: ~p~n",[Mod]),
+        % io:format("Func: ~p~n",[Func]),
+        % io:format("Args: ~p~n",[Args]),
         try
           case apply(Mod, Func, [Args, Req]) of
             {ok, Req} ->
@@ -239,7 +244,10 @@ do_look_liv(Id, [Liv|People], Req) ->
       do_look_liv(Id, People, Req)
   end.
 
--spec cmd_go([string()], req()) -> cmd_ok().
+-spec cmd_go([], req()) -> cmd_ok().
+cmd_go([], Req) ->
+  print("Go where?", Req),
+  {ok, Req};
 cmd_go([Dir|_Args], #req{living=Liv}=Req) ->
   Room = em_living:get_room(Liv),
   do_go(em_room:get_exit(Room, Dir), Req),
@@ -482,6 +490,9 @@ cmd_help(["all"], Req) ->
     "\n" ++ 'lmud-help':'get-all-help'(),
     Req),
   {ok, Req};
+%% XXX this might not be needed once alias args are fixed/merged
+cmd_help(["commands"], Req) ->
+  cmd_help(["all"], Req);
 cmd_help(_Args, Req) ->
   print(
     "\n" ++ 'lmud-config':'simple-welcome'() ++
