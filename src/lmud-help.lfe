@@ -16,6 +16,16 @@
 (defun get-god-help ()
   (get-groups-help "GOD HELP" (lmud-commands:god)))
 
+(defun display-aliases-help ()
+  (io:format (get-aliases-help)))
+
+(defun get-aliases-help ()
+  (get-groups-help "ALIASES HELP" (lmud-aliases:all)))
+
+(defun get-all-help ()
+  (++ (get-base-help)
+      (get-aliases-help)))
+
 (defun get-groups-help (name prop-list)
   (++ "\n" name "\n"
       (lists:map
@@ -60,12 +70,23 @@
       rest)))
 
 (defun format-help
-  (((list (tuple 'name cmd) (tuple 'desc help) _ _)
+  (((list (tuple 'name cmd) (tuple 'desc help) _ _ _)
       max-cmd-len max-pad wrap-width)
     (io_lib:format (++ "~-"
                        (integer_to_list (lmud-config:help-pad-cmd)) "."
                        (integer_to_list max-cmd-len) "s" "~s~n")
-                   (list cmd (wrap-help max-pad wrap-width help)))))
+                   (list cmd (wrap-help max-pad wrap-width help))))
+  (((list (tuple 'name name) (tuple 'command command) (tuple 'args args))
+      max-cmd-len max-pad wrap-width)
+    (let ((help (++ "Alias for the \""
+                    (string:join (++ (list command) args) " ")
+                    "\" command.")))
+      (io_lib:format (++ "~-"
+                         (integer_to_list (lmud-config:help-pad-cmd)) "."
+                         (integer_to_list max-cmd-len) "s" "~s~n")
+                     (list name (wrap-help max-pad wrap-width help)))))
+  ((data max-cmd-len max-pad wrap-width)
+    (io:format "Could not parse data: ~p~n" (list data))))
 
 (defun format-help (help max-cmd-len)
   (let* ((max-pad (lmud-config:help-pad-cmd))

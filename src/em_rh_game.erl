@@ -47,11 +47,12 @@ parse(Line, Req) ->
   end.
 
 -spec parse_cmd(string(), [string()], string(), req()) -> req_any().
-parse_cmd(Cmd, Args, Line, Req) ->
+parse_cmd(Cmd, PassedArgs, Line, Req) ->
   LowerCmd = string:to_lower(Cmd),
   try
-    case 'lmud-commands':'get-command'(LowerCmd, 'lmud-commands':'base'()) of
-      [[_,_,{mod,Mod},{func,Func}]] ->
+    case 'lmud-commands':'get-command-or-alias'(LowerCmd, 'lmud-commands':'base'()) of
+      [[_,_,{mod,Mod},{func,Func},{args,DefinedArgs}]] ->
+        Args = lists:merge([DefinedArgs,PassedArgs]),
         try
           case apply(Mod, Func, [Args, Req]) of
             {ok, Req} ->
@@ -468,6 +469,18 @@ cmd_help(["privileges"], Req) ->
   "The 'admin' privilege is the only one in use for now, to restrict\n"
   "access to commands like 'redit' etc that will modify the game.\n",
   Req),
+  {ok, Req};
+cmd_help(["aliases"], Req) ->
+  print(
+    "\n" ++ 'lmud-config':'simple-welcome'() ++
+    "\n" ++ 'lmud-help':'get-aliases-help'(),
+    Req),
+  {ok, Req};
+cmd_help(["all"], Req) ->
+  print(
+    "\n" ++ 'lmud-config':'simple-welcome'() ++
+    "\n" ++ 'lmud-help':'get-all-help'(),
+    Req),
   {ok, Req};
 cmd_help(_Args, Req) ->
   print(

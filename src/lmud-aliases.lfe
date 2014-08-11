@@ -1,52 +1,88 @@
 (defmodule lmud-aliases
   (export all))
 
-; %% Below are general aliases/shortcuts for commands.
-; parse_cmd("?", Args, Line, Req) ->
-;   parse_cmd("help", Args, Line, Req);
-; parse_cmd("h", Args, Line, Req) ->
-;   parse_cmd("help", Args, Line, Req);
-; get -> take
-; tell -> whisper
-; north -> go north
-; east -> go east
-; west -> go west
-; south -> go south
 (defun base ()
-  'noop)
+  `((#(name "?")
+     #(command "help")
+     #(args ()))
+    (#(name "h")
+     #(command "help")
+     #(args ()))
+    (#(name "examine")
+     #(command "look")
+     #(args ()))
+    (#(name "get")
+     #(command "take")
+     #(args ()))
+    (#(name "tell")
+     #(command "whisper")
+     #(args ()))
+    (#(name "north")
+     #(command "go")
+     #(args ("north")))
+    (#(name "east")
+     #(command "go")
+     #(args ("east")))
+    (#(name "west")
+     #(command "go")
+     #(args ("west")))
+    (#(name "south")
+     #(command "go")
+     #(args ("south")))
+    (#(name "exit")
+     #(command "quit")
+     #(args ()))))
 
-; %% Below are IRC aliases/shortcuts for commands.
-; parse_cmd("/?", Args, Line, Req) ->
-;   parse_cmd("help", Args, Line, Req);
-; parse_cmd("/h", Args, Line, Req) ->
-;   parse_cmd("help", Args, Line, Req);
-; parse_cmd("/help", Args, Line, Req) ->
-;   parse_cmd("help", Args, Line, Req);
-; parse_cmd("/quit", Args, Line, Req) ->
-;   parse_cmd("quit", Args, Line, Req);
-; parse_cmd("/q", Args, Line, Req) ->
-;   parse_cmd("quit", Args, Line, Req);
-; /me -> emote
 (defun aliases-irc ()
-  'noop)
+  `((#(name "/?")
+     #(command "help")
+     #(args ()))
+    (#(name "/h")
+     #(command "help")
+     #(args ()))
+    (#(name "/help")
+     #(command "help")
+     #(args ()))
+    (#(name "/me")
+     #(command "emote")
+     #(args ()))
+    (#(name "/me-ns")
+     #(command "emote-ns")
+     #(args ()))
+    (#(name "/msg")
+     #(command "whisper")
+     #(args ()))
+    (#(name "/q")
+     #(command "quit")
+     #(args ()))
+    (#(name "/quit")
+     #(command "quit")
+     #(args ()))))
 
-; %% Below are TinyMUSH aliases/shortcuts for commands.
-; parse_cmd("\"", Args, Line, Req) ->
-;   parse_cmd("say", Args, Line, Req);
-; parse_cmd("/me", Args, Line, Req) ->
-;   parse_cmd("emote", Args, Line, Req);
-; parse_cmd(":", Args, Line, Req) ->
-;   parse_cmd("emote", Args, Line, Req);
-; parse_cmd(";", Args, Line, Req) ->
-;   parse_cmd("emote_ns", Args, Line, Req);
-; parse_cmd("'", Args=[_,_|_], Line, Req) ->
-;   parse_cmd("tell", Args, Line, Req);
-; parse_cmd("\\\\", Args=[_,_|_], Line, Req) ->
-;   parse_cmd("tell", Args, Line, Req);
-; pose -> emote
-; page -> whisper
 (defun aliases-tinymud ()
-  'noop)
+  `((#(name "\"")
+     #(command "say")
+     #(args ()))
+    (#(name "pose")
+     #(command "emote")
+     #(args ()))
+    (#(name ":")
+     #(command "emote")
+     #(args ()))
+    (#(name ";")
+     #(command "emote-ns")
+     #(args ()))
+    (#(name "page")
+     #(command "whisper")
+     #(args ()))
+    (#(name "'")
+     #(command "whisper")
+     #(args ()))
+    ; (#(name '"\\\\")
+    ;  #(command "whisper")
+    ;  #(args ()))
+    ))
+
 
 ; %% Below are WoW aliases/shortcuts for commands.
 ; % parse_cmd("?", Args, Line, Req) ->
@@ -54,4 +90,50 @@
 ; /emote -> emote
 ; /em -> emote
 (defun aliases-wow ()
-  'noop)
+  `((#(name "/say")
+     #(command "say")
+     #(args ()))
+    (#(name "/s")
+     #(command "say")
+     #(args ()))
+    (#(name "/emote")
+     #(command "emote")
+     #(args ()))
+    (#(name "/em")
+     #(command "emote")
+     #(args ()))
+    (#(name "/e")
+     #(command "emote")
+     #(args ()))
+    (#(name "/whisper")
+     #(command "whisper")
+     #(args ()))
+    (#(name "/tell")
+     #(command "whisper")
+     #(args ()))
+    (#(name "/send")
+     #(command "whisper")
+     #(args ()))
+    (#(name "/w")
+     #(command "whisper")
+     #(args ()))
+    (#(name "/t")
+     #(command "whisper")
+     #(args ()))))
+
+(defun all ()
+  `(#("Common Alias Group" ,(base))
+    #("IRC Alias Group" ,(aliases-irc))
+    #("TinyMU* Alias Group" ,(aliases-tinymud))
+    #("WoW Alias Group" ,(aliases-wow))))
+
+(defun get-alias (name prop-list)
+  (lmud-commands:get-command name prop-list))
+
+(defun get-command (alias-name prop-list)
+  (case (get-alias alias-name (all))
+    ('() '())
+    (match
+      (lmud-commands:get-command
+        (proplists:get_value 'command (car match))
+        (lmud-commands:all)))))
