@@ -13,6 +13,8 @@ ErlyMUD Change Log
 * Converted many of the smaller Erlang modules to LFE.
 * Added module for reading data from and writing data to game files (all
   game data IO now happens by calling this module).
+* Move command to dispatch approach (via new declared data structures).
+* Added support for aliases using a similar approach as commands.
 
 
 0.3.5
