@@ -51,7 +51,7 @@ parse_cmd(Cmd, PassedArgs, Line, Req) ->
   LowerCmd = string:to_lower(Cmd),
   try
     case 'lmud-commands':'get-command-or-alias'(LowerCmd, 'lmud-commands':'base'()) of
-      [[_,_,{mod,Mod},{func,Func},{args,DefinedArgs}]] ->
+      [{args,DefinedArgs},_,{func,Func},{mod,Mod},_] ->
         Args = lists:merge([DefinedArgs,PassedArgs]),
         % io:format("PassedArgs: ~p~n",[PassedArgs]),
         % io:format("DefinedArgs: ~p~n",[DefinedArgs]),

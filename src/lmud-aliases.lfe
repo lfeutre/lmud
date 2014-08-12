@@ -148,10 +148,36 @@
 (defun get-alias (name prop-list)
   (lmud-commands:get-command name prop-list))
 
-(defun get-command (alias-name prop-list)
+(defun get-value (alias-name prop-list key)
   (case (get-alias alias-name (all))
-    ('() '())
+    ('()
+      '(()))
+    ('(())
+      '(()))
     (match
       (lmud-commands:get-command
-        (proplists:get_value 'command (car match))
+        (proplists:get_value key match)
         (lmud-commands:all)))))
+
+(defun get-command (alias-name prop-list)
+  (lists:sort
+    (merge-args
+      (get-value alias-name prop-list 'command)
+      (get-args alias-name prop-list))))
+
+(defun get-args (alias-name prop-list)
+  (orddict:filter
+    (lambda (x _)
+      (== x 'args))
+    (get-alias alias-name prop-list)))
+
+(defun merge-args (command-data alias-args)
+  "The 'command-data' parameter should have the form that every entry in the
+  command data structure has. The 'alias-args' parameter should have a similar
+  proplist form, but with only one key, 'args', and a value that is a list (can
+  be empty)."
+  (orddict:merge
+    (lambda (k v1 v2)
+      (lists:merge (list v1 v2)))
+    (orddict:from_list command-data)
+    (orddict:from_list alias-args)))

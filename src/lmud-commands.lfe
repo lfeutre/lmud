@@ -152,16 +152,17 @@
   (proplists:get_value name prop-list))
 
 (defun get-command (name prop-list)
-  (lists:filter
-    (lambda (x)
-      (=/= x 'false))
-    (check-command name prop-list)))
+  (lists:sort
+    (car (lists:filter
+           (lambda (x)
+             (=/= x 'false))
+           (check-command name prop-list)))))
 
 (defun get-command-or-alias (name prop-list)
-  (lists:merge
-    (list
-      (get-command name prop-list)
-      (lmud-aliases:get-command name (lmud-aliases:all)))))
+  (try
+    (get-command name prop-list)
+    (catch ((tuple 'error 'badarg _)
+      (lmud-aliases:get-command name (lmud-aliases:all))))))
 
 (defun check-command (name prop-list)
   (lists:map
