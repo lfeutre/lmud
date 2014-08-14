@@ -50,7 +50,7 @@ that taken care of, follow these steps:
   1. From another terminal, connect to the game:
 
      ```sh
-     $ rlwrap telnet localhost 2155
+     $ rlwrap telnet localhost 1203
      ```
      Note that ``rlwrap`` gives you readline support in telnet, allowing you
      to use a command history like with your system shell (including such
