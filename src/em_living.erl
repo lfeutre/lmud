@@ -15,7 +15,7 @@
          get_name/1,
          get_room/1, set_room/2,
          add_object/2, move_object/3, get_objects/1, remove_object/2,
-         set_desc/2, long/1,
+         set_desc/2, desc/1,
          cmd/2, print/2, print/3,
          load/1, save/1]).
 
@@ -26,7 +26,7 @@
 -record(state, {name="noname" :: living_name(),
                 room::em_room:room_pid(),
                 client::client(),
-                long="" :: string(),
+                desc="" :: string(),
                 objects=[] :: [em_object:object()]}).
 
 %% ==========================================================================
@@ -84,12 +84,12 @@ set_room(Pid, Room) when is_list(Room) ->
   gen_server:call(Pid, {set_room_str, Room}).
 
 -spec set_desc(living_pid(), string()) -> ok.
-set_desc(Pid, Long) ->
-  gen_server:call(Pid, {set_desc, Long}).
+set_desc(Pid, Desc) ->
+  gen_server:call(Pid, {set_desc, Desc}).
 
--spec long(living_pid()) -> string().
-long(Pid) ->
-  gen_server:call(Pid, long).
+-spec desc(living_pid()) -> string().
+desc(Pid) ->
+  gen_server:call(Pid, desc).
 
 -spec cmd(living_pid(), string()) -> ok.
 cmd(Pid, Line) ->
@@ -142,10 +142,10 @@ handle_call({set_room_pid, Room}, _From, State) ->
 handle_call({set_room_str, RoomStr}, _From, State) ->
   {ok, Room} = em_room_mgr:get_room(RoomStr),
   {reply, ok, State#state{room=Room}};
-handle_call({set_desc, Long}, _From, State) ->
-  {reply, ok, State#state{long=Long}};
-handle_call(long, _From, #state{long=Long}=State) ->
-  {reply, Long, State};
+handle_call({set_desc, Desc}, _From, State) ->
+  {reply, ok, State#state{desc=Desc}};
+handle_call(desc, _From, #state{desc=Desc}=State) ->
+  {reply, Desc, State};
 handle_call({print, Format}, _From, #state{client={_,Out}}=State) ->
   em_conn:print(Out, Format),
   {reply, ok, State};
@@ -233,8 +233,8 @@ load_living(Name, State) ->
 -spec update_living([{any(), any()}], #state{}) -> #state{}.
 update_living([], State) ->
   State;
-update_living([{long, Long}|Data], State) ->
-  update_living(Data, State#state{long=Long});
+update_living([{desc, Desc}|Data], State) ->
+  update_living(Data, State#state{desc=Desc});
 update_living([{room, Room}|Data], State) ->
   {ok, RoomPid} = em_room_mgr:get_room(Room),
   update_living(Data, State#state{room=RoomPid});
@@ -257,7 +257,7 @@ do_save(#state{name=Name}=State) ->
 save_living(State) ->
   lists:flatten([
     "{version, 1}.\n",
-    "{long, ", io_lib:format("~p", [State#state.long]), "}.\n",
+    "{desc, ", io_lib:format("~p", [State#state.desc]), "}.\n",
     "{room, \"", em_room:get_name(State#state.room), "\"}.\n",
     "{objects, ", save_objects(State), "}.\n"
   ]).

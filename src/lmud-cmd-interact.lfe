@@ -92,7 +92,7 @@
               `#(ok ,req))
             ((tuple 'error 'not_found)
               (lmud-util:print "There's no such thing here.\n" req)
-              `#(ok req))))))))
+              `#(ok ,req))))))))
 
 (defun do-look-obj
   ((_ '() req)
@@ -103,7 +103,7 @@
         (lmud-util:print
           "~s\n"
           (list (em_text:wrapline
-                  (em_object:long obj)
+                  (em_object:desc obj)
                   (lmud-config:wrap-width)))
           req)
           'ok)
@@ -118,7 +118,7 @@
       (name (when (== name id))
         (lmud-util:print
           (++
-            (em_text:wrapline (em_living:long living)
+            (em_text:wrapline (em_living:desc living)
               (lmud-config:wrap-width))
             "\n")
           req))

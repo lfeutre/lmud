@@ -16,7 +16,7 @@
          set_desc/2,
          a_short/1, the_short/1,
 %         short/1, the_short/1, a_short/1, plural_short/1,
-         long/1, show_in_room/1,
+         desc/1, show_in_room/1,
          is_attached/1, set_attached/2,
          get_template/1
         ]).
@@ -24,7 +24,7 @@
 -record(object, {ids=[]::id_list(), plurals=[]::id_list(),
                  adjs=[]::adj_list(),
                  primary_id=""::id(), primary_adj=""::adj(),
-                 short="nondescript thing"::string(), long=""::string(),
+                 short="nondescript thing"::string(), desc=""::string(),
                  show_in_room = ""::string(),
                  proper_name = ""::string(),
                  quantity = 0::count(),
@@ -81,8 +81,8 @@ make_object([{primary_adj, Adj}|Data], Ob) ->
   make_object(Data, add_primary_adj(Ob, Adj));
 make_object([{show_in_room, Desc}|Data], Ob) ->
   make_object(Data, set_show_in_room(Ob, Desc));
-make_object([{long, Long}|Data], Ob) ->
-  make_object(Data, set_desc(Ob, Long));
+make_object([{desc, Desc}|Data], Ob) ->
+  make_object(Data, set_desc(Ob, Desc));
 make_object([{is_attached, Flag}|Data], Ob) ->
   make_object(Data, set_attached(Ob, Flag));
 make_object([_Other|Data], Ob) ->
@@ -107,9 +107,9 @@ a_short(#object{short=Short}) ->
 the_short(#object{short=Short}) ->
   ["the "|Short].
 
--spec long(object()) -> string().
-long(#object{long=Long}) ->
-  Long.
+-spec desc(object()) -> string().
+desc(#object{desc=Desc}) ->
+  Desc.
 
 -spec has_id(object(), id()) -> boolean().
 has_id(#object{ids=Ids}, Id) ->
@@ -156,8 +156,8 @@ set_name(Ob, [Token|Toks], Ids, Adjs) ->
   set_name(Ob, Toks, Ids, Adjs ++ [Token]).
 
 -spec set_desc(object(), string()) -> object().
-set_desc(Ob, Long) ->
-  Ob#object{long=Long}.
+set_desc(Ob, Desc) ->
+  Ob#object{desc=Desc}.
 
 -spec set_show_in_room(object(), string()) -> object().
 set_show_in_room(Ob, Desc) ->

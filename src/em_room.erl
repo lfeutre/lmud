@@ -26,7 +26,7 @@
 
 -export([add_event_listener/2, notify/2]).
 
--record(state, {name, title, desc, long, people=[], exits=[], objects=[],
+-record(state, {name, title, brief, desc, people=[], exits=[], objects=[],
                 resets=[], event_listeners=[]}).
 
 -type room_name() :: string().
@@ -94,8 +94,8 @@ set_title(Room, Title) ->
 set_brief(Room, Brief) ->
   gen_server:call(Room, {set_brief, Brief}).
 
-set_desc(Room, Long) ->
-  gen_server:call(Room, {set_desc, Long}).
+set_desc(Room, Desc) ->
+  gen_server:call(Room, {set_desc, Desc}).
 
 save(Room) ->
   gen_server:call(Room, save).
@@ -149,9 +149,9 @@ handle_call({print_while, Pred, Format, Args}, _From, State) ->
 handle_call({set_title, Title}, _From, State) ->
   {reply, ok, State#state{title=Title}};
 handle_call({set_brief, Brief}, _From, State) ->
-  {reply, ok, State#state{desc=Brief}};
-handle_call({set_desc, Long}, _From, State) ->
-  {reply, ok, State#state{long=Long}};
+  {reply, ok, State#state{brief=Brief}};
+handle_call({set_desc, Desc}, _From, State) ->
+  {reply, ok, State#state{desc=Desc}};
 handle_call(save, _From, State) ->
   {ok, NewState} = do_save(State),
   {reply, ok, NewState}.
@@ -208,10 +208,10 @@ do_describe(#state{title=Title, desc=Desc, people=People, exits=Exits, objects=O
 do_describe_except(User, #state{people=People}=State) ->
   do_describe(State#state{people = People -- [User]}).
 
-do_looking(User, #state{long=undefined}=State) ->
+do_looking(User, #state{desc=undefined}=State) ->
   do_describe_except(User, State);
-do_looking(User, #state{long=Long}=State) ->
-  do_describe_except(User, State#state{desc=Long}).
+do_looking(User, #state{desc=Desc}=State) ->
+  do_describe_except(User, State#state{desc=Desc}).
 
 list_exits(Exits) ->
   list_exits([Dir || {Dir, _Dest} <- Exits], []).
@@ -260,15 +260,15 @@ save_room(State) ->
     "{version, 1}.\n",
     "{title, \"", State#state.title, "\"}.\n",
     "{desc, \"", State#state.desc, "\"}.\n",
-    save_long(State),
+    save_desc(State),
     "{exits, ", save_exits(State), "}.\n",
     save_resets(State)
   ]).
 
-save_long(#state{long=undefined}) ->
+save_desc(#state{desc=undefined}) ->
   "";
-save_long(#state{long=Long}) ->
-  ["{long, \"", Long, "\"}.\n"].
+save_desc(#state{desc=Desc}) ->
+  ["{desc, \"", Desc, "\"}.\n"].
 
 save_exits(State) ->
   ["[", save_exits(State#state.exits, []), "]"].

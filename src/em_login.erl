@@ -78,7 +78,7 @@ login({new_user_pw_confirm, Name, Password}, Password, #req{conn=Conn}=Req) ->
   'lmud-filestore':write("livings", Name,
     lists:flatten([
     "{version, 1}.\n",
-    "{long, \"", Name, " looks pretty ordinary.\"}.\n"])),
+    "{desc, \"", Name, " looks pretty ordinary.\"}.\n"])),
   em_conn:print(Conn, ["\nWelcome, ", Name, "!\n\n"]),
   do_login(Name, Req);
 login({new_user_pw_confirm, Name, _Password}, _WrongPassword, #req{conn=Conn}=Req) ->

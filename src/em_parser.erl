@@ -229,11 +229,11 @@ cmd_redit(["brief", What|Rest], #req{living=Liv}=Req) ->
   em_room:set_brief(Room, Brief),
   ok = em_room:save(Room),
   {ok, Req};
-cmd_redit(["long", What|Rest], #req{living=Liv}=Req) ->
+cmd_redit(["desc", What|Rest], #req{living=Liv}=Req) ->
   ok = 'lmud-perms':verify(admin, Req),
   Room = em_living:get_room(Liv),
-  Long = string:join([What|Rest], " "),
-  em_room:set_desc(Room, Long),
+  Desc = string:join([What|Rest], " "),
+  em_room:set_desc(Room, Desc),
   ok = em_room:save(Room),
   {ok, Req};
 cmd_redit(_Args, Req) ->
@@ -246,7 +246,7 @@ cmd_redit(_Args, Req) ->
   "                         to the new room <name>\n"
   "  title <what>           Set the room title to <what>\n"
   "  brief <what>           Set the room brief desc to <what>\n"
-  "  long <what>            Set the room long desc to <what>\n",
+  "  desc <what>            Set the room long description to <what>\n",
   Req),
   {ok, Req}.
 

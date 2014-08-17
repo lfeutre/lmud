@@ -4,7 +4,10 @@
 (include-file "include/request.hrl")
 
 (defun get-port-digits ()
-  "This silly little function is how we got the port number for L-MUD."
+  "This silly little function is how we got the port number for L-MUD.
+
+  It does a modulus 10 on each letter of the input (in this case, 'lmud'),
+  and retuns digits between 0 and 9 for each (in this case: 1, 2, 0, and 3)."
   (lists:map
     (lambda (x)
       (rem (- x 97) 10)) "lmud"))

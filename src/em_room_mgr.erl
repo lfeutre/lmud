@@ -120,14 +120,14 @@ make_room(Name, Data) ->
   {title, Title} = lists:keyfind(title, 1, Data),
   {desc, Desc} = lists:keyfind(desc, 1, Data),
   {exits, Exits} = lists:keyfind(exits, 1, Data),
-  Long = case lists:keyfind(long, 1, Data) of
-           {long, What} -> What;
+  Desc = case lists:keyfind(desc, 1, Data) of
+           {desc, What} -> What;
            false -> undefined
          end,
   Resets = proplists:get_value(objects, Data, []),
   Obs = em_object:load_obs(Resets),
   {ok, Room} = 'lmud-room-pool-sup':start_child(Name, Title, Desc),
-  em_room:set_desc(Room, Long),
+  em_room:set_desc(Room, Desc),
   add_exits(Room, Exits),
   add_objects(Room, Obs),
   add_resets(Room, Resets),

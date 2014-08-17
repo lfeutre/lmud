@@ -4,6 +4,11 @@ TODO
 This is the new TODO list. See the bottom of this document for the
 old TODO.
 
+Bugs
+----
+
+* When writing non-wrappd (short) descriptions, extra quotes are added to
+  the data files.
 
 Usability
 ---------
