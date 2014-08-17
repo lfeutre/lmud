@@ -14,9 +14,9 @@
 (defun init
   (('())
      `#(ok #(#(simple_one_for_one 0 1)
-              (#(em_player
-               #(em_player start_link ())
+              (#(lmud-player
+               #(lmud-player start_link ())
                temporary
                brutal_kill
                worker
-               (em_player)))))))
+               (lmud-player)))))))

@@ -24,8 +24,8 @@
          terminate/2, code_change/3]).
 
 -record(state, {name="noname" :: living_name(),
-                room::em_room:room_pid(),
-                client::client(),
+                room :: em_room:room_pid(),
+                client,
                 desc="" :: string(),
                 objects=[] :: [em_object:object()]}).
 
@@ -35,20 +35,17 @@
 -include("types.hrl").
 -type living_name() :: string().
 -type living_pid() :: pid().
--type client() :: {em_player:user_pid(), em_conn:conn_pid()}.
 
--export_type([living_name/0, living_pid/0, client/0]).
+-export_type([living_name/0, living_pid/0]).
 
 
 %% ==========================================================================
 %% API functions
 %% ==========================================================================
 
--spec start_link(living_name(), client()) -> any().
 start_link(Name, Client) ->
   gen_server:start_link(?MODULE, [Name, Client], []).
 
--spec start(living_name(), client()) -> any().
 start(Name, Client) ->
   gen_server:start(?MODULE, [Name, Client], []).
 
