@@ -159,7 +159,7 @@ cmd_tell([], Req) ->
   print("Tell whom what?", Req),
   {ok, Req};
 cmd_tell([Who,FirstWord|Rest], #req{user=User}=Req) ->
-  Name = em_user:get_name(User),
+  Name = em_player:get_name(User),
   case em_game:lookup_user(Who) of
     {error, not_found} ->
       print("There's no such user.\n", Req);
@@ -167,9 +167,9 @@ cmd_tell([Who,FirstWord|Rest], #req{user=User}=Req) ->
       print("Talking to yourself, huh?\n", Req);
     {ok, {OtherName, OtherUser}} ->
       Text = string:join([em_text:capitalize(FirstWord)|Rest], " "),
-      em_user:print(OtherUser,
-                    color:magenta("[Whisper] ") ++
-                    "~s tells you, \"~s\"~n", [Name, Text]),
+      em_player:print(OtherUser,
+                      color:magenta("[Whisper] ") ++
+                      "~s tells you, \"~s\"~n", [Name, Text]),
       print(color:magenta("[Whisper] ") ++
             "You tell ~s, \"~s\"~n", [OtherName, Text], Req)
   end,

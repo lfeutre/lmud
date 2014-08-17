@@ -5,6 +5,6 @@
 
 (defun verify
   ((priv (match-req user user))
-    (case (em_user:has_privilege user priv)
+    (case (em_player:has_privilege user priv)
       ('true 'ok)
       ('false (throw 'not_allowed)))))

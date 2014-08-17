@@ -5,7 +5,7 @@
 %%% Represents a single connected user, and hosts user-related state.
 %%% @end
 %%% =========================================================================
--module(em_user).
+-module(em_player).
 
 -behaviour(gen_server).
 

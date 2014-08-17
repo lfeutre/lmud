@@ -104,9 +104,9 @@ login({got_password, Settings, Name}, Password, #req{conn=Conn}=Req) ->
 
 -spec do_login(string(), req()) -> req_ok() | req_link().
 do_login(Name, #req{conn=Conn}=Req) ->
-  {ok, User} = 'lmud-user-sup':start_child(Name, Conn),
+  {ok, User} = 'lmud-player-sup':start_child(Name, Conn),
   link(User),
-  ok = em_user:load(User),
+  ok = em_player:load(User),
   case em_game:login(User) of
     ok ->
       {ok, Living} = 'lmud-living-sup':start_child(Name, {User, Conn}),

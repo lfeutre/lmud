@@ -35,7 +35,7 @@
 -include("types.hrl").
 -type living_name() :: string().
 -type living_pid() :: pid().
--type client() :: {em_user:user_pid(), em_conn:conn_pid()}.
+-type client() :: {em_player:user_pid(), em_conn:conn_pid()}.
 
 -export_type([living_name/0, living_pid/0, client/0]).
 
