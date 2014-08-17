@@ -49,7 +49,7 @@ clean:
 clean-run: clean rel run
 
 connect:
-	rlwrap telnet localhost $(shell $(GET_PORT_CMD))
+	-@rlwrap telnet localhost $(shell $(GET_PORT_CMD))
 
 repl:
 	./deps/lfe/bin/lfe -pa $(LFE_DEPS) -pa $(EBIN) -pa $(LUTIL_DEPS)
