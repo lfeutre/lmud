@@ -6,7 +6,7 @@
 %%% to the in-game request handler.
 %%% @end
 %%% =========================================================================
--module(em_rh_login).
+-module(em_login).
 
 %% API
 -export([welcome/1, login/3]).
@@ -115,7 +115,7 @@ do_login(Name, #req{conn=Conn}=Req) ->
       {ok, NewReq} = do_incarnate(Req#req{user=User, living=Living}),
       unlink(Living),
       unlink(User),
-      ?req_next_and_link(em_rh_game, parse, [], NewReq);
+      ?req_next_and_link(em_parser, parse, [], NewReq);
     {error, user_exists} ->
       unlink(User),
       exit(User, user_exists),
