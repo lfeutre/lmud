@@ -3,6 +3,12 @@
 
 (include-file "include/request.hrl")
 
+(defun get-port-digits ()
+  "This silly little function is how we got the port number for L-MUD."
+  (lists:map
+    (lambda (x)
+      (rem (- x 97) 10)) "lmud"))
+
 (defun get-app-src ()
   (let* ((filename (++ (filename:join "src" (lmud-const:name)) ".app.src"))
          ((tuple 'ok (list app)) (file:consult filename)))
