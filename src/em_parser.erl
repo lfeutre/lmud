@@ -6,7 +6,7 @@
 %%% here, to the parse/2 function.
 %%% @end
 %%% =========================================================================
--module(em_rh_game).
+-module(em_parser).
 
 %% API
 -export([parse/2]).
@@ -15,14 +15,13 @@
 -export([cmd_go/2,
          cmd_emote/2, cmd_emote_ns/2,
          cmd_say/2, cmd_tell/2, cmd_think/2,
-         cmd_who/2, cmd_inv/2, cmd_setdesc/2, cmd_news/2,
          cmd_redit/2, cmd_addexit/2,
          cmd_cast/2]).
 
 -include("request.hrl").
 -include("types.hrl").
 
--type ob_list() :: [em_object:object()].
+%-type ob_list() :: [em_object:object()].
 %-type liv_list() :: [em_living:living_pid()].
 -type cmd_ok() :: {ok, req()}.
 
@@ -49,11 +48,11 @@ parse_cmd(Cmd, PassedArgs, Line, Req) ->
     case 'lmud-commands':'get-command-or-alias'(LowerCmd, 'lmud-commands':'base'()) of
       [{args,DefinedArgs},_,{func,Func},{mod,Mod},_] ->
         Args = lists:merge([DefinedArgs,PassedArgs]),
-        io:format("PassedArgs: ~p~n",[PassedArgs]),
-        io:format("DefinedArgs: ~p~n",[DefinedArgs]),
-        io:format("Mod: ~p~n",[Mod]),
-        io:format("Func: ~p~n",[Func]),
-        io:format("Args: ~p~n",[Args]),
+        % io:format("PassedArgs: ~p~n",[PassedArgs]),
+        % io:format("DefinedArgs: ~p~n",[DefinedArgs]),
+        % io:format("Mod: ~p~n",[Mod]),
+        % io:format("Func: ~p~n",[Func]),
+        % io:format("Args: ~p~n",[Args]),
         try
           case apply(Mod, Func, [Args, Req]) of
             {ok, Req} ->
@@ -66,6 +65,9 @@ parse_cmd(Cmd, PassedArgs, Line, Req) ->
             Other ->
               print("Error occurred while processing '~s':~n~p~n",
                 [Line, Other], Req),
+              % print("Mod: ~p~n",[Mod],Req),
+              % print("Func: ~p~n",[Func],Req),
+              % print("Args: ~p~n",[Args],Req),
               ?req_next(parse)
           end
         catch
@@ -87,26 +89,6 @@ parse_cmd(Cmd, PassedArgs, Line, Req) ->
 %% ==========================================================================
 %% Game commands
 %% ==========================================================================
-
-%% Inventory
--spec cmd_inv([string()], req()) -> cmd_ok().
-cmd_inv(_Args, #req{living=Liv}=Req) ->
-  Obs = em_living:get_objects(Liv),
-  do_inv(Obs, Req),
-  {ok, Req}.
-
--spec do_inv(ob_list(), req()) -> ok.
-do_inv([], Req) ->
-  print("You're not carrying anything.\n", Req);
-do_inv(Obs, Req) ->
-  print("You're carrying:\n", Req),
-  print(desc_inv(Obs, []), Req).
-
--spec desc_inv(ob_list(), iolist()) -> iolist().
-desc_inv([], Result) -> Result;
-desc_inv([Ob|Obs], Result) ->
-  Line = [" ", em_object:a_short(Ob), "\n"],
-  desc_inv(Obs, [Result, Line]).
 
 -spec cmd_go([], req()) -> cmd_ok().
 cmd_go([], Req) ->
@@ -194,26 +176,6 @@ cmd_tell([Who,FirstWord|Rest], #req{user=User}=Req) ->
   {ok, Req};
 cmd_tell([Who], Req) ->
   print("Tell " ++ Who ++ " what?", Req),
-  {ok, Req}.
-
-
-%% Who
--spec cmd_who([string()], req()) -> cmd_ok().
-cmd_who(_Args, Req) ->
-  print(["Users:\n",
-    [[" ", Name, "\n"] || {Name, _Pid} <- em_game:get_users()]], Req),
-  {ok, Req}.
-
-%% News
-cmd_news(_Args, Req) ->
-  print(["\nHeadlines\n---------\n\n",
-         "There is no new news. Which, of course, is good news.\n"], Req),
-  {ok, Req}.
-
-%% setdesc
--spec cmd_setdesc([string()], req()) -> cmd_ok().
-cmd_setdesc(Args, #req{living=Liv}=Req) ->
-  em_living:set_desc(Liv, io_lib:format("~p", [string:join(Args, " ")])),
   {ok, Req}.
 
 %% addexit

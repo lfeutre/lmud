@@ -13,7 +13,7 @@
 %% API
 -export([start_link/0, start/0,
          data_dir/0,
-         get_users/0, lookup_user/1, lookup_user_pid/1,
+         get_users/0, get_user_names/0, lookup_user/1, lookup_user_pid/1,
          login/1, incarnate/1, logout/1,
          print_except/3, print_while/3]).
 
@@ -53,6 +53,9 @@ data_dir() ->
 -spec get_users() -> users().
 get_users() ->
   gen_server:call(?SERVER, get_users).
+
+get_user_names() ->
+  [[" ", Name, "\n"] || {Name, _Pid} <- get_users()].
 
 %% @doc Log in a user to the game. Returns an error if the user is already
 %% logged in.
