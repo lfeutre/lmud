@@ -92,6 +92,36 @@ Commands
   [ ] auctions
 
 
+Permissions
+-----------
+
+For a massive MUD, there will likely need to be a greater number of
+permissions. Possible permission levels:
+
+* complete world control:
+  * creating rooms/tunnels/open spaces/etc,
+  * creating creatures
+  * name: Deva? Valar? Aesir?
+  * command prefix: d@- ?
+* world-modification and defying laws of physics:
+  * creating things, teleporting people/things, changing rooms/etc.
+  * name: wizard
+  * command prefix: w@- ?
+* control over worlds' commodities, goods, money, markets:
+  * name: Asura?
+  * command prefix: a@- ?
+* NPC
+* Player
+
+Maybe have a special "room" for objects that haven't been created, that only
+wizards can pull stuff from (but not enter) and only gods can actuall enter?
+Both wizards and gods could:
+
+* create things in the room
+* teleport things out of it
+* list the items they created that are in it
+
+
 Colorizing
 ----------
 
@@ -163,28 +193,6 @@ NPCs
   * [ ] add auctioneer
 
 
-Permissions
------------
-
-For a massive MUD, there will likely need to be a greater number of
-permissions. Possible permission levels:
-
-* complete world control:
-  * creating rooms/tunnels/open spaces/etc,
-  * creating creatures
-  * name: Deva? Valar? Aesir?
-  * command prefix: d@- ?
-* world-modification and defying laws of physics:
-  * creating things, teleporting people/things, changing rooms/etc.
-  * name: wizard
-  * command prefix: w@- ?
-* control over worlds' commodities, goods, money, markets:
-  * name: Asura?
-  * command prefix: a@- ?
-* NPC
-* Player
-
-
 Groups
 ------
 
@@ -225,7 +233,7 @@ Migration to LFE
 ----------------
 
 * [x] include LFE as a dep
-* [ ] all new functionality, write in LFE
+* [x] all new functionality, write in LFE
   * [x] port newly-added em_util to lmud-util
 * [x] rename to lmud or λMUD
 * continue to use em_* Erlang modules (as legacy)

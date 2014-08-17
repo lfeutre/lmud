@@ -8,9 +8,15 @@
     (#(name "h")
      #(command "help")
      #(args ()))
+    (#(name "help alias")
+     #(command "help")
+     #(args ("aliases")))
     (#(name "help commands")
      #(command "help")
      #(args ("all")))
+    (#(name "help priv")
+     #(command "help")
+     #(args ("privileges")))
     (#(name "examine")
      #(command "look")
      #(args ()))
@@ -149,21 +155,24 @@
   (lmud-commands:get-command name prop-list))
 
 (defun get-value (alias-name prop-list key)
-  (case (get-alias alias-name (all))
-    ('()
-      '(()))
-    ('(())
-      '(()))
-    (match
-      (lmud-commands:get-command
-        (proplists:get_value key match)
-        (lmud-commands:all)))))
+  (let ((result (get-alias alias-name (all))))
+    (case result
+      ((tuple 'error _)
+        result)
+      (_
+        (lmud-commands:get-command
+          (proplists:get_value key result)
+          (lmud-commands:all))))))
 
 (defun get-command (alias-name prop-list)
-  (lists:sort
-    (merge-args
-      (get-value alias-name prop-list 'command)
-      (get-args alias-name prop-list))))
+  (let ((result (get-value alias-name prop-list 'command)))
+    (case result
+      ((tuple 'error _) result)
+      (_
+        (lists:sort
+          (merge-args
+            result
+            (get-args alias-name prop-list)))))))
 
 (defun get-args (alias-name prop-list)
   (orddict:filter

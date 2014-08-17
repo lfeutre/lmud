@@ -6,9 +6,7 @@ ErlyMUD Change Log
 -----
 * Renamed project tp λMUD ("El-MUD").
 * Removed custom color management and used @julianduque's erlang-color.
-* Added support for TinyMUSH emote/pose with no space after the name.
-* Added TinyMUSH aliases for :, ;, \\ and ".
-* Added ' and PAGE as aliases for WHISPER/TELL.
+* Added support for some TinyMUD, IRC, and WoW command aliases.
 * Added color output to most of the talk and emote functions.
 * Converted many of the smaller Erlang modules to LFE.
 * Added module for reading data from and writing data to game files (all

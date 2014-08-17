@@ -1,6 +1,8 @@
 (defmodule lmud-util
   (export all))
 
+(include-file "include/request.hrl")
+
 (defun get-app-src ()
   (let* ((filename (++ (filename:join "src" (lmud-const:name)) ".app.src"))
          ((tuple 'ok (list app)) (file:consult filename)))
@@ -86,3 +88,14 @@
 
 (defun supervisor-child (supervisor args type)
   (make-child supervisor args type))
+
+(defun print (format req)
+  (print format '() req))
+
+(defun print
+  ((format args (match-req conn conn))
+    (em_conn:print conn format args)))
+
+(defun print
+  ((color format args (match-req conn conn))
+    (em_conn:print conn (lmud-util:format-color color format) args)))

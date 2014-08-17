@@ -12,13 +12,10 @@
 -export([parse/2]).
 
 %% game commands
--export([cmd_look/2,
-         cmd_go/2, cmd_quit/2,
+-export([cmd_go/2,
          cmd_emote/2, cmd_emote_ns/2,
          cmd_say/2, cmd_tell/2, cmd_think/2,
-         cmd_who/2,
-         cmd_take/2, cmd_drop/2, cmd_inv/2, cmd_glance/2,
-         cmd_save/2, cmd_setdesc/2, cmd_help/2, cmd_news/2,
+         cmd_who/2, cmd_inv/2, cmd_setdesc/2, cmd_news/2,
          cmd_redit/2, cmd_addexit/2,
          cmd_cast/2]).
 
@@ -26,9 +23,8 @@
 -include("types.hrl").
 
 -type ob_list() :: [em_object:object()].
--type liv_list() :: [em_living:living_pid()].
+%-type liv_list() :: [em_living:living_pid()].
 -type cmd_ok() :: {ok, req()}.
--type cmd_stop() :: {stop, req()}.
 
 %% ==========================================================================
 %% API functions
@@ -53,11 +49,11 @@ parse_cmd(Cmd, PassedArgs, Line, Req) ->
     case 'lmud-commands':'get-command-or-alias'(LowerCmd, 'lmud-commands':'base'()) of
       [{args,DefinedArgs},_,{func,Func},{mod,Mod},_] ->
         Args = lists:merge([DefinedArgs,PassedArgs]),
-        % io:format("PassedArgs: ~p~n",[PassedArgs]),
-        % io:format("DefinedArgs: ~p~n",[DefinedArgs]),
-        % io:format("Mod: ~p~n",[Mod]),
-        % io:format("Func: ~p~n",[Func]),
-        % io:format("Args: ~p~n",[Args]),
+        io:format("PassedArgs: ~p~n",[PassedArgs]),
+        io:format("DefinedArgs: ~p~n",[DefinedArgs]),
+        io:format("Mod: ~p~n",[Mod]),
+        io:format("Func: ~p~n",[Func]),
+        io:format("Args: ~p~n",[Args]),
         try
           case apply(Mod, Func, [Args, Req]) of
             {ok, Req} ->
@@ -112,138 +108,6 @@ desc_inv([Ob|Obs], Result) ->
   Line = [" ", em_object:a_short(Ob), "\n"],
   desc_inv(Obs, [Result, Line]).
 
-%% Drop
--spec cmd_drop([string()], req()) -> cmd_ok().
-cmd_drop([], Req) ->
-  print("Drop what?\n", Req),
-  {ok, Req};
-cmd_drop([Id|_Args], #req{living=Liv}=Req) ->
-  Obs = em_living:get_objects(Liv),
-  try_drop(Id, Obs, Req),
-  {ok, Req}.
-
--spec try_drop(string(), ob_list(), req()) -> ok.
-try_drop(_Id, [], Req) ->
-  print("You don't have anything like that.\n", Req);
-try_drop(Id, [Ob|Obs], Req) ->
-  case em_object:has_id(Ob, Id) of
-    true ->
-      do_drop(Ob, Req);
-    false ->
-      try_drop(Id, Obs, Req)
-  end.
-
--spec do_drop(em_object:object(), req()) -> ok.
-do_drop(Ob, #req{living=Liv}=Req) ->
-  Name = em_living:get_name(Liv),
-  Room = em_living:get_room(Liv),
-  AShort = em_object:a_short(Ob),
-  TheShort = em_object:the_short(Ob),
-  try
-    ok = em_living:move_object(Liv, Ob, {to_room, Room}),
-    print("You drop ~s.\n", [TheShort], Req),
-    em_room:print_except(Room, Liv, "~s drops ~s.~n", [Name, AShort])
-  catch
-    throw:{em_living, not_found} ->
-      print("You don't have anything like that.\n", Req)
-  end.
-
-%% Get
--spec cmd_take([string()], req()) -> cmd_ok().
-cmd_take([], Req) ->
-  print("Take what?\n", Req),
-  {ok, Req};
-cmd_take([Id|_Args], #req{living=Liv}=Req) ->
-  Room = em_living:get_room(Liv),
-  Obs = lists:filter(fun(Ob) -> not em_object:is_attached(Ob) end,
-                     em_room:get_objects(Room)),
-  do_take(Id, Obs, Req),
-  {ok, Req}.
-
--spec do_take(string(), ob_list(), req()) -> ok.
-do_take(_Id, [], Req) ->
-  print("There's no such thing here.\n", Req);
-do_take(Id, [Ob|Obs], #req{living=Liv}=Req) ->
-  case em_object:has_id(Ob, Id) of
-    true ->
-      Name = em_living:get_name(Liv),
-      Room = em_living:get_room(Liv),
-      TheShort = em_object:the_short(Ob),
-      print("You take ~s.\n", [TheShort], Req),
-      em_room:remove_object(Room, Ob),
-      em_room:print_except(Room, Liv, "~s takes ~s.~n", [Name, TheShort]),
-      em_living:add_object(Liv, Ob);
-    false ->
-      do_take(Id, Obs, Req)
-  end.
-
-%% Quit
--spec cmd_quit([string()], req()) -> cmd_stop().
-cmd_quit(Args, #req{user=User, living=Liv}=Req) ->
-  cmd_save(Args, Req),
-  print("Goodbye!\n", Req),
-  Name = em_living:get_name(Liv),
-  Room = em_living:get_room(Liv),
-  em_room:print_except(Room, Liv, "~s leaves.~n", [Name]),
-  ok = em_game:logout(User),
-  {stop, Req}.
-
-%% Glance
--spec cmd_glance([string()], req()) -> cmd_ok().
-cmd_glance(_Args, #req{living=Liv}=Req) ->
-  Room = em_living:get_room(Liv),
-  print(em_room:describe_except(Room, Liv), Req),
-  {ok, Req}.
-
-%% Look
--spec cmd_look([string()], req()) -> cmd_ok().
-cmd_look([], #req{living=Liv}=Req) ->
-  Room = em_living:get_room(Liv),
-  print(em_room:looking(Room, Liv), Req),
-  {ok, Req};
-cmd_look([Id|_Args], #req{living=Liv}=Req) ->
-  Room = em_living:get_room(Liv),
-  Obs = em_room:get_objects(Room),
-  case do_look_ob(string:to_lower(Id), Obs, Req) of
-    ok -> {ok, Req};
-    {error, not_found} ->
-      People = lists:delete(Liv, em_room:get_people(Room)),
-      case do_look_liv(string:to_lower(Id), People, Req) of
-        ok -> {ok, Req};
-        {error, not_found} ->
-          print("There's no such thing here.\n", Req),
-          {ok, Req}
-      end
-  end.
-
--spec do_look_ob(string(), ob_list(), req()) -> ok | {error, not_found}.
-do_look_ob(_Id, [], _Req) ->
-  {error, not_found};
-do_look_ob(Id, [Ob|Obs], Req) ->
-  case em_object:has_id(Ob, Id) of
-    true ->
-      Long = em_object:long(Ob),
-      print("~s\n", [em_text:wrapline(Long, 'lmud-config':'wrap-width'())], Req),
-      ok;
-    false ->
-      do_look_ob(Id, Obs, Req)
-  end.
-
--spec do_look_liv(string(), liv_list(), req()) -> ok | {error, not_found}.
-do_look_liv(_Id, [], _Req) ->
-  {error, not_found};
-do_look_liv(Id, [Liv|People], Req) ->
-  case string:to_lower(em_living:get_name(Liv)) of
-    Id ->
-      Long = em_living:long(Liv),
-      Wrapped = em_text:wrapline(Long, 'lmud-config':'wrap-width'()),
-      print(Wrapped ++ "\n", [], Req),
-      %print("~s\n", [Long], Req),
-      ok;
-    _Other ->
-      do_look_liv(Id, People, Req)
-  end.
-
 -spec cmd_go([], req()) -> cmd_ok().
 cmd_go([], Req) ->
   print("Go where?", Req),
@@ -267,7 +131,7 @@ do_go({ok, {Dir, Dest}}, #req{living=Liv}=Req) ->
   em_living:set_room(Liv, DestRoom),
   em_room:enter(DestRoom, Liv),
   em_room:print_except(yellowb, DestRoom, Liv, "~s arrives.~n", [Name]),
-  cmd_glance([], Req).
+  'lmud-cmd-interact':glance([], Req).
 
 %% Emote/Pose
 -spec cmd_emote([string()], req()) -> cmd_ok().
@@ -346,18 +210,6 @@ cmd_news(_Args, Req) ->
          "There is no new news. Which, of course, is good news.\n"], Req),
   {ok, Req}.
 
-%% Save
--spec cmd_save([string()], req()) -> cmd_ok().
-cmd_save(_Args, #req{living=Liv}=Req) ->
-  print("Saving...\n", Req),
-  case em_living:save(Liv) of
-    ok ->
-      {ok, Req};
-    {error, Reason} ->
-      print("Error: ~s\n", [Reason], Req),
-      {ok, Req}
-  end.
-
 %% setdesc
 -spec cmd_setdesc([string()], req()) -> cmd_ok().
 cmd_setdesc(Args, #req{living=Liv}=Req) ->
@@ -367,7 +219,7 @@ cmd_setdesc(Args, #req{living=Liv}=Req) ->
 %% addexit
 -spec cmd_addexit([string()], req()) -> cmd_ok().
 cmd_addexit([Dir, ToName|_Rest], #req{living=Liv}=Req) ->
-  ok = verify_privilege(admin, Req),
+  ok = 'lmud-perms':verify(admin, Req),
   case em_room_mgr:get_room(ToName) of
     {ok, _ToRoom} ->
       FromRoom = em_living:get_room(Liv),
@@ -378,7 +230,7 @@ cmd_addexit([Dir, ToName|_Rest], #req{living=Liv}=Req) ->
   end,
   {ok, Req};
 cmd_addexit(_Args, Req) ->
-  ok = verify_privilege(admin, Req),
+  ok = 'lmud-perms':verify(admin, Req),
   print(
   "Usage: addexit <dir> <name>\n\n"
   "  Add an exit in direction <dir> to the existing room <name>.\n",
@@ -388,7 +240,7 @@ cmd_addexit(_Args, Req) ->
 %% REdit
 -spec cmd_redit([string()], req()) -> cmd_ok().
 cmd_redit(["dig", Dir, ToName|_Rest], #req{living=Liv}=Req) ->
-  ok = verify_privilege(admin, Req),
+  ok = 'lmud-perms':verify(admin, Req),
   case em_room_mgr:new_room(ToName) of
     {ok, ToRoom} ->
       FromRoom = em_living:get_room(Liv),
@@ -402,28 +254,28 @@ cmd_redit(["dig", Dir, ToName|_Rest], #req{living=Liv}=Req) ->
   end,
   {ok, Req};
 cmd_redit(["title", What|Rest], #req{living=Liv}=Req) ->
-  ok = verify_privilege(admin, Req),
+  ok = 'lmud-perms':verify(admin, Req),
   Room = em_living:get_room(Liv),
   Title = string:join([What|Rest], " "),
   em_room:set_title(Room, Title),
   ok = em_room:save(Room),
   {ok, Req};
 cmd_redit(["brief", What|Rest], #req{living=Liv}=Req) ->
-  ok = verify_privilege(admin, Req),
+  ok = 'lmud-perms':verify(admin, Req),
   Room = em_living:get_room(Liv),
   Brief = string:join([What|Rest], " "),
   em_room:set_brief(Room, Brief),
   ok = em_room:save(Room),
   {ok, Req};
 cmd_redit(["long", What|Rest], #req{living=Liv}=Req) ->
-  ok = verify_privilege(admin, Req),
+  ok = 'lmud-perms':verify(admin, Req),
   Room = em_living:get_room(Liv),
   Long = string:join([What|Rest], " "),
   em_room:set_desc(Room, Long),
   ok = em_room:save(Room),
   {ok, Req};
 cmd_redit(_Args, Req) ->
-  ok = verify_privilege(admin, Req),
+  ok = 'lmud-perms':verify(admin, Req),
   print(
   "Edit / create rooms. Changes are immediately saved.\n"
   "Usage: redit <cmd> <args>\n\n"
@@ -458,47 +310,6 @@ reverse_dir("north") -> "south";
 reverse_dir("east") -> "west";
 reverse_dir("south") -> "north";
 reverse_dir("west") -> "east".
-
--spec verify_privilege(atom(), req()) -> ok.
-verify_privilege(Priv, #req{user=User}) ->
-  case em_user:has_privilege(User, Priv) of
-    true -> ok;
-    false -> throw(not_allowed)
-  end.
-
-%% Help
--spec cmd_help([string()], req()) -> cmd_ok().
-cmd_help(["privileges"], Req) ->
-  print(
-  "Privileges are used to control what commands users have access to.\n"
-  "Currently it's not possible to set them in-game; instead, edit the\n"
-  "file data/users/<username>.dat and add a line like this:\n\n"
-  "{privileges, [admin]}.\n\n"
-  "The 'admin' privilege is the only one in use for now, to restrict\n"
-  "access to commands like 'redit' etc that will modify the game.\n",
-  Req),
-  {ok, Req};
-cmd_help(["aliases"], Req) ->
-  print(
-    "\n" ++ 'lmud-config':'simple-welcome'() ++
-    "\n" ++ 'lmud-help':'get-aliases-help'(),
-    Req),
-  {ok, Req};
-cmd_help(["all"], Req) ->
-  print(
-    "\n" ++ 'lmud-config':'simple-welcome'() ++
-    "\n" ++ 'lmud-help':'get-all-help'(),
-    Req),
-  {ok, Req};
-%% XXX this might not be needed once alias args are fixed/merged
-cmd_help(["commands"], Req) ->
-  cmd_help(["all"], Req);
-cmd_help(_Args, Req) ->
-  print(
-    "\n" ++ 'lmud-config':'simple-welcome'() ++
-    "\n" ++ 'lmud-help':'get-base-help'(),
-    Req),
-  {ok, Req}.
 
 %% Utility functions
 
