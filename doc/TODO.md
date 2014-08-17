@@ -10,6 +10,13 @@ Usability
 
 * [x] Add readline support (done via rlwrap)
 * [ ] Convert stdout messages to log messages, conditional on debug setting
+* [ ] add "connected since" and "member since" to user data
+* [ ] add support for "who <username>" and retun new user data as well as
+      existing user data
+* [ ] add "whoami" command with alias "id"
+* [ ] add support for a "NEWS" file
+  * [ ] have news read for a NEWS file in the game directory
+  * [ ] every time the news func is called, read the file
 
 
 Command Parsing
