@@ -18,7 +18,6 @@ GET_PORT_CMD=$(ERL_START) "'lmud-util':'print-port'()." $(ERL_END)
 GET_VERSION_CMD=$(ERL_START) "'lmud-util':'print-version'()." $(ERL_END)
 REL_CONTENT_CMD=$(ERL_START) "'lmud-util':'print-release-data'()." $(ERL_END)
 
-
 $(LFE_LIB):
 	@cp src/*.app.src ./ebin/ && mv ./ebin/*.app.src \
 	`ls -1 src/*.app.src|sed -e 's/\.src//g'|sed -e 's/src\//ebin\//g'`
