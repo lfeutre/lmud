@@ -1,3 +1,7 @@
+ifeq ($(shell which erl),)
+$(error Can't find Erlang executable 'erl')
+exit 1
+endif
 EBIN=./ebin
 LFE_DEPS=./deps/lfe/ebin
 LUTIL_DEPS=./deps/lutil/ebin
@@ -44,7 +48,7 @@ run:
 clean: $(LMUD_UTIL)
 clean: REL=$(shell $(GET_NAME_CMD))-$(shell $(GET_VERSION_CMD))
 clean:
-	-rm $(REL).rel $(REL).boot $(REL).script erl_crash.dump $(EBIN)/*.beam
+	-rm -v $(REL).rel $(REL).boot $(REL).script erl_crash.dump $(EBIN)/*.beam
 
 clean-run: clean rel run
 
