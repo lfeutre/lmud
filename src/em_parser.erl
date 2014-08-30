@@ -191,6 +191,3 @@ print(Format, Req) ->
 -spec print(iolist(), list(), req()) -> ok.
 print(Format, Args, #req{conn=Conn}) ->
   em_conn:print(Conn, Format, Args).
-
-print(Color, Format, Args, #req{conn=Conn}) ->
-  em_conn:print(Conn, 'lmud-util':'format-color'(Color, Format), Args).
