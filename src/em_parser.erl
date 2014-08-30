@@ -13,8 +13,6 @@
 
 %% game commands
 -export([cmd_go/2,
-         cmd_emote/2, cmd_emote_ns/2,
-         cmd_say/2, cmd_tell/2, cmd_think/2,
          cmd_redit/2, cmd_addexit/2,
          cmd_cast/2]).
 
@@ -114,69 +112,6 @@ do_go({ok, {Dir, Dest}}, #req{living=Liv}=Req) ->
   em_room:enter(DestRoom, Liv),
   em_room:print_except(yellowb, DestRoom, Liv, "~s arrives.~n", [Name]),
   'lmud-cmd-interact':glance([], Req).
-
-%% Emote/Pose
--spec cmd_emote([string()], req()) -> cmd_ok().
-cmd_emote(Args, #req{living=Liv}=Req) ->
-  Text = em_english:punctuate(string:join(Args, " ")),
-  Name = em_living:get_name(Liv),
-  Room = em_living:get_room(Liv),
-  em_room:print_except(yellowb, Room, Liv, "~s ~s~n", [Name, Text]),
-  print(yellowb, "~s ~s~n", [Name, Text], Req),
-  {ok, Req}.
-
-%% Emote/Pose (no space)
-cmd_emote_ns(Args, #req{living=Liv}=Req) ->
-  Text = em_english:punctuate(string:join(Args, " ")),
-  Name = em_living:get_name(Liv),
-  Room = em_living:get_room(Liv),
-  em_room:print_except(yellowb, Room, Liv, "~s~s~n", [Name, Text]),
-  print(yellowb, "~s~s~n", [Name, Text], Req),
-  {ok, Req}.
-
-%% Think
-cmd_think(Args, #req{living=Liv}=Req) ->
-  Text = em_english:punctuate(string:join(Args, " ")),
-  Name = em_living:get_name(Liv),
-  Room = em_living:get_room(Liv),
-  em_room:print_except(blackb, Room, Liv, "~s is pondering.~n", [Name]),
-  print(blackb, "~s thinks ~s~n", [Name, Text], Req),
-  {ok, Req}.
-
-%% Say
--spec cmd_say([string()], req()) -> cmd_ok().
-cmd_say([FirstWord|Rest], #req{living=Liv}=Req) ->
-  Text = string:join([em_text:capitalize(FirstWord)|Rest], " "),
-  Name = em_living:get_name(Liv),
-  Room = em_living:get_room(Liv),
-  em_room:print_except(yellowb, Room, Liv, "~s says, \"~s\"~n", [Name, Text]),
-  print(yellowb, "You say, \"~s\"~n", [Text], Req),
-  {ok, Req}.
-
-%% Tell/Whisper/Page
--spec cmd_tell([], req()) -> cmd_ok().
-cmd_tell([], Req) ->
-  print("Tell whom what?", Req),
-  {ok, Req};
-cmd_tell([Who,FirstWord|Rest], #req{user=User}=Req) ->
-  Name = 'lmud-player':get_name(User),
-  case em_game:lookup_user(Who) of
-    {error, not_found} ->
-      print("There's no such user.\n", Req);
-    {ok, {Name, _}} ->
-      print("Talking to yourself, huh?\n", Req);
-    {ok, {OtherName, OtherUser}} ->
-      Text = string:join([em_text:capitalize(FirstWord)|Rest], " "),
-      'lmud-player':print(OtherUser,
-                          color:magenta("[Whisper] ") ++
-                          "~s tells you, \"~s\"~n", [Name, Text]),
-      print(color:magenta("[Whisper] ") ++
-            "You tell ~s, \"~s\"~n", [OtherName, Text], Req)
-  end,
-  {ok, Req};
-cmd_tell([Who], Req) ->
-  print("Tell " ++ Who ++ " what?", Req),
-  {ok, Req}.
 
 %% addexit
 -spec cmd_addexit([string()], req()) -> cmd_ok().
