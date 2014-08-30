@@ -117,10 +117,10 @@ permissions. Possible permission levels:
   * command prefix: d@- ?
 * world-modification and defying laws of physics:
   * creating things, teleporting people/things, changing rooms/etc.
-  * name: wizard
+  * name: wizard? wysard?
   * command prefix: w@- ?
 * control over worlds' commodities, goods, money, markets:
-  * name: Asura?
+  * name: Asura? Vanir?
   * command prefix: a@- ?
 * NPC
 * Player
