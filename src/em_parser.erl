@@ -12,15 +12,13 @@
 -export([parse/2]).
 
 %% game commands
--export([cmd_go/2,
-         cmd_redit/2, cmd_addexit/2,
+-export([cmd_redit/2,
+         cmd_addexit/2,
          cmd_cast/2]).
 
 -include("request.hrl").
 -include("types.hrl").
 
-%-type ob_list() :: [em_object:object()].
-%-type liv_list() :: [em_living:living_pid()].
 -type cmd_ok() :: {ok, req()}.
 
 %% ==========================================================================
@@ -88,30 +86,6 @@ parse_cmd(Cmd, PassedArgs, Line, Req) ->
 %% Game commands
 %% ==========================================================================
 
--spec cmd_go([], req()) -> cmd_ok().
-cmd_go([], Req) ->
-  print("Go where?", Req),
-  {ok, Req};
-cmd_go([Dir|_Args], #req{living=Liv}=Req) ->
-  Room = em_living:get_room(Liv),
-  do_go(em_room:get_exit(Room, Dir), Req),
-  {ok, Req}.
-
--spec do_go({error, not_found}, req()) -> ok
-         ; ({ok, {string(), string()}}, req()) -> cmd_ok().
-do_go({error, not_found}, Req) ->
-  print("You can't go in that direction.\n", Req);
-do_go({ok, {Dir, Dest}}, #req{living=Liv}=Req) ->
-  {ok, DestRoom} = em_room_mgr:get_room(Dest),
-  print("You leave " ++ Dir ++ ".\n\n", Req),
-  Name = em_living:get_name(Liv),
-  Room = em_living:get_room(Liv),
-  em_room:print_except(yellowb, Room, Liv, "~s leaves ~s.~n", [Name, Dir]),
-  em_room:leave(Room, Liv),
-  em_living:set_room(Liv, DestRoom),
-  em_room:enter(DestRoom, Liv),
-  em_room:print_except(yellowb, DestRoom, Liv, "~s arrives.~n", [Name]),
-  'lmud-cmd-interact':glance([], Req).
 
 %% addexit
 -spec cmd_addexit([string()], req()) -> cmd_ok().

@@ -78,8 +78,8 @@
 (defun movement-commands ()
   `((#(name "go")
      #(desc "Move in a given direction.")
-     #(mod em_parser)
-     #(func cmd_go)
+     #(mod lmud-cmd-move)
+     #(func go)
      #(args ()))))
 
 (defun speaking-commands ()
