@@ -4,7 +4,7 @@
 (include-file "include/request.hrl")
 
 (defun help
-  (((list '"privileges") req)
+  (('("privileges") req)
     (lmud-util:print
       (++ "\nPrivileges are used to control what commands users have access "
           "to.\n"
@@ -15,20 +15,24 @@
           "access to commands like 'redit' etc that will modify the game.\n")
       req)
     `#(ok ,req))
-  (((list '"priv") req)
-    (help '("privileges") req))
-  (((list '"aliases") req)
+  (('("aliases") req)
     (lmud-util:print (++ "\n" (lmud-config:simple-welcome)
                      "\n" (lmud-help:get-aliases-help)) req)
     `#(ok ,req))
-  (((list '"all") req)
+  (('("all") req)
     (lmud-util:print (++ "\n" (lmud-config:simple-welcome)
                      "\n" (lmud-help:get-all-help)) req)
     `#(ok ,req))
-  (((list '"commands") req)
+  ;; alias help commands
+  (('("priv") req)
+    (help '("privileges") req))
+  (('("commands") req)
     (help '("all") req))
-  (((list '"alias") req)
+  (('("alias") req)
     (help '("aliases") req))
+  (('("cast") req)
+    (em_parser:cmd_cast '() req))
+  ;; catch-all
   (('() req)
     (lmud-util:print (++ "\n" (lmud-config:simple-welcome)
                      "\n" (lmud-help:get-base-help)) req)
