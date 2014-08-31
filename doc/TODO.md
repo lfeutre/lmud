@@ -10,6 +10,7 @@ Bugs
 * When writing non-wrappd (short) descriptions, extra quotes are added to
   the data files.
 
+
 Usability
 ---------
 
@@ -18,7 +19,6 @@ Usability
 * [ ] add "connected since" and "member since" to user data
 * [ ] add support for "who <username>" and retun new user data as well as
       existing user data
-* [ ] add "whoami" command with alias "id"
 * [ ] add support for a "NEWS" file
   * [ ] have news read for a NEWS file in the game directory
   * [ ] every time the news func is called, read the file
@@ -26,6 +26,52 @@ Usability
 
 Command Parsing
 ---------------
+
+Support the following additional 'info' commands:
+
+* [ ] add "whoami" command with alias "id"
+
+Support the following movement commands:
+
+* wizard-level
+  [ ] teleport <room>
+  [ ] teleport <player> (to player location)
+  [ ] teleport <player> <room> (teleport a player to a room)
+  [ ] teleport <player1> <player2> (teleport player1 to player2's location)
+
+Support the following world-creation commands:
+
+* aesir-level
+  [ ] open <dir> <name>
+  [ ] dig <dir> <name>
+  [ ] title <room name> <title text>
+  [ ] brief <room name> <brief text>
+  [ ] desc <room name> <desc text>
+
+Support the following object-creation commands:
+
+* wizard-level (valid only for objects in the same room as the wizard)
+  [ ] create object <name>
+  [ ] title <object name> <title text>
+  [ ] brief <object name> <brief text>
+  [ ] desc <object name> <desc text>
+* wizard-level (for any object in the game)
+  [ ] create object <room name> <name>
+  [ ] title <room name> <object name> <title text>
+  [ ] brief <room name> <object name> <brief text>
+  [ ] desc <room name> <object name> <desc text>
+
+Add commands for building an ecnomic system:
+  [ ] setting up finance
+  [ ] markets
+  [ ] trade
+  [ ] auctions
+
+Support the following permissions-related commands:
+
+  [x] add a god-level permission for granting god permissions in-game
+  [x] add a wizard-level permission for granting wizard permissions in-game
+  [x] split up wizard commands and regular commands
 
 Support the following usage workflow:
 
@@ -52,10 +98,10 @@ Support the following development workflow:
       actual mod:func
 * [x] parse_cmd checks the passed command (from user input) against this data
       structure to see if alias, if base command, which mod:func to call
-* [ ] BUG - when calling an alias, pass (and marge) the alias args to the
+* [ ] BUG - when calling an alias, pass (and merge) the alias args to the
       command args
 
-Support the following command-related commands
+Support the following command-related commands:
 
 * [x] help (and aliases) - display base commands only
 * [x] help aliases - display all aliases, grouped by type (e.g., IRC, WoW,
@@ -91,18 +137,6 @@ Breakout and Dependencies
 * [x] Move lib/erlymud into top-level dir
 
 
-Commands
---------
-
-* [ ] add a god-level permission for granting god permissions in-game
-* [ ] add a wizard-level permission for granting wizard permissions in-game
-* [ ] split up wizard commands and regular commands
-* add commands for:
-  [ ] setting up finance
-  [ ] markets
-  [ ] trade
-  [ ] auctions
-
 
 Permissions
 -----------
@@ -126,7 +160,7 @@ permissions. Possible permission levels:
 * Player
 
 Maybe have a special "room" for objects that haven't been created, that only
-wizards can pull stuff from (but not enter) and only gods can actuall enter?
+wizards can pull stuff from (but not enter) and only gods can actually enter?
 Both wizards and gods could:
 
 * create things in the room
