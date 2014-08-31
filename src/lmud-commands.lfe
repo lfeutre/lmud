@@ -7,6 +7,9 @@
           (admin)
           (lmud-aliases:all))))
 
+(defun base+admin ()
+  (++ (base) (admin)))
+
 (defun base ()
   `(#("Game Command Group" ,(game-commands))
     #("Interaction Command Group" ,(interaction-commands))
@@ -41,6 +44,11 @@
      #(mod lmud-cmd-game)
      #(func help)
      #(args ("all")))
+    (#(name "help admin")
+     #(desc "Display admin help info.")
+     #(mod lmud-cmd-game)
+     #(func help)
+     #(args ("admin")))
     (#(name "save")
      #(desc ,(++ "Save the one's character state; location and "
                  "inventory will be restored at login."))
@@ -163,10 +171,18 @@
      #(args ()))))
 
 (defun vanir-commands ()
-  `(()))
+  `((#(name "@grant")
+     #(desc "Give 'vanir' permissions to another player.")
+     #(mod lmud-cmd-aesir)
+     #(func grant)
+     #(args ()))))
 
 (defun wysard-commands ()
-  `(()))
+  `((#(name "@grant")
+     #(desc "Give 'wysard' permissions to another player.")
+     #(mod lmud-cmd-aesir)
+     #(func grant)
+     #(args ()))))
 
 (defun get-groups-names (prop-list)
   (proplists:get_keys prop-list))
