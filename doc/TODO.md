@@ -193,7 +193,8 @@ permissions. Possible permission levels:
   * creating things, teleporting people/things, changing rooms/etc.
   * name: wizard? wysard?
   * command prefix: w@- ?
-* control over worlds' commodities, goods, money, markets:
+* control over worlds' commodities, goods, money, markets, harvests;
+  also creating game groups (towns, regions, etc.):
   * name: Asura? Vanir?
   * command prefix: a@- ?
 * NPC
