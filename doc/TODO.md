@@ -250,7 +250,7 @@ TBD
 
 ## Version 0.4
 
-## Command Parsing
+### Command Parsing
 
 Support the following world-creation commands:
 
@@ -300,7 +300,7 @@ Support the following command-related commands:
       etc.)
 * [x] help commands - display aliases as well as base commands
 
-## Breakout and Dependencies
+### Breakout and Dependencies
 
 * [x] move mud_parser into its own repo/project
   * add as a dependency
