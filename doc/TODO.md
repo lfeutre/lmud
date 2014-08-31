@@ -11,7 +11,6 @@ old TODO.
 
 ## Usability
 
-* [x] Add readline support (done via rlwrap)
 * [ ] Convert stdout messages to log messages, conditional on debug setting
 * [ ] add "connected since" and "member since" to user data
 * [ ] add support for a "NEWS" file
@@ -68,8 +67,6 @@ Support the following movement commands:
 Support the following world-creation commands:
 
 * aesir-level
-  * [x] open ``<dir> <name>``
-  * [ ] dig ``<dir> <name>``
   * [ ] title ``<room name> <title text>``
   * [ ] brief ``<room name> <brief text>``
   * [ ] desc ``<room name> <desc text>``
@@ -98,41 +95,10 @@ Add commands for building an ecnomic system:
   * [ ] auctions
 
 
-Support the following permissions-related commands:
-
-* [x] add a god-level permission for granting god permissions in-game
-* [x] add a wizard-level permission for granting wizard permissions in-game
-* [x] split up wizard commands and regular commands
-
-
-Support the following usage workflow:
-
-1. [x] Enter a command in the MUD
-1. [x] The command is checked against a list of aliases
-1. [x] If matched, the actual command is used instead of the alias
-1. [x] Command and args are parsed
-1. [x] Appropriate mod:finc + args is called
-1. [x] Results of call are printed to terminal session
-
-
 Support the following development workflow:
 
 * [ ] BUG - when calling an alias, pass (and merge) the alias args to the
       command args
-* [x] Base commands as well as aliases have metadata for which group of
-      commands they belong to (useful for printing help and extended help
-      for commands)
-* [x] A base module exists which has a list of all supported commands +
-      help text + mod:func they dispatch to
-* [x] A new module is created with a list of aliases + actual command names
-* [x] A data amalgamation function is updated to include calling the data
-      function of the new module, adding its aliases/commands to the list of
-      command data
-* [x] A parsing function pulls in the base commands as well as all the
-      defined aliases in the alias modules and the aliases are mapped to
-      actual mod:func
-* [x] parse_cmd checks the passed command (from user input) against this data
-      structure to see if alias, if base command, which mod:func to call
 
 
 Support the following command-related commands:
@@ -141,11 +107,6 @@ Support the following command-related commands:
       destination module, it's destination function, the lowest permission
       role allowed in order to call it, and maybe its aliases as well ...
 * [ ] possibly an is-alias function?
-* [x] help (and aliases) - display base commands only
-* [x] help aliases - display all aliases, grouped by type (e.g., IRC, WoW,
-      etc.)
-* [x] help commands - display aliases as well as base commands
-
 
 
 ## Breakout and Dependencies
@@ -163,13 +124,6 @@ Support the following command-related commands:
     * otp /lib/common_test/test/telnet_server.erl?
   * add support for an SSH MUD server via ssh_sshd?
     * what would it take to modify ssh_sshd?
-* [x] move mud_parser into its own repo/project
-  * add as a dependency
-* [x] add erlang color as a dep:
-  * https://github.com/julianduque/erlang-color
-  * [x] replace custom color macros
-* [x] Move lib/erlymud into top-level dir
-
 
 
 ## Permissions
@@ -296,6 +250,66 @@ TBD
 
 ## Version 0.4
 
+## Command Parsing
+
+Support the following world-creation commands:
+
+* aesir-level
+  * [x] open ``<dir> <name>``
+  * [x] dig ``<dir> <name>``
+
+Support the following permissions-related commands:
+
+* [x] add a god-level permission for granting god permissions in-game
+* [x] add a wizard-level permission for granting wizard permissions in-game
+* [x] split up wizard commands and regular commands
+
+
+Support the following usage workflow:
+
+1. [x] Enter a command in the MUD
+1. [x] The command is checked against a list of aliases
+1. [x] If matched, the actual command is used instead of the alias
+1. [x] Command and args are parsed
+1. [x] Appropriate mod:finc + args is called
+1. [x] Results of call are printed to terminal session
+
+
+Support the following development workflow:
+
+* [x] Base commands as well as aliases have metadata for which group of
+      commands they belong to (useful for printing help and extended help
+      for commands)
+* [x] A base module exists which has a list of all supported commands +
+      help text + mod:func they dispatch to
+* [x] A new module is created with a list of aliases + actual command names
+* [x] A data amalgamation function is updated to include calling the data
+      function of the new module, adding its aliases/commands to the list of
+      command data
+* [x] A parsing function pulls in the base commands as well as all the
+      defined aliases in the alias modules and the aliases are mapped to
+      actual mod:func
+* [x] parse_cmd checks the passed command (from user input) against this data
+      structure to see if alias, if base command, which mod:func to call
+
+
+Support the following command-related commands:
+
+* [x] help (and aliases) - display base commands only
+* [x] help aliases - display all aliases, grouped by type (e.g., IRC, WoW,
+      etc.)
+* [x] help commands - display aliases as well as base commands
+
+## Breakout and Dependencies
+
+* [x] move mud_parser into its own repo/project
+  * add as a dependency
+* [x] add erlang color as a dep:
+  * https://github.com/julianduque/erlang-color
+  * [x] replace custom color macros
+* [x] Move lib/erlymud into top-level dir
+
+
 ### Colorizing
 
 Update outputs with the following colors:
@@ -338,6 +352,7 @@ read/write functions in a common module:
 
 ### User Experience
 
+* [x] Add readline support (done via rlwrap)
 * [x] use this ASCII:
    ```
           ___       ___           ___           ___
