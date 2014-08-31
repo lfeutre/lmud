@@ -10,11 +10,8 @@
 (defun get-base-help ()
   (get-groups-help "BASE HELP" (lmud-commands:base)))
 
-(defun get-wizard-help ()
-  (get-groups-help "WIZARD HELP" (lmud-commands:wizard)))
-
-(defun get-god-help ()
-  (get-groups-help "GOD HELP" (lmud-commands:god)))
+(defun get-admin-help ()
+  (get-groups-help "ADMIN HELP" (lmud-commands:admin)))
 
 (defun display-aliases-help ()
   (io:format (get-aliases-help)))
@@ -24,8 +21,7 @@
 
 (defun get-all-help ()
   (++ (get-base-help)
-      ; (get-god-help)
-      ; (get-wizard-help)
+      (get-admin-help)
       (get-aliases-help)))
 
 (defun get-groups-help (name prop-list)
