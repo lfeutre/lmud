@@ -14,7 +14,7 @@
       (em_room:print_except
         room living
         (++ "~s starts muttering something incomprehensible. "
-            "It's probably a spell.\n"
+            "It's probably a spell.\n")
         (list name))
       (em_spell_ward:start living room))
     `#(ok ,req))
