@@ -1,18 +1,15 @@
-TODO
-====
+# TODO
 
 This is the new TODO list. See the bottom of this document for the
 old TODO.
 
-Bugs
-----
+## Bugs
 
 * When writing non-wrappd (short) descriptions, extra quotes are added to
   the data files.
 
 
-Usability
----------
+## Usability
 
 * [x] Add readline support (done via rlwrap)
 * [ ] Convert stdout messages to log messages, conditional on debug setting
@@ -22,8 +19,7 @@ Usability
   * [ ] every time the news func is called, read the file
 
 
-Regions, Towns, and Dungeons
-----------------------------
+## Regions, Towns, and Dungeons
 
 * [ ] Add support for the ability to group rooms
   * [ ] groups need to have the ability to be named
@@ -49,8 +45,7 @@ Regions, Towns, and Dungeons
     * a forest that is in two countries
 
 
-Command Parsing
----------------
+## Command Parsing
 
 Support the following additional 'info' commands:
 
@@ -153,8 +148,7 @@ Support the following command-related commands:
 
 
 
-Breakout and Dependencies
--------------------------
+## Breakout and Dependencies
 
 * [ ] Add lager for use in debugging
 * [ ] Look at using a plugin system
@@ -178,8 +172,7 @@ Breakout and Dependencies
 
 
 
-Permissions
------------
+## Permissions
 
 For a massive MUD, there will likely need to be a greater number of
 permissions. Possible permission levels:
@@ -209,8 +202,7 @@ Both wizards and gods could:
 * list the items they created that are in it
 
 
-Colorizing
-----------
+## Colorizing
 
 Update outputs with the following colors:
 
@@ -220,8 +212,7 @@ Update outputs with the following colors:
   * [ ] one of the "notice" messages isn't getting coloured (logging out)
 
 
-Game Data
----------
+## Game Data
 
 Game data is currently written to files; we should moved to a database
 instead.
@@ -241,8 +232,7 @@ to swap out with something in the future. Perhaps along these lines:
 * [ ] Load rooms on start from DB
 
 
-Talking
--------
+## Talking
 
 * [ ] Add support for WALL
 * [ ] Add support for YELL (nearest rooms only)
@@ -253,8 +243,7 @@ Talking
 * [ ] Add support for country, region, town channels
 
 
-NPCs
-----
+## NPCs
 
 * [ ] add NCP abstraction
 * [ ] add simple conversation to NPCs
@@ -266,8 +255,7 @@ NPCs
   * [ ] add auctioneer
 
 
-Groups
-------
+## Groups
 
 * Add support for Guilds
   * [ ] come up with a mechanism for players to create guilds
@@ -278,47 +266,37 @@ Groups
         to a different queue or moving to "active" status
 
 
-Mapping Areas
--------------
+## Mapping Areas
 
 TBD
 
 
-Creating Buildings
-------------------
+## Creating Buildings
 
 TBD
 
 
-World Items
------------
+## World Items
 
 TBD
 
 
-In-Game Trade
--------------
+## In-Game Trade
 
 TBD
 
 
-Migration to LFE
-----------------
+## Migration to LFE
 
 * [ ] migrate remaining modules to LFE
 
 
 
-Change Log
-==========
+# Change Log
 
+## Version 0.4
 
-Version 0.4
------------
-
-
-Colorizing
-..........
+### Colorizing
 
 Update outputs with the following colors:
 
@@ -330,8 +308,7 @@ Update outputs with the following colors:
 * [x] room title -> green (bold)
 
 
-Game Data
-.........
+### Game Data
 
 Game data is currently written to files; we should moved to a database
 instead. Before doing that, though, it might be nice to put all data
@@ -345,14 +322,12 @@ read/write functions in a common module:
 * [x] update user code to use it
 
 
-Talking
-.......
+### Talking
 
 * [x] Add support for EMIT/MSG
 
 
-Migration to LFE
-................
+### Migration to LFE
 
 * [x] include LFE as a dep
 * [x] all new functionality, write in LFE
@@ -360,6 +335,9 @@ Migration to LFE
 * [x] rename to lmud or λMUD
 * continue to use em_* Erlang modules (as legacy)
   * slowly port these to LFE, as time and interest allows
+
+### User Experience
+
 * [x] use this ASCII:
    ```
           ___       ___           ___           ___
@@ -437,19 +415,18 @@ Migration to LFE
    ```
 
 
-Old TODO
-========
+# Old TODO
 
 
-0.3.4
------
+## 0.3.4
+
 * Add typespecs, documentation for (at least) API functions
   -status: continue with em_room
 * Write some tests?
 
 
-0.3.5
------
+## 0.3.5
+
 * Add item building commands
   - oedit: Edit / Create Objects
 * Fix so that failure to load start room puts you in safe room
@@ -462,8 +439,8 @@ Old TODO
 * Idle timer in 'who' list
 
 
-Future
-------
+## Future
+
 * Improve password hashing security
   - at least use password + secret
   - or look at implementing HMAC?
