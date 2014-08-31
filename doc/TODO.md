@@ -34,38 +34,38 @@ Support the following additional 'info' commands:
 Support the following movement commands:
 
 * wizard-level
-  [ ] teleport <room>
-  [ ] teleport <player> (to player location)
-  [ ] teleport <player> <room> (teleport a player to a room)
-  [ ] teleport <player1> <player2> (teleport player1 to player2's location)
+  * [ ] teleport <room>
+  * [ ] teleport <player> (to player location)
+  * [ ] teleport <player> <room> (teleport a player to a room)
+  * [ ] teleport <player1> <player2> (teleport player1 to player2's location)
 
 Support the following world-creation commands:
 
 * aesir-level
-  [ ] open <dir> <name>
-  [ ] dig <dir> <name>
-  [ ] title <room name> <title text>
-  [ ] brief <room name> <brief text>
-  [ ] desc <room name> <desc text>
+  * [ ] open <dir> <name>
+  * [ ] dig <dir> <name>
+  * [ ] title <room name> <title text>
+  * [ ] brief <room name> <brief text>
+  * [ ] desc <room name> <desc text>
 
 Support the following object-creation commands:
 
 * wizard-level (valid only for objects in the same room as the wizard)
-  [ ] create object <name>
-  [ ] title <object name> <title text>
-  [ ] brief <object name> <brief text>
-  [ ] desc <object name> <desc text>
+  * [ ] create object <name>
+  * [ ] title <object name> <title text>
+  * [ ] brief <object name> <brief text>
+  * [ ] desc <object name> <desc text>
 * wizard-level (for any object in the game)
-  [ ] create object <room name> <name>
-  [ ] title <room name> <object name> <title text>
-  [ ] brief <room name> <object name> <brief text>
-  [ ] desc <room name> <object name> <desc text>
+  * [ ] create object <room name> <name>
+  * [ ] title <room name> <object name> <title text>
+  * [ ] brief <room name> <object name> <brief text>
+  * [ ] desc <room name> <object name> <desc text>
 
 Add commands for building an ecnomic system:
-  [ ] setting up finance
-  [ ] markets
-  [ ] trade
-  [ ] auctions
+  * [ ] setting up finance
+  * [ ] markets
+  * [ ] trade
+  * [ ] auctions
 
 Support the following permissions-related commands:
 
