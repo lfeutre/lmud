@@ -10,18 +10,19 @@
           "to.\n"
           "Currently it's not possible to set them in-game; instead, edit the\n"
           "file data/users/<username>.dat and add a line like this:\n\n"
-          "{privileges, [admin]}.\n\n"
-          "The 'admin' privilege is the only one in use for now, to restrict\n"
-          "access to commands like 'redit' etc that will modify the game.\n")
+          "{privileges, [aesir,vanir,wysard]}.\n\n"
+          "The 'aesir' privilege is the only one in use for now, to restrict\n"
+          "access to commands like '@open' or '@dig'  that will modify the "
+          "game.\n")
       req)
     `#(ok ,req))
   (('("aliases") req)
     (lmud-util:print (++ "\n" (lmud-config:simple-welcome)
-                     "\n" (lmud-help:get-aliases-help)) req)
+                         "\n" (lmud-help:get-aliases-help)) req)
     `#(ok ,req))
   (('("all") req)
     (lmud-util:print (++ "\n" (lmud-config:simple-welcome)
-                     "\n" (lmud-help:get-all-help)) req)
+                         "\n" (lmud-help:get-all-help)) req)
     `#(ok ,req))
   ;; alias help commands
   (('("priv") req)
