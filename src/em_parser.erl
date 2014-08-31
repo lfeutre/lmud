@@ -37,7 +37,7 @@ parse(Line, Req) ->
 parse_cmd(Cmd, PassedArgs, Line, Req) ->
   LowerCmd = string:to_lower(Cmd),
   try
-    case 'lmud-commands':'get-command-or-alias'(LowerCmd, 'lmud-commands':'base'()) of
+    case 'lmud-commands':'get-command-or-alias'(LowerCmd, 'lmud-commands':'base+admin'()) of
       [{args,DefinedArgs},_,{func,Func},{mod,Mod},_] ->
         Args = lists:merge([DefinedArgs,PassedArgs]),
         % io:format("PassedArgs: ~p~n",[PassedArgs]),
@@ -85,7 +85,8 @@ parse_cmd(Cmd, PassedArgs, Line, Req) ->
 
 %% @open
 -spec cmd_open([string()], req()) -> cmd_ok().
-cmd_open([Dir, ToName|_Rest], #req{living=Liv}=Req) ->
+cmd_open([InputDir, ToName|_Rest], #req{living=Liv}=Req) ->
+  {ok, Dir} = check_dir(InputDir),
   ok = 'lmud-perms':verify(aesir, Req),
   case em_room_mgr:get_room(ToName) of
     {ok, _ToRoom} ->
@@ -97,27 +98,37 @@ cmd_open([Dir, ToName|_Rest], #req{living=Liv}=Req) ->
   end,
   {ok, Req};
 cmd_open(_Args, Req) ->
-  ok = 'lmud-perms':verify(aesir, Req),
   'lmud-util':print(
-  "Usage: open <dir> <name>\n\n"
+  "Usage: @open <dir> <name>\n\n"
   "  Add an exit in direction <dir> to the existing room <name>.\n",
   Req),
   {ok, Req}.
 
 %% @dig
-cmd_dig([Dir, ToName|_Rest], #req{living=Liv}=Req) ->
+cmd_dig([InputDir, ToName|_Rest], #req{living=Liv}=Req) ->
   ok = 'lmud-perms':verify(aesir, Req),
-  case em_room_mgr:new_room(ToName) of
-    {ok, ToRoom} ->
-      FromRoom = em_living:get_room(Liv),
-      FromName = em_room:get_name(FromRoom),
-      em_room:add_exit(FromRoom, Dir, ToName),
-      ok = em_room:save(FromRoom),
-      em_room:add_exit(ToRoom, reverse_dir(Dir), FromName),
-      ok = em_room:save(ToRoom);
-    {error, room_exists} ->
-      'lmud-util':print("That room already exists!\n", Req)
-  end,
+  case check_dir(InputDir) of
+    {ok, Dir} ->
+      case em_room_mgr:new_room(ToName) of
+        {ok, ToRoom} ->
+          FromRoom = em_living:get_room(Liv),
+          FromName = em_room:get_name(FromRoom),
+          em_room:add_exit(FromRoom, Dir, ToName),
+          ok = em_room:save(FromRoom),
+          em_room:add_exit(ToRoom, reverse_dir(Dir), FromName),
+          ok = em_room:save(ToRoom);
+        {error, room_exists} ->
+          'lmud-util':print("That room already exists!\n", Req)
+      end;
+    {error, {invalid_direction, Dir}} ->
+      'lmud-util':print("'" ++ Dir ++ "' is not a valid direction.", Req)
+    end,
+  {ok, Req};
+cmd_dig(_Args, Req) ->
+  'lmud-util':print(
+  "Usage: @dig <dir> <name>\n\n"
+  "  Add an exit <dir> in the current room, leading to the new room <name>\n",
+  Req),
   {ok, Req}.
 
 %% REdit
@@ -149,8 +160,6 @@ cmd_redit(_Args, Req) ->
   "Edit / create rooms. Changes are immediately saved.\n"
   "Usage: redit <cmd> <args>\n\n"
   "Commands:\n"
-  "  dig <dir> <name>       Add an exit <dir> in the current room, leading\n"
-  "                         to the new room <name>\n"
   "  title <what>           Set the room title to <what>\n"
   "  brief <what>           Set the room brief desc to <what>\n"
   "  desc <what>            Set the room long description to <what>\n",
@@ -162,3 +171,13 @@ reverse_dir("north") -> "south";
 reverse_dir("east") -> "west";
 reverse_dir("south") -> "north";
 reverse_dir("west") -> "east".
+
+check_dir("n") -> {ok, "north"};
+check_dir("e") -> {ok, "east"};
+check_dir("s") -> {ok, "south"};
+check_dir("w") -> {ok, "west"};
+check_dir("north"=Dir) -> {ok, Dir};
+check_dir("east"=Dir) -> {ok, Dir};
+check_dir("south"=Dir) -> {ok, Dir};
+check_dir("west"=Dir) -> {ok, Dir};
+check_dir(Dir) -> {error, {invalid_direction, Dir}}.
