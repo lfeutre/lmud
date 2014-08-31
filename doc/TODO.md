@@ -271,7 +271,7 @@ Support the following usage workflow:
 1. [x] The command is checked against a list of aliases
 1. [x] If matched, the actual command is used instead of the alias
 1. [x] Command and args are parsed
-1. [x] Appropriate mod:finc + args is called
+1. [x] Appropriate mod:func + args is called
 1. [x] Results of call are printed to terminal session
 
 
