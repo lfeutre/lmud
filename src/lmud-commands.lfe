@@ -4,8 +4,7 @@
 (defun all ()
   (lists:merge
     (list (base)
-          ; (wizard)
-          ; (god)
+          (admin)
           (lmud-aliases:all))))
 
 (defun base ()
@@ -15,6 +14,11 @@
     #("Speaking Command Group" ,(speaking-commands))
     #("Magic Command Group" ,(magic-commands))
     #("Information Command Group" ,(information-commands))))
+
+(defun admin ()
+  `(#("Æsir Group" ,(aesir-commands))
+    #("Vanir Group" ,(vanir-commands))
+    #("Wysard Group" ,(wysard-commands))))
 
 (defun game-commands ()
   `((#(name "help")
@@ -32,9 +36,6 @@
      #(mod lmud-cmd-game)
      #(func help)
      #(args ("privileges")))
-    ;; XXX help @wzard
-    ;; XXX help @god
-    ;; XXX help @commands
     (#(name "help all")
      #(desc "Display all help info.")
      #(mod lmud-cmd-game)
@@ -144,10 +145,27 @@
      #(func news)
      #(args ()))))
 
-(defun wizard ()
+(defun aesir-commands ()
+  `((#(name "@dig")
+     #(desc "Create a new room.")
+     #(mod em_parser)
+     #(func cmd_dig)
+     #(args ()))
+    (#(name "@open")
+     #(desc "Creating an opening between two rooms.")
+     #(mod em_parser)
+     #(func cmd_open)
+     #(args ()))
+    (#(name "@grant")
+     #(desc "Give 'aesir' permissions to another player.")
+     #(mod lmud-cmd-aesir)
+     #(func grant)
+     #(args ()))))
+
+(defun vanir-commands ()
   `(()))
 
-(defun god ()
+(defun wysard-commands ()
   `(()))
 
 (defun get-groups-names (prop-list)
