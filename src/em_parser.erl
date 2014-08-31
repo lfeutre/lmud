@@ -13,16 +13,13 @@
 
 %% game commands
 -export([cmd_redit/2,
-         cmd_addexit/2]).
+         cmd_open/2,
+         cmd_dig/2]).
 
 -include("request.hrl").
 -include("types.hrl").
 
 -type cmd_ok() :: {ok, req()}.
-
-%% ==========================================================================
-%% API functions
-%% ==========================================================================
 
 -spec parse(string(), req()) -> req_any().
 parse(Line, Req) ->
@@ -86,10 +83,10 @@ parse_cmd(Cmd, PassedArgs, Line, Req) ->
 %% ==========================================================================
 
 
-%% addexit
--spec cmd_addexit([string()], req()) -> cmd_ok().
-cmd_addexit([Dir, ToName|_Rest], #req{living=Liv}=Req) ->
-  ok = 'lmud-perms':verify(admin, Req),
+%% @open
+-spec cmd_open([string()], req()) -> cmd_ok().
+cmd_open([Dir, ToName|_Rest], #req{living=Liv}=Req) ->
+  ok = 'lmud-perms':verify(aesir, Req),
   case em_room_mgr:get_room(ToName) of
     {ok, _ToRoom} ->
       FromRoom = em_living:get_room(Liv),
@@ -99,18 +96,17 @@ cmd_addexit([Dir, ToName|_Rest], #req{living=Liv}=Req) ->
       'lmud-util':print("No such room exists!\n", Req)
   end,
   {ok, Req};
-cmd_addexit(_Args, Req) ->
-  ok = 'lmud-perms':verify(admin, Req),
+cmd_open(_Args, Req) ->
+  ok = 'lmud-perms':verify(aesir, Req),
   'lmud-util':print(
-  "Usage: addexit <dir> <name>\n\n"
+  "Usage: open <dir> <name>\n\n"
   "  Add an exit in direction <dir> to the existing room <name>.\n",
   Req),
   {ok, Req}.
 
-%% REdit
--spec cmd_redit([string()], req()) -> cmd_ok().
-cmd_redit(["dig", Dir, ToName|_Rest], #req{living=Liv}=Req) ->
-  ok = 'lmud-perms':verify(admin, Req),
+%% @dig
+cmd_dig([Dir, ToName|_Rest], #req{living=Liv}=Req) ->
+  ok = 'lmud-perms':verify(aesir, Req),
   case em_room_mgr:new_room(ToName) of
     {ok, ToRoom} ->
       FromRoom = em_living:get_room(Liv),
@@ -122,30 +118,33 @@ cmd_redit(["dig", Dir, ToName|_Rest], #req{living=Liv}=Req) ->
     {error, room_exists} ->
       'lmud-util':print("That room already exists!\n", Req)
   end,
-  {ok, Req};
+  {ok, Req}.
+
+%% REdit
+-spec cmd_redit([string()], req()) -> cmd_ok().
 cmd_redit(["title", What|Rest], #req{living=Liv}=Req) ->
-  ok = 'lmud-perms':verify(admin, Req),
+  ok = 'lmud-perms':verify(aesir, Req),
   Room = em_living:get_room(Liv),
   Title = string:join([What|Rest], " "),
   em_room:set_title(Room, Title),
   ok = em_room:save(Room),
   {ok, Req};
 cmd_redit(["brief", What|Rest], #req{living=Liv}=Req) ->
-  ok = 'lmud-perms':verify(admin, Req),
+  ok = 'lmud-perms':verify(aesir, Req),
   Room = em_living:get_room(Liv),
   Brief = string:join([What|Rest], " "),
   em_room:set_brief(Room, Brief),
   ok = em_room:save(Room),
   {ok, Req};
 cmd_redit(["desc", What|Rest], #req{living=Liv}=Req) ->
-  ok = 'lmud-perms':verify(admin, Req),
+  ok = 'lmud-perms':verify(aesir, Req),
   Room = em_living:get_room(Liv),
   Desc = string:join([What|Rest], " "),
   em_room:set_desc(Room, Desc),
   ok = em_room:save(Room),
   {ok, Req};
 cmd_redit(_Args, Req) ->
-  ok = 'lmud-perms':verify(admin, Req),
+  ok = 'lmud-perms':verify(aesir, Req),
   'lmud-util':print(
   "Edit / create rooms. Changes are immediately saved.\n"
   "Usage: redit <cmd> <args>\n\n"
