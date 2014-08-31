@@ -24,6 +24,10 @@
     (lmud-util:print (++ "\n" (lmud-config:simple-welcome)
                          "\n" (lmud-help:get-all-help)) req)
     `#(ok ,req))
+  (('("admin") req)
+    (lmud-util:print (++ "\n" (lmud-config:simple-welcome)
+                         "\n" (lmud-help:get-admin-help)) req)
+    `#(ok ,req))
   ;; alias help commands
   (('("priv") req)
     (help '("privileges") req))
