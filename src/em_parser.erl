@@ -13,8 +13,7 @@
 
 %% game commands
 -export([cmd_redit/2,
-         cmd_addexit/2,
-         cmd_cast/2]).
+         cmd_addexit/2]).
 
 -include("request.hrl").
 -include("types.hrl").
@@ -157,23 +156,6 @@ cmd_redit(_Args, Req) ->
   "  brief <what>           Set the room brief desc to <what>\n"
   "  desc <what>            Set the room long description to <what>\n",
   Req),
-  {ok, Req}.
-
-cmd_cast(["ward"], #req{living=Liv}=Req) ->
-  Room = em_living:get_room(Liv),
-  Name = em_living:get_name(Liv),
-  em_living:print(Liv,
-    "As you quietly vocalize your chosen mnemonics, "
-    "the spell takes shape.\n"),
-  em_room:print_except(Room, Liv,
-    "~s starts muttering something incomprehensible.\n", [Name]),
-  em_spell_ward:start(Liv, Room),
-  {ok, Req};
-cmd_cast(_Args, Req) ->
-  'lmud-util':print(
-  "You can cast the following spells:\n"
-  "  ward - Will let you know if someone enters the protected room.\n"
-  ,Req),
   {ok, Req}.
 
 -spec reverse_dir(string()) -> string().

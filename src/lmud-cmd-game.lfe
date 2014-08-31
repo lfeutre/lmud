@@ -31,7 +31,7 @@
   (('("alias") req)
     (help '("aliases") req))
   (('("cast") req)
-    (em_parser:cmd_cast '() req))
+    (lmud-cmd-magic:cast '() req))
   ;; catch-all
   (('() req)
     (lmud-util:print (++ "\n" (lmud-config:simple-welcome)

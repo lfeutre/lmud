@@ -117,8 +117,8 @@
 (defun magic-commands ()
   `((#(name "cast")
      #(desc "Cast a spell. \"help cast\" will display available spells.")
-     #(mod em_parser)
-     #(func cmd_cast)
+     #(mod lmud-cmd-magic)
+     #(func cast)
      #(args ()))))
 
 (defun information-commands ()
