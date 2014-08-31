@@ -218,27 +218,13 @@ Update outputs with the following colors:
 * [ ] Yelling -> red (bold)
 * [x] Notification -> blue
   * [ ] one of the "notice" messages isn't getting coloured (logging out)
-* [x] whisper -> magenta
-* [x] say -> yellow
-* [x] emote -> yellow (bold)
-* [x] leave & arrive messages -> yellow (bold)
-* [x] think -> black (bold); really grey
-* [x] room title -> green (bold)
 
 
 Game Data
 ---------
 
 Game data is currently written to files; we should moved to a database
-instead. Before doing that, though, it might be nice to put all data
-read/write functions in a common module:
-
-* [x] create a new filestore module
-* [x] update "living" code to use it
-* [x] update login code to use it
-* [x] update object code to use it
-* [x] update room code to use it
-* [x] update user code to use it
+instead.
 
 Desired features for existing code:
 
@@ -260,11 +246,11 @@ Talking
 
 * [ ] Add support for WALL
 * [ ] Add support for YELL (nearest rooms only)
-* [ ] Add support for EMIT/MSG
 * [ ] Add public channel
 * [ ] Add support for talking on a public channel
 * [ ] Add channel for every guild
 * [ ] Add support for talking on a guild channel
+* [ ] Add support for country, region, town channels
 
 
 NPCs
@@ -318,6 +304,55 @@ TBD
 
 Migration to LFE
 ----------------
+
+* [ ] migrate remaining modules to LFE
+
+
+
+Change Log
+==========
+
+
+Version 0.4
+-----------
+
+
+Colorizing
+..........
+
+Update outputs with the following colors:
+
+* [x] whisper -> magenta
+* [x] say -> yellow
+* [x] emote -> yellow (bold)
+* [x] leave & arrive messages -> yellow (bold)
+* [x] think -> black (bold); really grey
+* [x] room title -> green (bold)
+
+
+Game Data
+.........
+
+Game data is currently written to files; we should moved to a database
+instead. Before doing that, though, it might be nice to put all data
+read/write functions in a common module:
+
+* [x] create a new filestore module
+* [x] update "living" code to use it
+* [x] update login code to use it
+* [x] update object code to use it
+* [x] update room code to use it
+* [x] update user code to use it
+
+
+Talking
+.......
+
+* [x] Add support for EMIT/MSG
+
+
+Migration to LFE
+................
 
 * [x] include LFE as a dep
 * [x] all new functionality, write in LFE
