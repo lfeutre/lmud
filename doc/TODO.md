@@ -17,11 +17,36 @@ Usability
 * [x] Add readline support (done via rlwrap)
 * [ ] Convert stdout messages to log messages, conditional on debug setting
 * [ ] add "connected since" and "member since" to user data
-* [ ] add support for "who <username>" and retun new user data as well as
-      existing user data
 * [ ] add support for a "NEWS" file
   * [ ] have news read for a NEWS file in the game directory
   * [ ] every time the news func is called, read the file
+
+
+Regions, Towns, and Dungeons
+----------------------------
+
+* [ ] Add support for the ability to group rooms
+  * [ ] groups need to have the ability to be named
+  * [ ] a group can have entrances
+* [ ] Add support for group types:
+  * [ ] house
+  * [ ] dungeon
+  * [ ] neighborhood
+  * [ ] town/city
+  * [ ] region (political)
+  * [ ] country
+  * [ ] geological formation (e.g., mountain, valley, cave system)
+  * [ ] ecological area (e.g., woods, jungle, tundra)
+  * [ ] region (physical)
+  * We would need to figure out how interfaces between groups work, e.g.:
+    * houses in neighbords
+    * neighborhoos in cities
+    * cities in regions
+    * regions in countries
+  * We would need to figure out how group overlaps work, e.g.:
+    * a town in a valley with dungeons that connect to mountain caves
+    * a town that is both in a valley and on a lake
+    * a forest that is in two countries
 
 
 Command Parsing
@@ -30,6 +55,10 @@ Command Parsing
 Support the following additional 'info' commands:
 
 * [ ] add "whoami" command with alias "id"
+* [ ] add support for "whois <username>" and retun new user data (e.g.,
+      "member since" & "connected since") as well as existing user data
+      (such as current location)
+
 
 Support the following movement commands:
 
@@ -39,14 +68,16 @@ Support the following movement commands:
   * [ ] teleport <player> <room> (teleport a player to a room)
   * [ ] teleport <player1> <player2> (teleport player1 to player2's location)
 
+
 Support the following world-creation commands:
 
 * aesir-level
-  * [ ] open <dir> <name>
+  * [x] open <dir> <name>
   * [ ] dig <dir> <name>
   * [ ] title <room name> <title text>
   * [ ] brief <room name> <brief text>
   * [ ] desc <room name> <desc text>
+
 
 Support the following object-creation commands:
 
@@ -61,17 +92,22 @@ Support the following object-creation commands:
   * [ ] brief <room name> <object name> <brief text>
   * [ ] desc <room name> <object name> <desc text>
 
+
 Add commands for building an ecnomic system:
+
+* vanir-level
   * [ ] setting up finance
   * [ ] markets
   * [ ] trade
   * [ ] auctions
 
+
 Support the following permissions-related commands:
 
-  [x] add a god-level permission for granting god permissions in-game
-  [x] add a wizard-level permission for granting wizard permissions in-game
-  [x] split up wizard commands and regular commands
+* [x] add a god-level permission for granting god permissions in-game
+* [x] add a wizard-level permission for granting wizard permissions in-game
+* [x] split up wizard commands and regular commands
+
 
 Support the following usage workflow:
 
@@ -82,8 +118,11 @@ Support the following usage workflow:
 1. [x] Appropriate mod:finc + args is called
 1. [x] Results of call are printed to terminal session
 
+
 Support the following development workflow:
 
+* [ ] BUG - when calling an alias, pass (and merge) the alias args to the
+      command args
 * [x] Base commands as well as aliases have metadata for which group of
       commands they belong to (useful for printing help and extended help
       for commands)
@@ -98,19 +137,19 @@ Support the following development workflow:
       actual mod:func
 * [x] parse_cmd checks the passed command (from user input) against this data
       structure to see if alias, if base command, which mod:func to call
-* [ ] BUG - when calling an alias, pass (and merge) the alias args to the
-      command args
+
 
 Support the following command-related commands:
 
-* [x] help (and aliases) - display base commands only
-* [x] help aliases - display all aliases, grouped by type (e.g., IRC, WoW,
-      etc.)
-* [x] help commands - display aliases as well as base commands
 * [ ] a function will be needed to list the command, it's help, its
       destination module, it's destination function, the lowest permission
       role allowed in order to call it, and maybe its aliases as well ...
 * [ ] possibly an is-alias function?
+* [x] help (and aliases) - display base commands only
+* [x] help aliases - display all aliases, grouped by type (e.g., IRC, WoW,
+      etc.)
+* [x] help commands - display aliases as well as base commands
+
 
 
 Breakout and Dependencies
