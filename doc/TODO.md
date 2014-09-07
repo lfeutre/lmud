@@ -220,9 +220,77 @@ to swap out with something in the future. Perhaps along these lines:
         to a different queue or moving to "active" status
 
 
+## Time
+
+* [ ] Add a process(es) for tracking time
+* [ ] Have a dedicated "time" channel that emits time-related messages
+  * [ ] "it's now morning"
+  * [ ] "it's now evening"
+  * [ ] "the moon is full"
+  * [ ] "the moon is new"
+  * [ ] "it is now Spring/Summer/Autumn/Winter"
+  * [ ] Define time state for gamne:
+    * year
+    * season
+    * moon state
+    * sun state
+    * hidden state, perhaps revealable with spells/"science" exp points:
+      * month
+      * day of month
+      * hour of day
+      * minute of hour
+  * [ ] Provide an API for querying the time process for current game time
+        state
+  * Perform specific actions on time state transitions:
+    * Day -> Evening:
+      * [ ] display map colors in monochrome
+    * Summer -> Autumn in temperate zones:
+      * [ ] enable multi-colored deciduous trees
+    * Autumn -> Winter in temperate zones:
+      * [ ] Change deciduous ASCII from "*" to "+" and make color brown
+      * [ ] Change low mountain color from brown to white
+      * [ ] Change grasslands from gree to white
+      * [ ] Change water from blue to white
+
+
+## Player State
+
+* [ ] Define player state
+  * coordinates
+  * player map - list of coordinates that have been visited
+  * ?
+* [ ] Publish player state data to internal message queue
+* [ ] Player message queue should be used for all queries about players
+  * e.g., who, whois, teleport (to player location)
+
+
+
 ## Mapping Areas
 
-TBD
+* [ ] Update game to require a map.ascii or map.coord file
+  * [ ] support plain text
+  * [ ] support ANSI terminal colors
+  * [ ] provide a utility to convert a .ascii map to a .ccord one
+  * [ ] and vice versa
+* [ ] Add a new map process and supervisor?
+* [ ] Provide a utility for generating default rooms from ASCII map
+* Add new map-related commands
+  * [ ] "map" - display the ASCII map with player location annotated
+    * this will require the lmud game to be aware of player locations
+    * and of a coordinate system in general
+    * room names as the unique identifier might go away, to be replaced by
+      coordinates
+  * [ ] "map zoom (+)n" - zoom in by a factor of n
+  * [ ] "map zoom -n" - zoom out by a factor of n
+  * [ ] "map +" - zoom in by a pre-defined constant
+  * [ ] "map -" - zoom out by a pre-defined constant
+  * [ ] "map guild" - show all the locations of guildmates
+  * [ ] "map team" - show all the locations of players in your team
+  * [ ] "map towns" - hide all landscape ASCII info and only show player
+                      location and town/city locations on the map
+* [ ] Only display the map for areas that have been visited
+  * [ ] this will require that upon entering any room, player metadata for
+        that room's coordinates need to set a ``#(visited true)`` value
 
 
 ## Creating Buildings
@@ -244,6 +312,28 @@ TBD
 
 * [ ] migrate remaining modules to LFE
 
+
+## Client/Server Architecture
+
+* Convert current messaging system (direct to telnet connection)
+  * [ ] Usage message queues instead
+  * [ ] create protocol  / message format that the lmud server will generate
+* Update telnet code to become a true client of the lmud server
+  * [ ] each client connection subscribes to game messages on a
+        per-connection basis
+        * [ ] figure out how to send config data read from disk
+  * [ ] read messages from queues
+  * [ ] write messages to queues
+  * [ ] when appropriate, format messages to telnet connection for
+        consumption by player(s)
+  * [ ] publish player state to lmud server players data queue
+* Create ncurses game client
+  * [ ] have chat area
+  * [ ] have read-only messages area (notices, system msgs, time updates)
+  * [ ] have map-display area
+* Create Qt game client
+* Create HTML/CSS/Websockets game client
+* Create Unity 3D game client
 
 
 # Change Log
