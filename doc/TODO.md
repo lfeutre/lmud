@@ -315,6 +315,23 @@ TBD
 
 ## Client/Server Architecture
 
+* [ ] Standardize current messaging approach with a well-defined API
+  * [ ] identify which processes currently send messages
+  * [ ] identify who they send their messages to
+  * [ ] sketch out what this might look like in an HTTP/websockets world
+  * [ ] do the same for a telnet world
+  * is there a way to refactor the current code that approximate that?
+  * how does one create a process (game entity)?
+  * what are the similarities between the currently supervised processes?
+    * acceptor
+    * connection
+    * living
+    * player
+    * request
+    * room pool
+    * room
+    * session
+    * spell
 * Convert current messaging system (direct to telnet connection)
   * [ ] Usage message queues instead
   * [ ] create protocol  / message format that the lmud server will generate
