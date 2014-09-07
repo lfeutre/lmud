@@ -321,7 +321,7 @@ to swap out with something in the future. Perhaps along these lines:
 * [ ] Add support for country, region, town channels
 
 
-## Groups
+## Player Groups
 
 * Add support for Guilds
   * [ ] come up with a mechanism for players to create guilds
@@ -330,6 +330,11 @@ to swap out with something in the future. Perhaps along these lines:
         move to "approved" queue
   * [ ] provide a means of wizards overriding the guild status and moving
         to a different queue or moving to "active" status
+* Add support for team
+  * these would be temporary in nature, e.g., short quests, etc.
+  * [ ] create a team queue for chatting
+  * [ ] set team creator/initiator as team channel mod
+  * [ ] provide a means of inviting / deinviting other players to team
 
 
 ## Creating Buildings
