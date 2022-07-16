@@ -8,7 +8,7 @@ old TODO.
 * When writing non-wrappd (short) descriptions, extra quotes are added to
   the data files.
 
-## Client/Server Architecture
+## Architecture
 
 * [ ] Standardize current messaging approach with a well-defined API
   * [ ] identify which processes currently send messages
@@ -39,6 +39,9 @@ old TODO.
   * [ ] when appropriate, format messages to telnet connection for
         consumption by player(s)
   * [ ] publish player state to lmud server players data queue
+
+## Clients
+
 * Create ncurses game client
   * [ ] have chat area
   * [ ] have read-only messages area (notices, system msgs, time updates)
