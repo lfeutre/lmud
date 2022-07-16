@@ -8,16 +8,6 @@ old TODO.
 * When writing non-wrappd (short) descriptions, extra quotes are added to
   the data files.
 
-
-## Usability
-
-* [ ] Convert stdout messages to log messages, conditional on debug setting
-* [ ] add "connected since" and "member since" to user data
-* [ ] add support for a "NEWS" file
-  * [ ] have news read for a NEWS file in the game directory
-  * [ ] every time the news func is called, read the file
-
-
 ## Client/Server Architecture
 
 * [ ] Standardize current messaging approach with a well-defined API
