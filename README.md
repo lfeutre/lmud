@@ -38,71 +38,70 @@ that taken care of, follow these steps:
 
      ```sh
      $ cd lmud
-     $ rebar3 release
+     $ make
      ```
 
-  1. Start up λMUD:
+     Note that this requires having the following installed:
+     * GNU make
+     * Erlang
+     * rebar3
 
+  1. Start up λMUD:
+     
      ```sh
-     $ _build/default/rel/lmud/bin/lmud foreground
+     $ make start
      ```
 
   1. From another terminal, connect to the game:
 
      ```sh
-     $ rlwrap telnet localhost 1203
-     ```
-     Note that ``rlwrap`` gives you readline support in telnet, allowing you
-     to use a command history like with your system shell (including such
-     things as searching the command history with ``^r``).
-
-     If your other terminal session is in the ``lmud`` working dir, you can
-     use thr following convenience ``make`` target:
-
-     ```sh
      $ make connect
      ```
 
-     At which point you should see something like this:
+     This `make` target uses the `rlwrap` CLI tool, which provides readline
+     support in telnet. That, in turn, allows you to use a command history like
+     with your system shell (including such things as searching the command
+     history with `^r`).
+
+     Once connected, you should see something like this:
 
      ```
-      Trying 127.0.0.1...
-      Connected to localhost.
-      Escape character is '^]'.
+     Trying 127.0.0.1...
+     Connected to localhost.
+     Escape character is '^]'.
 
-      Welcome to:
+     Welcome to:
 
-                                    ....
-                                  .'   ,:
-                                .'      \.___..
-                              .'      .-'   _.'
-                              '.\  \/...-''`\
-                                :.'   /   \  :
-                                 :    () () /
-                                 (_ .  '--' ':
-                                   / |_'-- .'
-                                   \   \  .'_\
-                                  .|__  \/_/:
-                                 /          :\.
-                                .' -./      .'{\|))
-              __        .        :    ...    ::::::::::-.
-              \ \       ;;,.    ;;;   ;;     ;;; ;;,   `';,
-               \ \      [[[[, ,[[[[, [['     [[[ `[[     [[
-                > \     $$$$$$$$"$$$ $$      $$$  $$,    $$
-               / ^ \  o_888 Y88" 888o88    .d888  888_,o8P'
-              /_/ \_\ "MMMM  M'  "MMM "YmmMMMM""  MMMMP"`
+                                   ....
+                                 .'   ,:
+                               .'      \.___..
+                             .'      .-'   _.'
+                             '.\  \/...-''`\
+                               :.'   /   \  :
+                                :    () () /
+                                (_ .  '--' ':
+                                  / |_'-- .'
+                                  \   \  .'_\
+                                 .|__  \/_/:
+                                /          :\.
+                               .' -./      .'{\|))
+             __       M"""""`'"""`YM M""MMMMM""M M""""""'YMM
+             \ \      M  mm.  mm.  M M  MMMMM  M M  mmmm. `M
+              \ \     M  MMM  MMM  M M  MMMMM  M M  MMMMM  M
+               > \    M  MMM  MMM  M M  MMMMM  M M  MMMMM  M
+              / ^ \   M  MMM  MMM  M M  `MMM'  M M  MMMM' .M
+             /_/ \_\  M  MMM  MMM  M Mb       dM M       .MM
+                 MMMMMMMMMMMMMM MMMMMMMMMMM MMMMMMMMMMM
 
+     An El-MUD Game Server, v0.5.0-dev
 
-      An El-MUD Game Server, v0.4.0
+     ----------------------------------------------------------------
+       If you are logging in for the first time, then at the 'Login'
+       prompt, type the character name you would like to have (case
+       insensitive).
+     ----------------------------------------------------------------
 
-
-      ------------------------------------------------------------------------------
-        If you are loging in for the first time, enter the character name
-        you would like to have (case insensitive) at the "Login" prompt.
-      ------------------------------------------------------------------------------
-
-
-      Login:
+     Login:
      ```
 
   1. Create a user.
@@ -116,6 +115,12 @@ that taken care of, follow these steps:
 It's possible to connect, create a password-protected user account, and log
 in to the game. Once there, you can communicate with other players, walk
 around between rooms, and handle items.
+
+Do note, however, that lmud isn't a game! It's meant to be used to _create_
+games :-D
+
+Current open ticket, by milestone: (includes both features and bugs):
+* https://github.com/lfex/lmud/milestones
 
 ## Game Features
 
