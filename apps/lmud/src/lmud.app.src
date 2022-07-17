@@ -12,7 +12,8 @@
                   kernel,
                   stdlib,
                   sasl,
-                  eunit
+                  eunit,
+                  color
                  ]},
   {mod, {'lmud-app', []}},
   {env, []}
