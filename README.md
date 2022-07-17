@@ -38,13 +38,13 @@ that taken care of, follow these steps:
 
      ```sh
      $ cd lmud
-     $ make rel
+     $ rebar3 release
      ```
 
   1. Start up λMUD:
 
      ```sh
-     $ make run
+     $ _build/default/rel/lmud/bin/lmud foreground
      ```
 
   1. From another terminal, connect to the game:

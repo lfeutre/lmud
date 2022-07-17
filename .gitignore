@@ -1,3 +1,5 @@
+_build
+rebar.lock
 .eunit/*
 erl_crash.dump
 edoc-info

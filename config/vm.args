@@ -1,0 +1,6 @@
+-sname 'lmud'
+
+-setcookie 'lmud_cookie'
+
++K true
++A30
