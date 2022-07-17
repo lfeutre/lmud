@@ -111,19 +111,24 @@
 (defun proj-dir ()
   (parent-dirs (code:priv_dir 'lmud) 5))
 
+(defun data-dir ()
+  (let ((base-dir (proj-dir)))
+    (case (lists:last (filename:split base-dir))
+      ("default" (filename:join `(,(proj-dir) "rel" "lmud" "data")))
+      (_ (filename:join `(,(proj-dir) "data"))))))
+
 (defun src-dir ()
-  (io:format "project dir: ~s~n" (list (proj-dir)))
-  (filename:join `(,(proj-dir) "apps" "lmud" "src")))
+  (let ((base-dir (proj-dir)))
+    (case (lists:last (filename:split base-dir))
+      ("default" (filename:join `(,(proj-dir) "lib" "lmud" "src")))
+      (_ (filename:join `(,(proj-dir) "apps" "lmud" "src"))))))
 
 (defun app-src-file ()
-  (io:format "src dir: ~s~n" (list (src-dir)))
   (filename:join `(,(src-dir) "lmud.app.src")))
 
 (defun app-src ()
-  (io:format "app-src file: ~s~n" (list (file:consult (app-src-file))))
   (let ((`#(ok ,data) (file:consult (app-src-file))))
     data))
 
 (defun app-cfg ()
-  (io:format "app-src file: ~s~n" (list (file:consult (app-src-file))))
   (element 3 (car (app-src))))

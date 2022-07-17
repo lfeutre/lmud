@@ -28,7 +28,7 @@
 %% ==========================================================================
 %% Type Specifications
 %% ==========================================================================
--include("types.hrl").
+-include("apps/lmud/include/types.hrl").
 
 -type user() :: {string(), pid()}.
 -type users() :: [user()].
@@ -47,7 +47,7 @@ start() ->
 %% @doc Return path to the data directory.
 -spec data_dir() -> file_path().
 data_dir() ->
-  filename:join(["data"]).
+  'lmud-util':'data-dir'().
 
 %% @doc Return a list of {Name, UserPid} tuples with all logged in users.
 -spec get_users() -> users().
