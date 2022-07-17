@@ -37,7 +37,7 @@
 -export_type([object/0]).
 
 %% Type Specifications
--include("types.hrl").
+-include("apps/lmud/include/types.hrl").
 -type name() :: string().
 -type id() :: string().
 -type id_list() :: [id()].

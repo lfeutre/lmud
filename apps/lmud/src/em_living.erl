@@ -32,7 +32,7 @@
 %% ==========================================================================
 %% Type Specifications
 %% ==========================================================================
--include("types.hrl").
+-include("apps/lmud/include/types.hrl").
 -type living_name() :: string().
 -type living_pid() :: pid().
 

@@ -1,7 +1,7 @@
 (defmodule lmud-cmd-game
   (export all))
 
-(include-file "include/request.hrl")
+(include-lib "apps/lmud/include/request.hrl")
 
 (defun help
   (('("privileges") req)

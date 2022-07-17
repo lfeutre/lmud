@@ -1,7 +1,7 @@
 (defmodule lmud-cmd-magic
   (export all))
 
-(include-file "include/request.hrl")
+(include-lib "apps/lmud/include/request.hrl")
 
 (defun cast
   ((`("ward") (= (match-req living living) req))

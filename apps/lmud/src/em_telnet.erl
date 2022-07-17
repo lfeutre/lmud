@@ -10,7 +10,7 @@
 -export([new/2, parse/2, will/2, wont/2, do/2, dont/2]).
 
 %% Definitions
--include("telnet.hrl").
+-include("apps/lmud/include/telnet.hrl").
 -define(DEBUG_PRINT(Str), ok).
 -define(DEBUG_PRINT(Str, Args), ok).
 -define(DUMMY_PRINTER, fun(_) -> throw(missing_printer_fun) end).

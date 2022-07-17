@@ -5,7 +5,7 @@
 
 (defun server () (MODULE))
 
-(include-file "include/types.hrl")
+(include-lib "apps/lmud/include/types.hrl")
 
 (defun start_link ()
   (supervisor:start_link `#(local ,(server)) (MODULE) '()))

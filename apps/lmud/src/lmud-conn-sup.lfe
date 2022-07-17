@@ -3,7 +3,7 @@
   (behaviour supervisor)
   (export all))
 
-(include-file "include/types.hrl")
+(include-lib "apps/lmud/include/types.hrl")
 
 (defun server () (MODULE))
 

@@ -1,7 +1,7 @@
 (defmodule lmud-cmd-info
   (export all))
 
-(include-file "include/request.hrl")
+(include-lib "apps/lmud/include/request.hrl")
 
 (defun inv
   ((_ (= (match-req living living) req))

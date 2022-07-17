@@ -9,7 +9,7 @@
 %%% @end
 %%% =========================================================================
 -module(em_acceptor).
--include("types.hrl").
+-include("apps/lmud/include/types.hrl").
 
 -behaviour(gen_server).
 

@@ -1,7 +1,7 @@
 (defmodule lmud-perms
   (export all))
 
-(include-file "include/request.hrl")
+(include-lib "apps/lmud/include/request.hrl")
 
 (defun verify
   ((priv (match-req user user))

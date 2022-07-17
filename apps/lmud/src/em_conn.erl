@@ -7,8 +7,8 @@
 %%% @end
 %%% =========================================================================
 -module(em_conn).
--include("types.hrl").
--include("telnet.hrl").
+-include("apps/lmud/include/types.hrl").
+-include("apps/lmud/include/telnet.hrl").
 
 -behaviour(gen_server).
 

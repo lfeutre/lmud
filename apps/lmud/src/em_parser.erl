@@ -16,8 +16,8 @@
          cmd_open/2,
          cmd_dig/2]).
 
--include("request.hrl").
--include("types.hrl").
+-include("apps/lmud/include/request.hrl").
+-include("apps/lmud/include/types.hrl").
 
 -type cmd_ok() :: {ok, req()}.
 

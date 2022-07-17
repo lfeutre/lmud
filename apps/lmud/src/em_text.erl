@@ -13,7 +13,7 @@
 -export([capitalize/1, title_caps/1, wrap/2, wrapline/2]).
 
 %% Type Specifications
--include("types.hrl").
+-include("apps/lmud/include/types.hrl").
 
 %% ==========================================================================
 %% API Functions

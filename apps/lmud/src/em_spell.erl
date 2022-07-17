@@ -3,7 +3,7 @@
 %%% @copyright 2010-2011 Johan Warlander
 %%% =========================================================================
 -module(em_spell).
--include("types.hrl").
+-include("apps/lmud/include/types.hrl").
 
 -behaviour(gen_server).
 

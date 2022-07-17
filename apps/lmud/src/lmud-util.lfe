@@ -1,7 +1,7 @@
 (defmodule lmud-util
   (export all))
 
-(include-file "apps/lmud/include/request.hrl")
+(include-lib "apps/lmud/include/request.hrl")
 
 (defun get-port-digits ()
   "This silly little function is how we got the port number for L-MUD.
@@ -112,14 +112,18 @@
   (parent-dirs (code:priv_dir 'lmud) 5))
 
 (defun src-dir ()
+  (io:format "project dir: ~s~n" (list (proj-dir)))
   (filename:join `(,(proj-dir) "apps" "lmud" "src")))
 
 (defun app-src-file ()
+  (io:format "src dir: ~s~n" (list (src-dir)))
   (filename:join `(,(src-dir) "lmud.app.src")))
 
 (defun app-src ()
+  (io:format "app-src file: ~s~n" (list (file:consult (app-src-file))))
   (let ((`#(ok ,data) (file:consult (app-src-file))))
     data))
 
 (defun app-cfg ()
+  (io:format "app-src file: ~s~n" (list (file:consult (app-src-file))))
   (element 3 (car (app-src))))

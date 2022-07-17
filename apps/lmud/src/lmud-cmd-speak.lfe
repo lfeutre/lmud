@@ -1,7 +1,7 @@
 (defmodule lmud-cmd-speak
   (export all))
 
-(include-file "include/request.hrl")
+(include-lib "apps/lmud/include/request.hrl")
 
 (defun base-emote
   ((args (= (match-req living living) req) format-str)

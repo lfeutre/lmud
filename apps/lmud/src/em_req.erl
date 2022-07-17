@@ -22,7 +22,7 @@
 -record(state, {mfa :: mfargs()}).
 
 %% Type Specifications
--include("types.hrl").
+-include("apps/lmud/include/types.hrl").
 
 
 %% ==========================================================================

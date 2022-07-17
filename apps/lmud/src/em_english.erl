@@ -14,7 +14,7 @@
 -export([add_article/1, number_of/2, number_word/1, pluralize/1, punctuate/1]).
 
 %% Type Specifications
--include("types.hrl").
+-include("apps/lmud/include/types.hrl").
 
 
 %% ==========================================================================
