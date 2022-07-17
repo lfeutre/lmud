@@ -13,7 +13,7 @@
        (lmud-acceptor-sup:start_listener
         (lmud-config:port)
         (lmud-config:acceptors))
-       `#(ok ,pid)))
+       `#(ok ,pid))
     (other `#(error ,other)))
   `#(ok ,(self)))
 

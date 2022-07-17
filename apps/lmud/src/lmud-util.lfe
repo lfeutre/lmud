@@ -1,7 +1,7 @@
 (defmodule lmud-util
   (export all))
 
-(include-file "include/request.hrl")
+(include-file "apps/lmud/include/request.hrl")
 
 (defun get-port-digits ()
   "This silly little function is how we got the port number for L-MUD.
