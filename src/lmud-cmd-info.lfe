@@ -41,10 +41,7 @@
 ;;   desc_inv(Obs, [Result, Line]).
 
 (defun who (_ req)
-  (let ())
-  (lmud-util:print
-   (list "Users:\n" (em_game:get_user_names))
-   req)
+  (lmud-util:print (list "Users:\n" (em_game:get_user_names)) req)
   `#(ok ,req))
 
 (defun news (_ req)
