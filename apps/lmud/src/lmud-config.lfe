@@ -16,7 +16,7 @@
     acceptors))
 
 (defun wrap-width () 64)
-(defun divider-char () '"-")
+(defun divider-char () "-")
 (defun divider () (string:copies (divider-char) (wrap-width)))
 (defun help-pad-cmd () 20)
 
@@ -115,9 +115,9 @@
 (defun login-instructions ()
   (++ (divider)
 "
-  If you are loging in for the first time, enter the character
-  name you would like to have (case insensitive) at the \"Login\"
-  prompt.
+  If you are logging in for the first time, then at the 'Login'
+  prompt, type the character name you would like to have (case
+  insensitive).
 "
   (divider)))
 
