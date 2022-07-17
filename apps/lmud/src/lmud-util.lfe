@@ -22,11 +22,8 @@
             (file:consult "sys.config")))
     cfg))
 
-(defun get-version ()
-  (proplists:get_value 'vsn (element 3 (get-app-src))))
-
 (defun print-version ()
-  (io:format "~s~n" (list (get-version))))
+  (io:format "~s~n" (list (lmud-config:version))))
 
 (defun get-name ()
   (element 2 (get-app-src)))
@@ -34,11 +31,8 @@
 (defun print-name ()
   (io:format "~s~n" (list (get-name))))
 
-(defun get-port ()
-  (proplists:get_value 'port (get-sys-cfg)))
-
 (defun print-port ()
-  (io:format "~p~n" (list (get-port))))
+  (io:format "~p~n" (list (lmud-config:port))))
 
 (defun get-desc ()
   (proplists:get_value 'description (element 3 (get-app-src))))
@@ -61,13 +55,12 @@
 (defun get-release-data ()
   "A function for generating the data needed by the .rel file."
   `#(release
-    #("lmud" ,(get-version))
+    #(lmud ,(lmud-config:version))
     #(erts ,(erlang:system_info 'version))
     (#(kernel ,(cadr (string:tokens (get-lib-dir 'kernel) "-")))
      #(stdlib ,(cadr (string:tokens (get-lib-dir 'stdlib) "-")))
      #(sasl ,(cadr (string:tokens (get-lib-dir 'sasl) "-")))
-     #(eunit ,(cadr (string:tokens (get-lib-dir 'eunit) "-")))
-     #(lmud ,(get-version)))))
+     #(eunit ,(cadr (string:tokens (get-lib-dir 'eunit) "-"))))))
 
 (defun print-release-data ()
   (io:format "~p.~n" (list (get-release-data))))
@@ -108,3 +101,25 @@
 (defun print
   ((color format args (match-req conn conn))
     (em_conn:print conn (lmud-util:format-color color format) args)))
+
+(defun parent-dirs
+  ((path 0)
+   path)
+  ((path count)
+   (parent-dirs (filename:dirname path) (- count 1))))
+
+(defun proj-dir ()
+  (parent-dirs (code:priv_dir 'lmud) 5))
+
+(defun src-dir ()
+  (filename:join `(,(proj-dir) "apps" "lmud" "src")))
+
+(defun app-src-file ()
+  (filename:join `(,(src-dir) "lmud.app.src")))
+
+(defun app-src ()
+  (let ((`#(ok ,data) (file:consult (app-src-file))))
+    data))
+
+(defun app-cfg ()
+  (element 3 (car (app-src))))

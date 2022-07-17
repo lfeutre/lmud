@@ -1,6 +1,20 @@
 (defmodule lmud-config
   (export all))
 
+(defun version ()
+  (proplists:get_value 'vsn (lmud-util:app-cfg)))
+
+(defun description ()
+  (proplists:get_value 'description (lmud-util:app-cfg)))
+
+(defun port ()
+  (let ((`#(ok ,port) (application:get_env 'lmud 'port)))
+    port))
+
+(defun acceptors ()
+  (let ((`#(ok ,acceptors) (application:get_env 'lmud 'acceptors)))
+    acceptors))
+
 (defun wrap-width () 64)
 (defun divider-char () '"-")
 (defun divider () (string:copies (divider-char) (wrap-width)))
@@ -91,7 +105,7 @@
                  MMMMMMMMMMMMMM MMMMMMMMMMM MMMMMMMMMMM
 ")
 
-(defun get-banner ()
+(defun banner ()
   (let ((func-name
           (list_to_atom
             (++ "banner-" (integer_to_list
