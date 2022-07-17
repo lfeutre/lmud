@@ -11,10 +11,10 @@
 %% API
 -export([welcome/1, login/3]).
 
--include("request.hrl").
+-include("apps/lmud/include/request.hrl").
 
 %% Type Specifications
--include("types.hrl").
+-include("apps/lmud/include/types.hrl").
 
 
 %% ==========================================================================
@@ -24,9 +24,9 @@
 -spec welcome(em_conn:conn_pid()) -> ok.
 welcome(Conn) ->
   em_conn:print(Conn, "\nWelcome to:\n"
-    ++ 'lmud-config':'get-banner'() ++ "\nAn "
-    ++ 'lmud-util':'get-desc'() ++ ", v"
-    ++ 'lmud-util':'get-version'() ++ "\n\n"
+    ++ 'lmud-config':banner() ++ "\nAn "
+    ++ 'lmud-config':description() ++ ", v"
+    ++ 'lmud-config':version() ++ "\n\n"
     ++ 'lmud-config':'login-instructions'() ++ "\n\n"),
   em_conn:print(Conn, "Login: ").
 

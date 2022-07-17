@@ -1,6 +1,6 @@
 # λMUD
 
-<a href="https://raw.github.com/lfex/lmud/master/resources/images/El-Mud.png"><img src="resources/images/El-Mud.png"/></a><br/>
+<a href="https://raw.github.com/lfex/lmud/main/priv/images/El-Mud.png"><img src="priv/images/El-Mud.png"/></a><br/>
 
 λMUD (pronounded "L-MUD" or "El-MUD") is a rather minimalistic MUD server,
 written in Erlang and LFE, making use of the excellent OTP libraries.
