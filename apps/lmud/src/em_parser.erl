@@ -26,11 +26,11 @@
 parse(Line, Req) ->
   case string:tokens(Line, " ") of
     [] ->
-      'lmud-util':print("\n> ", Req),
+      'lmud-io':print("\n> ", Req),
       ?req_next(parse);
     [Cmd|Args] ->
       Result = parse_cmd(Cmd, Args, Line, Req),
-      'lmud-util':print("\n> ", Req),
+      'lmud-io':print("\n> ", Req),
       Result
   end.
 
@@ -53,10 +53,10 @@ parse_cmd(Cmd, PassedArgs, Line, Req) ->
             {stop, Req} ->
               ?req_done;
             {error, Reason} ->
-              'lmud-util':print(Reason, Req),
+              'lmud-io':print(Reason, Req),
               ?req_next(parse);
             Other ->
-              'lmud-util':print("Error occurred while processing '~s':~n~p~n",
+              'lmud-io':print("Error occurred while processing '~s':~n~p~n",
                 [Line, Other], Req),
               ?'log-debug'("Mod: ~p",[Mod],Req),
               ?'log-debug'("Func: ~p",[Func],Req),
@@ -65,16 +65,16 @@ parse_cmd(Cmd, PassedArgs, Line, Req) ->
           end
         catch
           throw:not_allowed ->
-            'lmud-util':print("You're not allowed to use the '~s' command.~n", [Line], Req),
+            'lmud-io':print("You're not allowed to use the '~s' command.~n", [Line], Req),
             ?req_next(parse)
         end;
       _ ->
-        'lmud-util':print("I don't understand what you mean by '~s'~n", [Line], Req),
+        'lmud-io':print("I don't understand what you mean by '~s'~n", [Line], Req),
         ?req_next(parse)
     end
   catch
     _ ->
-      'lmud-util':print("I don't understand what you mean by '~s'~n", [Line], Req),
+      'lmud-io':print("I don't understand what you mean by '~s'~n", [Line], Req),
       ?req_next(parse)
   end.
 
@@ -95,11 +95,11 @@ cmd_open([InputDir, ToName|_Rest], #req{living=Liv}=Req) ->
       em_room:add_exit(FromRoom, Dir, ToName),
       ok = em_room:save(FromRoom);
     {error, not_found} ->
-      'lmud-util':print("No such room exists!\n", Req)
+      'lmud-io':print("No such room exists!\n", Req)
   end,
   {ok, Req};
 cmd_open(_Args, Req) ->
-  'lmud-util':print(
+  'lmud-io':print(
   "Usage: @open <dir> <name>\n\n"
   "  Add an exit in direction <dir> to the existing room <name>.\n",
   Req),
@@ -119,14 +119,14 @@ cmd_dig([InputDir, ToName|_Rest], #req{living=Liv}=Req) ->
           em_room:add_exit(ToRoom, reverse_dir(Dir), FromName),
           ok = em_room:save(ToRoom);
         {error, room_exists} ->
-          'lmud-util':print("That room already exists!\n", Req)
+          'lmud-io':print("That room already exists!\n", Req)
       end;
     {error, {invalid_direction, Dir}} ->
-      'lmud-util':print("'" ++ Dir ++ "' is not a valid direction.", Req)
+      'lmud-io':print("'" ++ Dir ++ "' is not a valid direction.", Req)
     end,
   {ok, Req};
 cmd_dig(_Args, Req) ->
-  'lmud-util':print(
+  'lmud-io':print(
   "Usage: @dig <dir> <name>\n\n"
   "  Add an exit <dir> in the current room, leading to the new room <name>\n",
   Req),
@@ -157,7 +157,7 @@ cmd_redit(["desc", What|Rest], #req{living=Liv}=Req) ->
   {ok, Req};
 cmd_redit(_Args, Req) ->
   ok = 'lmud-perms':verify(aesir, Req),
-  'lmud-util':print(
+  'lmud-io':print(
   "Edit / create rooms. Changes are immediately saved.\n"
   "Usage: redit <cmd> <args>\n\n"
   "Commands:\n"

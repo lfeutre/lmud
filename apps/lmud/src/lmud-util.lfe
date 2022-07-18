@@ -43,9 +43,8 @@
 
 ;; XXX move this into lutil library
 (defun rand-int (start end)
-  (let (((tuple mega-sec sec micro-sec) (now)))
-    (random:seed mega-sec sec micro-sec)
-    (+ (trunc (* (random:uniform) (- end (- start 1)))) start)))
+  (rand:seed (erlang:now()))
+  (+ (trunc (* (rand:uniform) (- end (- start 1)))) start))
 
 ;; XXX move this into lutil library
 (defun get-lib-dir (mod)
