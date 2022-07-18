@@ -6,32 +6,12 @@
 (defun display-groups-help (name prop-list)
   (io:format (get-groups-help name prop-list)))
 
-(defun display-base-help ()
-  (io:format (get-base-help)))
-
-(defun get-base-help ()
-  (get-groups-help "BASE HELP" (lmud-commands:base)))
-
-(defun get-admin-help ()
-  (get-groups-help "ADMIN HELP" (lmud-commands:admin)))
-
-(defun display-aliases-help ()
-  (io:format (get-aliases-help)))
-
-(defun get-aliases-help ()
-  (get-groups-help "ALIASES HELP" (lmud-aliases:all)))
-
-(defun get-all-help ()
-  (++ (get-base-help)
-      (get-admin-help)
-      (get-aliases-help)))
-
 (defun get-groups-help (name prop-list)
   (++ "\n" name "\n"
       (lists:map
         (lambda (x)
           (get-group-help
-            x (lmud-commands:get-longest-command-length prop-list)))
+            x (lmud-cmd:get-longest-command-length prop-list)))
         prop-list)
       (lmud-config:divider)
       "\n"))

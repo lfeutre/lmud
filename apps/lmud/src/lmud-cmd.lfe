@@ -1,4 +1,4 @@
-(defmodule lmud-commands
+(defmodule lmud-cmd
   (export all))
 
 (defun all ()

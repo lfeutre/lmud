@@ -18,15 +18,15 @@
     `#(ok ,req))
   (('("aliases") req)
     (lmud-io:print (++ "\n" (lmud-config:simple-welcome)
-                         "\n" (lmud-help:get-aliases-help)) req)
+                         "\n" (lmud-cmd-help:aliases)) req)
     `#(ok ,req))
   (('("all") req)
     (lmud-io:print (++ "\n" (lmud-config:simple-welcome)
-                         "\n" (lmud-help:get-all-help)) req)
+                         "\n" (lmud-cmd-help:all)) req)
     `#(ok ,req))
   (('("admin") req)
     (lmud-io:print (++ "\n" (lmud-config:simple-welcome)
-                         "\n" (lmud-help:get-admin-help)) req)
+                         "\n" (lmud-cmd-help:admin)) req)
     `#(ok ,req))
   ;; alias help commands
   (('("priv") req)
@@ -40,7 +40,7 @@
   ;; catch-all
   (('() req)
     (lmud-io:print (++ "\n" (lmud-config:simple-welcome)
-                     "\n" (lmud-help:get-base-help)) req)
+                     "\n" (lmud-cmd-help:base)) req)
     `#(ok ,req)))
 
 (defun quit
