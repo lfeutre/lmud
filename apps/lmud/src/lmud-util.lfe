@@ -43,7 +43,6 @@
 
 ;; XXX move this into lutil library
 (defun rand-int (start end)
-  (rand:seed (erlang:now()))
   (+ (trunc (* (rand:uniform) (- end (- start 1)))) start))
 
 ;; XXX move this into lutil library
