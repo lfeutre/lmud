@@ -24,7 +24,7 @@ jobs:
       run: rebar3 compile
     - name: Compile LFE
       run: rebar3 lfe compile
-    - name: Run tests
-      run: rebar3 do eunit, ct
+    - name: Run unit tests
+      run: rebar3 eunit
     - name: Create Release
       run: rebar3 release
