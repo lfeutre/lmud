@@ -13,7 +13,8 @@
                   stdlib,
                   sasl,
                   eunit,
-                  color
+                  color,
+                  logjam
                  ]},
   {mod, {'lmud-app', []}},
   {env, []}

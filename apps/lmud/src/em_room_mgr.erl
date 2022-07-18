@@ -17,6 +17,8 @@
 -define(SERVER, ?MODULE).
 -define(TABLE_ID, ?MODULE).
 
+-include_lib("logjam/include/logjam.hrl").
+
 -record(state, {}).
 
 %% API
@@ -106,7 +108,7 @@ try_load_room(Name) ->
   load_room(Name).
 
 load_room(Name) ->
-  io:format("loading: ~s~n", ['lmud-filestore':'get-room-file'(Name)]),
+  ?'log-info'("loading: ~s", ['lmud-filestore':'get-room-file'(Name)]),
   case 'lmud-filestore':read("rooms", Name) of
     {ok, Data} ->
       Room = make_room(Name, Data),

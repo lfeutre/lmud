@@ -51,6 +51,13 @@ that taken care of, follow these steps:
      ```sh
      $ make start
      ```
+     
+     Additionally, you can start the MUD with the LFE REPL (useful if you're
+     going to be developing or debugging):
+     
+     ```sh
+     $ rebar3 lfe repl
+     ```
 
   1. From another terminal, connect to the game:
 

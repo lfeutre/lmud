@@ -21,6 +21,8 @@
          get_template/1
         ]).
 
+-include_lib("logjam/include/logjam.hrl").
+
 -record(object, {ids=[]::id_list(), plurals=[]::id_list(),
                  adjs=[]::adj_list(),
                  primary_id=""::id(), primary_adj=""::adj(),
@@ -63,7 +65,7 @@ new(Ids, Adjs) ->
 
 -spec load(name()) -> {ok, object()} | {error, not_found}.
 load(Name) ->
-  io:format("loading object: ~s~n", ['lmud-filestore':'get-object-file'(Name)]),
+  ?'log-info'("loading object: ~s", ['lmud-filestore':'get-object-file'(Name)]),
   case 'lmud-filestore':read("objects", Name) of
     {ok, Data} ->
       Ob = make_object(Data, #object{template=Name}),

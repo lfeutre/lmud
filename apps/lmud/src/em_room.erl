@@ -26,6 +26,8 @@
 
 -export([add_event_listener/2, notify/2]).
 
+-include_lib("logjam/include/logjam.hrl").
+
 -record(state, {name, title, brief, desc, people=[], exits=[], objects=[],
                 resets=[], event_listeners=[]}).
 
@@ -246,7 +248,7 @@ list_people(People) ->
 do_save(State) ->
   Data = save_room(State),
   Name = State#state.name,
-  io:format("saving room: ~s~n~p~n",
+  ?'log-info'("saving room: ~s~n~p",
             ['lmud-filestore':'get-room-file'(Name), Data]),
   case 'lmud-filestore':write("rooms", Name, Data) of
     ok ->

@@ -3,6 +3,8 @@
   (behaviour gen_server)
   (export all))
 
+(include-lib "logjam/include/logjam.hrl")
+
 (defrecord state
   name
   conn
@@ -65,7 +67,7 @@
     (load_user name state)))
 
 (defun load_user (name state)
-  (io:format "loading user: ~s~n" (list (lmud-filestore:get-user-file name)))
+  (log-info "loading user: ~s" (list (lmud-filestore:get-user-file name)))
   (case (lmud-filestore:read "users" name)
     ((tuple 'ok data)
       `#(ok ,(update_user data state)))

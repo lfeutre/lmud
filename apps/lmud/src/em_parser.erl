@@ -18,6 +18,7 @@
 
 -include("apps/lmud/include/request.hrl").
 -include("apps/lmud/include/types.hrl").
+-include_lib("logjam/include/logjam.hrl").
 
 -type cmd_ok() :: {ok, req()}.
 
@@ -40,11 +41,11 @@ parse_cmd(Cmd, PassedArgs, Line, Req) ->
     case 'lmud-commands':'get-command-or-alias'(LowerCmd, 'lmud-commands':'base+admin'()) of
       [{args,DefinedArgs},_,{func,Func},{mod,Mod},_] ->
         Args = lists:merge([DefinedArgs,PassedArgs]),
-        % io:format("PassedArgs: ~p~n",[PassedArgs]),
-        % io:format("DefinedArgs: ~p~n",[DefinedArgs]),
-        % io:format("Mod: ~p~n",[Mod]),
-        % io:format("Func: ~p~n",[Func]),
-        % io:format("Args: ~p~n",[Args]),
+        ?'log-debug'("PassedArgs: ~p",[PassedArgs]),
+        ?'log-debug'("DefinedArgs: ~p",[DefinedArgs]),
+        ?'log-debug'("Mod: ~p",[Mod]),
+        ?'log-debug'("Func: ~p",[Func]),
+        ?'log-debug'("Args: ~p",[Args]),
         try
           case apply(Mod, Func, [Args, Req]) of
             {ok, Req} ->
@@ -57,9 +58,9 @@ parse_cmd(Cmd, PassedArgs, Line, Req) ->
             Other ->
               'lmud-util':print("Error occurred while processing '~s':~n~p~n",
                 [Line, Other], Req),
-              % 'lmud-util':print("Mod: ~p~n",[Mod],Req),
-              % 'lmud-util':print("Func: ~p~n",[Func],Req),
-              % 'lmud-util':print("Args: ~p~n",[Args],Req),
+              ?'log-debug'("Mod: ~p",[Mod],Req),
+              ?'log-debug'("Func: ~p",[Func],Req),
+              ?'log-debug'("Args: ~p",[Args],Req),
               ?req_next(parse)
           end
         catch

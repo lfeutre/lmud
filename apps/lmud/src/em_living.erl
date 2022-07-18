@@ -29,6 +29,8 @@
                 desc="" :: string(),
                 objects=[] :: [em_object:object()]}).
 
+-include_lib("logjam/include/logjam.hrl").
+
 %% ==========================================================================
 %% Type Specifications
 %% ==========================================================================
@@ -217,7 +219,7 @@ do_load(#state{name=Name}=State) ->
 -spec load_living(file_path(), #state{}) ->
         {ok, #state{}} | {error, not_found}.
 load_living(Name, State) ->
-  io:format("loading living: ~s~n",
+  ?'log-info'("loading living: ~s",
             ['lmud-filestore':'get-living-file'(Name)]),
   case 'lmud-filestore':'read'("livings", Name) of
     {ok, Data} ->

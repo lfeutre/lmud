@@ -1,6 +1,8 @@
 (defmodule lmud-help
   (export all))
 
+(include-lib "logjam/include/logjam.hrl")
+
 (defun display-groups-help (name prop-list)
   (io:format (get-groups-help name prop-list)))
 
@@ -84,7 +86,7 @@
                          (integer_to_list max-cmd-len) "s" "~s~n")
                      (list name (wrap-help max-pad wrap-width help)))))
   ((data max-cmd-len max-pad wrap-width)
-    (io:format "Could not parse data: ~p~n" (list data))))
+    (log-error "Could not parse data: ~p" (list data))))
 
 (defun format-help (help max-cmd-len)
   (let* ((max-pad (lmud-config:help-pad-cmd))
