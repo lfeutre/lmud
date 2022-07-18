@@ -20,7 +20,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Compile
-      run: make
+    - name: Compile Erlang
+      run: rebar3 compile
+    - name: Compile LFE
+      run: rebar3 lfe compile
     - name: Run tests
       run: rebar3 do eunit, ct
+    - name: Create Release
+      run: rebar3 release

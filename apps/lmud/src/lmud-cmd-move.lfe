@@ -5,7 +5,7 @@
 
 (defun go
   (('() req)
-    (lmud-util:print "Go where?" req)
+    (lmud-io:print "Go where?" req)
     `#(ok ,req))
   (((cons direction _) (= (match-req living living) req))
     (let ((room (em_living:get_room living)))
@@ -14,12 +14,12 @@
 
 (defun do-go
   ((`#(error not_found) req)
-    (lmud-util:print "You can't go in that direction.\n" req))
+    (lmud-io:print "You can't go in that direction.\n" req))
   ((`#(ok #(,direction ,destination)) (= (match-req living living) req))
     (let ((`#(ok ,destination-room) (em_room_mgr:get_room destination))
           (name (em_living:get_name living))
           (room (em_living:get_room living)))
-      (lmud-util:print (++ "You leave " direction ".\n\n") req)
+      (lmud-io:print (++ "You leave " direction ".\n\n") req)
       (em_room:print_except
         'yellowb room living "~s leaves ~s.~n" (list name direction))
       (em_room:leave room living)

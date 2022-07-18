@@ -12,8 +12,15 @@ build:
 clean:
 	@rm -rf _build
 
+clean-lock:
+	@rm rebar.lock
+
+clean-all: clean clean-lock
+
 start:
 	@_build/default/rel/lmud/bin/lmud foreground
+
+fresh-start: clean-all build start
 
 connect:
 	@echo ">> Connecting to game server ..."

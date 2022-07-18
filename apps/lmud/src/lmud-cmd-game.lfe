@@ -5,7 +5,7 @@
 
 (defun help
   (('("privileges") req)
-    (lmud-util:print
+    (lmud-io:print
       (++ "\nPrivileges are used to control what commands users have access "
           "to.\n"
           "Currently it's not possible to set them in-game; instead, edit the\n"
@@ -17,15 +17,15 @@
       req)
     `#(ok ,req))
   (('("aliases") req)
-    (lmud-util:print (++ "\n" (lmud-config:simple-welcome)
+    (lmud-io:print (++ "\n" (lmud-config:simple-welcome)
                          "\n" (lmud-help:get-aliases-help)) req)
     `#(ok ,req))
   (('("all") req)
-    (lmud-util:print (++ "\n" (lmud-config:simple-welcome)
+    (lmud-io:print (++ "\n" (lmud-config:simple-welcome)
                          "\n" (lmud-help:get-all-help)) req)
     `#(ok ,req))
   (('("admin") req)
-    (lmud-util:print (++ "\n" (lmud-config:simple-welcome)
+    (lmud-io:print (++ "\n" (lmud-config:simple-welcome)
                          "\n" (lmud-help:get-admin-help)) req)
     `#(ok ,req))
   ;; alias help commands
@@ -39,14 +39,14 @@
     (lmud-cmd-magic:cast '() req))
   ;; catch-all
   (('() req)
-    (lmud-util:print (++ "\n" (lmud-config:simple-welcome)
+    (lmud-io:print (++ "\n" (lmud-config:simple-welcome)
                      "\n" (lmud-help:get-base-help)) req)
     `#(ok ,req)))
 
 (defun quit
   ((args (= (match-req user user living living) req))
     (save args req)
-    (lmud-util:print "Goodbye!\n" req)
+    (lmud-io:print "Goodbye!\n" req)
     (let ((name (em_living:get_name living))
           (room (em_living:get_room living)))
       (em_room:print_except room living "~s leaves.~n" (list name))
@@ -55,9 +55,9 @@
 
 (defun save
   ((_ (= (match-req living living) req))
-    (lmud-util:print "Saving ...\n" req)
+    (lmud-io:print "Saving ...\n" req)
     (case (em_living:save living)
       ('ok `#(ok ,req))
       ((tuple 'error reason)
-        (lmud-util:print "Error: ~s\n" (list reason) req)
+        (lmud-io:print "Error: ~s\n" (list reason) req)
         `#(ok ,req)))))

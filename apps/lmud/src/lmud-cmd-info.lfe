@@ -17,10 +17,10 @@
 
 (defun do-inv
   (('() req)
-   (lmud-util:print "You're not carrying anything.\n" req))
+   (lmud-io:print "You're not carrying anything.\n" req))
   ((objs req)
-   (lmud-util:print "You're carrying:\n" req)
-   (lmud-util:print (desc-inv objs '()) req)))
+   (lmud-io:print "You're carrying:\n" req)
+   (lmud-io:print (desc-inv objs '()) req)))
 
 ;; do_inv([], Req) ->
 ;;   print("You're not carrying anything.\n", Req);
@@ -41,11 +41,11 @@
 ;;   desc_inv(Obs, [Result, Line]).
 
 (defun who (_ req)
-  (lmud-util:print (list "Users:\n" (em_game:get_user_names)) req)
+  (lmud-io:print (list "Users:\n" (em_game:get_user_names)) req)
   `#(ok ,req))
 
 (defun news (_ req)
-  (lmud-util:print
+  (lmud-io:print
    (list "\nHeadlines\n---------\n\n"
          "There is no new news. Which, of course, is good news.\n")
    req)

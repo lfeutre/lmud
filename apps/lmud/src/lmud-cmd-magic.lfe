@@ -19,7 +19,7 @@
       (em_spell_ward:start living room))
     `#(ok ,req))
   ((_ req)
-    (lmud-util:print
+    (lmud-io:print
       (++ "You can cast the following spells:\n"
           "  ward - Will let you know if someone enters the protected room.\n")
       req)
