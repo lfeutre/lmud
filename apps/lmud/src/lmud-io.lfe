@@ -13,3 +13,10 @@
 (defun print
   ((color format args (match-req conn conn))
     (em_conn:print conn (lmud-util:format-color color format) args)))
+
+(defun read (filename)
+  (let ((`#(ok ,data) (file:read_file filename)))
+    data))
+
+(defun read-news ()
+  (read (filename:join (lmud-util:text-dir) "NEWS.txt")))

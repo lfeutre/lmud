@@ -104,6 +104,9 @@
       ("default" (filename:join `(,(proj-dir) "rel" "lmud" "data")))
       (_ (filename:join `(,(proj-dir) "data"))))))
 
+(defun text-dir ()
+  (filename:join `(,(data-dir) "text")))
+
 (defun src-dir ()
   (let ((base-dir (proj-dir)))
     (case (lists:last (filename:split base-dir))

@@ -47,7 +47,7 @@
 (defun news (_ req)
   (lmud-io:print
    (list "\nHeadlines\n---------\n\n"
-         "There is no new news. Which, of course, is good news.\n")
+         (lmud-io:read-news))
    req)
   `#(ok ,req))
 
