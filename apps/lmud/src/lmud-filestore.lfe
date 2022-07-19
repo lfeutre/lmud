@@ -15,25 +15,38 @@
 
 (defun read (table-name user-name)
   (file:consult
-    (get-table-file table-name user-name)))
+    (table-file table-name user-name)))
 
 (defun write (table-name user-name data)
   (file:write_file
-    (get-table-file table-name user-name)
+    (table-file table-name user-name)
     data))
 
-(defun get-user-file (user-name)
-  (get-table-file "users" user-name))
+(defun serialise
+  ((data) (when (is_tuple data))
+   (io_lib:format "~p.~n" (list data)))
+  ((data)
+   (serialise data '())))
 
-(defun get-living-file (user-name)
-  (get-table-file "livings" user-name))
+(defun serialise
+  (('() acc)
+   acc)
+  ((`(,head . ,tail) acc)
+   (serialise tail (lists:append acc (list (serialise head))))))
 
-(defun get-object-file (user-name)
-  (get-table-file "objects" user-name))
+(defun user-file (user-name)
+  (table-file "users" user-name))
 
-(defun get-room-file (room-name)
-  (get-table-file "rooms" room-name))
+(defun living-file (user-name)
+  (table-file "livings" user-name))
 
-(defun get-table-file (table-name name)
+(defun object-file (user-name)
+  (table-file "objects" user-name))
+
+(defun room-file (room-name)
+  (table-file "rooms" room-name))
+
+(defun table-file (table-name name)
   (filename:join
     (list (em_game:data_dir) table-name (++ name ".dat"))))
+

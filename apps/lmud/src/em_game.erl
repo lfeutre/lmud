@@ -20,6 +20,8 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
+-include_lib("logjam/include/logjam.hrl").
+
 -record(state, {users=[]::users()}).
 
 -define(SERVER, ?MODULE).
@@ -105,6 +107,7 @@ handle_call({incarnate, Living}, _From, State) ->
   {Result, NewState} = do_incarnate(Living, State),
   {reply, Result, NewState};
 handle_call({logout, User}, _From, State) ->
+  ?'log-debug'("Logging out user ..."),
   {Result, NewState} = do_logout(User, State),
   {reply, Result, NewState};
 handle_call({lookup_user, Name}, _From, #state{users=Users}=State)
@@ -167,7 +170,7 @@ do_incarnate(Living, State) ->
   Name = em_living:get_name(Living),
   Room = case em_living:get_room(Living) of
            undefined ->
-             {ok, StartRoom} = em_room_mgr:get_room("room1"),
+             {ok, StartRoom} = em_room_mgr:get_room("room1"), % TODO: let's not hard-code this ... put in config
              em_living:set_room(Living, StartRoom),
              StartRoom;
            LoadedRoom ->
@@ -180,12 +183,15 @@ do_incarnate(Living, State) ->
 %% @doc Log out a user. Do NOT actually touch the User process here, it might
 %% have crashed when we call do_logout(). Or could it really, since we link?!
 do_logout(User, #state{users=Users}=State) ->
+  ?'log-debug'("Users: ~p", [Users]),
   case lists:keyfind(User, 2, Users) of
     {Name, User} ->
       unlink(User),
+      ?'log-notice'("~s has logged out", [Name]),
       do_print_except(Users, User, "[Notice] ~s has logged out.~n", [Name]),
       {ok, State#state{users=lists:keydelete(User, 2, Users)}};
     false ->
+      ?'log-error'("Couldn't find user game state's list of users"),
       {{error, not_found}, State}
   end.
 

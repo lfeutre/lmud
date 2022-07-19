@@ -249,7 +249,7 @@ do_save(State) ->
   Data = save_room(State),
   Name = State#state.name,
   ?'log-info'("saving room: ~s~n~p",
-            ['lmud-filestore':'get-room-file'(Name), Data]),
+            ['lmud-filestore':'room-file'(Name), Data]),
   case 'lmud-filestore':write("rooms", Name, Data) of
     ok ->
       {ok, State};

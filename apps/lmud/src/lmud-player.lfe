@@ -70,7 +70,7 @@
     (load_user name state)))
 
 (defun load_user (name state)
-  (log-info "loading user: ~s" (list (lmud-filestore:get-user-file name)))
+  (log-info "loading user: ~s" (list (lmud-filestore:user-file name)))
   (case (lmud-filestore:read "users" name)
     ((tuple 'ok data)
       `#(ok ,(update_user data state)))
