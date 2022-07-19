@@ -33,3 +33,9 @@ connect:
 dockerize: BRANCH ?= main
 dockerize:
 	docker build --build-arg branch=$(BRANCH) .
+
+publish-image:
+	@echo TBD
+
+docker-run:
+	@echo TBD
