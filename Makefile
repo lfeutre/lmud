@@ -29,3 +29,7 @@ connect:
 	@echo "GAME_PORT to override defaults)"
 	@echo
 	@rlwrap telnet $(GAME_HOST) $(GAME_PORT)
+
+dockerize: BRANCH ?= main
+dockerize:
+	docker build --build-arg branch=$(BRANCH) .
