@@ -36,8 +36,7 @@ login(got_user, "", #req{conn=Conn}=Req) ->
   em_conn:print(Conn, "Invalid username.\n\n"),
   em_conn:print(Conn, "Login: "),
   ?req_next(login, [got_user]);
-login(got_user, Name, #req{conn=Conn}=Req) ->
-  UserName = em_text:capitalize(string:to_lower(Name)),
+login(got_user, UserName, #req{conn=Conn}=Req) ->
   case 'lmud-filestore':read("users", UserName) of
     {ok, Settings} ->
       em_conn:print(Conn, "Password: "),
