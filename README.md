@@ -22,6 +22,13 @@ derives much of its new MUDness from
 [PennMUSH](http://www.pennmush.org/),
 etc.
 
+## Run Immediately
+
+If you just want to check out the lmud server, you can do so with the following:
+
+``` sh
+TBD
+```
 
 ## Getting Started
 
@@ -98,7 +105,7 @@ that taken care of, follow these steps:
                > \    M  MMM  MMM  M M  MMMMM  M M  MMMMM  M
               / ^ \   M  MMM  MMM  M M  `MMM'  M M  MMMM' .M
              /_/ \_\  M  MMM  MMM  M Mb       dM M       .MM
-                 MMMMMMMMMMMMMM MMMMMMMMMMM MMMMMMMMMMM
+                      MMMMMMMMMMMMMM MMMMMMMMMMM MMMMMMMMMMM
 
      An El-MUD Game Server, v0.5.0-dev
 
