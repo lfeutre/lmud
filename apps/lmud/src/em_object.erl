@@ -18,22 +18,12 @@
 %         short/1, the_short/1, a_short/1, plural_short/1,
          desc/1, show_in_room/1,
          is_attached/1, set_attached/2,
-         get_template/1
+         get_template/1,
+         get_templates/1
         ]).
 
 -include_lib("logjam/include/logjam.hrl").
-
--record(object, {ids=[]::id_list(), plurals=[]::id_list(),
-                 adjs=[]::adj_list(),
-                 primary_id=""::id(), primary_adj=""::adj(),
-                 short="nondescript thing"::string(), desc=""::string(),
-                 show_in_room = ""::string(),
-                 proper_name = ""::string(),
-                 quantity = 0::count(),
-                 is_attached=false::boolean(),
-                 is_plural=false::boolean(),
-                 is_unique=false::boolean(),
-                 template="dummy"::string()}).
+-include_lib("apps/lmud/include/state.hrl").
 
 -opaque object() :: #object{}.
 -export_type([object/0]).
@@ -65,7 +55,7 @@ new(Ids, Adjs) ->
 
 -spec load(name()) -> {ok, object()} | {error, not_found}.
 load(Name) ->
-  ?'log-info'("loading object: ~s", ['lmud-filestore':'get-object-file'(Name)]),
+  ?'log-info'("loading object: ~s", ['lmud-filestore':'object-file'(Name)]),
   case 'lmud-filestore':read("objects", Name) of
     {ok, Data} ->
       Ob = make_object(Data, #object{template=Name}),
@@ -187,6 +177,9 @@ is_attached(Ob) ->
 -spec get_template(object()) -> name().
 get_template(Ob) ->
   Ob#object.template.
+
+get_templates(Obs) ->
+    [get_template(Ob) || Ob <- Obs].
 
 %%===========================================================================
 %% Internal Functions
