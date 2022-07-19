@@ -7,8 +7,6 @@
 %%% @end
 %%% =========================================================================
 -module(em_conn).
--include("apps/lmud/include/types.hrl").
--include("apps/lmud/include/telnet.hrl").
 
 -behaviour(gen_server).
 
@@ -16,6 +14,9 @@
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
+
+-include("apps/lmud/include/types.hrl").
+-include("apps/lmud/include/telnet.hrl").
 
 -record(state, {socket::socket(), session::pid(), telnet_session}).
 

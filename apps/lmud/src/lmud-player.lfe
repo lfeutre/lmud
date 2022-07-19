@@ -1,9 +1,12 @@
 ;;;; Represents a single connected player, and hosts player-related state.
 (defmodule lmud-player
   (behaviour gen_server)
-  (export all))
+  (export
+   all))
 
 (include-lib "logjam/include/logjam.hrl")
+
+(deftype player-pid (pid))
 
 (defrecord state
   name

@@ -72,7 +72,6 @@ logout(User) ->
   gen_server:call(?SERVER, {logout, User}).
 
 %% @doc Lookup a user by name, return the {Name, UserPid} tuple.
--spec lookup_user('lmud-player':user_name()) -> {ok, user()} | {error, not_found}.
 lookup_user(Name) ->
   gen_server:call(?SERVER, {lookup_user, Name}).
 

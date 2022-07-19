@@ -1,5 +1,6 @@
 % request.hrl
--record(req, {conn::em_conn:conn_pid(), user::em_user:user_pid(),
+-record(req, {conn::em_conn:conn_pid(),
+              user::pid(),
               living::em_living:living_pid(),
               queue=[]::[init | {input, string()}],
               handlers=[]::[req_handler()]}).
