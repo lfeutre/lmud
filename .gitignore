@@ -20,3 +20,4 @@ ebin/*.beam
 lmud-*.boot
 lmud-*.rel
 lmud-*.script
+game-data
