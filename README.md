@@ -26,14 +26,13 @@ etc.
 
 If you just want to check out the lmud server, you can do so with the following:
 
-``` sh
-TBD
-```
+  ```sh
+  $ make docker-run
+  ```
 
-## Getting Started
+This will use the published docker image with a game-data volume.
 
-ErlyMUD expects that you have Erlang 17 and rebar installed. Once you have
-that taken care of, follow these steps:
+## Building & Running
 
   1. Download the latest:
 
@@ -65,6 +64,8 @@ that taken care of, follow these steps:
      ```sh
      $ rebar3 lfe repl
      ```
+
+## Connecting a Client
 
   1. From another terminal, connect to the game:
 
