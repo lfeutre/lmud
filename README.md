@@ -108,7 +108,7 @@ This will use the published docker image with a game-data volume.
              /_/ \_\  M  MMM  MMM  M Mb       dM M       .MM
                       MMMMMMMMMMMMMM MMMMMMMMMMM MMMMMMMMMMM
 
-     An El-MUD Game Server, v0.5.0-dev
+     An El-MUD Game Server, v0.6.0-dev
 
      ----------------------------------------------------------------
        If you are logging in for the first time, then at the 'Login'
