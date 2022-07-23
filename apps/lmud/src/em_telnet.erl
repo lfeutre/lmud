@@ -143,6 +143,7 @@ process_data([?IAC,?SE|Data], #telnet{mode=sub}=Session) ->
 %% --------------------------------------------------------------------------
 %% @doc Handle incoming option command
 %% --------------------------------------------------------------------------
+
 -spec telopt_recv(telnet_opt_neg(), telnet_option(), #telnet{}) ->
         {ok, #telnet{}}.
 telopt_recv(?WILL, Opt, #telnet{remote=Remote}=Session) ->
@@ -165,6 +166,7 @@ telopt_recv(?DONT, Opt, #telnet{local=Local}=Session) ->
 %% --------------------------------------------------------------------------
 %% @doc Handle outgoing option command
 %% --------------------------------------------------------------------------
+
 -spec telopt_send(telnet_opt_neg(), telnet_option(), #telnet{}) ->
         {ok, #telnet{}}.
 telopt_send(?WILL, Opt, #telnet{local=Local}=Session) ->
@@ -186,6 +188,7 @@ telopt_send(?DONT, Opt, #telnet{remote=Remote}=Session) ->
 
 %% --------------------------------------------------------------------------
 %% --------------------------------------------------------------------------
+
 -spec request_telopt_enable(telnet_option(), #nvt{}, #telnet{}) ->
         {ok, #nvt{}}.
 request_telopt_enable(Opt, NVT, Session) ->
@@ -236,6 +239,7 @@ request_telopt_disable(Opt, NVT, Session) ->
 
 %% --------------------------------------------------------------------------
 %% --------------------------------------------------------------------------
+
 -spec handle_telopt_enable(telnet_option(), #nvt{}, #telnet{}) ->
         {ok, #nvt{}}.
 handle_telopt_enable(Opt, NVT, Session) ->
@@ -262,6 +266,7 @@ handle_telopt_enable(Opt, NVT, Session) ->
 
 %% --------------------------------------------------------------------------
 %% --------------------------------------------------------------------------
+
 -spec handle_telopt_disable(telnet_option(), #nvt{}, #telnet{}) ->
         {ok, #nvt{}}.
 handle_telopt_disable(Opt, NVT, Session) ->
@@ -286,6 +291,7 @@ handle_telopt_disable(Opt, NVT, Session) ->
 
 %% --------------------------------------------------------------------------
 %% --------------------------------------------------------------------------
+
 -spec ensure_exists(telnet_option(), telnet_options()) -> telnet_options().
 ensure_exists(Opt, Opts) ->
   case orddict:is_key(Opt, Opts) of
@@ -296,6 +302,7 @@ ensure_exists(Opt, Opts) ->
 %% --------------------------------------------------------------------------
 %% @doc Given data and a #telnet record, send data on the socket
 %% --------------------------------------------------------------------------
+
 -spec tcp_send(iolist(), #telnet{}) -> ok | {error, any()}.
 tcp_send(Data, #telnet{socket=Socket}) ->
   ?DEBUG_PRINT("telnet: SEND ~w!\n", [Data]),
