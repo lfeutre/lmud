@@ -10,6 +10,12 @@ economies deployed on a highly fault-tolerant environment (which supports
 hot-code loads) where system crashes or reboots are more of an exotic
 curiosity than a commonplace thing.
 
+## Current Milestone
+
+[0.6.x](https://github.com/lfex/lmud/milestone/3)
+
+## Background
+
 Erlang/OTP is an excellent match for MUD development, with strong support
 for concurrency through light-weight processes, hot code upgrades, near-
 transparent mechanisms for distributed computing, etc.
