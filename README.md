@@ -10,9 +10,10 @@ economies deployed on a highly fault-tolerant environment (which supports
 hot-code loads) where system crashes or reboots are more of an exotic
 curiosity than a commonplace thing.
 
-## Current Milestone
+## Milestones
 
-[0.6.x](https://github.com/lfex/lmud/milestone/3)
+* Current: [0.6.x](https://github.com/lfex/lmud/milestone/3)
+* All: [Open](https://github.com/lfex/lmud/milestones?direction=desc&sort=count&state=open)
 
 ## Background
 
