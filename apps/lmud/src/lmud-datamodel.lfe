@@ -13,9 +13,13 @@
      #(room ,(em_room:get_name r))
      #(objects ,(em_object:get_templates os)))))
 
-(defun user
-  ()
-  "")
+(defun user (password)
+  (user 1 password []))
+
+(defun user (version password privileges)
+  `(#(version ,version)
+    #(password ,password)
+    #(privileges ,privileges)))
 
 (defun object
   ()
