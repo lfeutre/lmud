@@ -11,7 +11,7 @@
 %% lmud-event-listener exports
 -export([handle_event/1]).
 
--record(state, {caster, room}).
+-include("apps/lmud/include/state.hrl").
 
 %% API
 
@@ -21,13 +21,13 @@ start(Caster, Room) ->
 %% em_spell exports
 
 init([Caster, Room]) ->
-  {ok, #state{caster=Caster, room=Room}, 0}.
+  {ok, #state_speller{caster=Caster, room=Room}, 0}.
 
 handle_cast({handle_event, Event}, State) ->
   do_handle_event(Event, State).
 
 handle_info(timeout, State) ->
-  em_room:add_event_listener(State#state.room, {em_spell_ward, [self()]}),
+  em_room:add_event_listener(State#state_speller.room, {em_spell_ward, [self()]}),
   {noreply, State}.
 
 terminate(_Reason, _State) ->
@@ -41,7 +41,7 @@ handle_event([Pid, Event]) ->
 %% internal
 
 do_handle_event({enter_room, _Liv}, State) ->
-  Caster = State#state.caster,
+  Caster = State#state_speller.caster,
   em_character:print(Caster, "A tingling sensation tells you that a ward has "
                           "been tripped.\n"),
   {stop, normal, State};
