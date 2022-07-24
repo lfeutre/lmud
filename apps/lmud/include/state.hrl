@@ -6,6 +6,18 @@
          objects=[] :: [em_object:object()]
       }).
 
+-record(state_room, {
+         name :: any(),
+         title :: any(),
+         brief :: any(),
+         desc :: any(),
+         people=[],
+         exits=[],
+         objects=[],
+         resets=[],
+         event_listeners=[]
+      }).
+
 -record(state_speller, {
          spell_mod :: atom(),
          spell_state :: any(),

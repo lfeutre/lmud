@@ -19,8 +19,6 @@
 
 -include_lib("logjam/include/logjam.hrl").
 
--record(state, {}).
-
 %% API
 
 start_link() ->
@@ -48,7 +46,7 @@ new_room(Name) ->
 init([]) ->
   ets:new(?TABLE_ID, [protected, named_table]),
   refresh('lmud-room-pool-sup':which_children()),
-  {ok, #state{}}.
+  {ok, #state_room{}}.
 
 handle_call({get_room, Name}, _From, State) ->
   case try_load_room(Name) of
