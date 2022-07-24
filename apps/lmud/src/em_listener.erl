@@ -7,8 +7,6 @@
 %%% @end
 %%% =========================================================================
 -module(em_listener).
--include("apps/lmud/include/types.hrl").
-
 -behaviour(gen_server).
 
 %% API
@@ -18,10 +16,10 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
--record(state, {lsock :: socket(), port :: inet_port(),
-                acceptors :: count()}).
-
 -define(SERVER, ?MODULE).
+
+-include("apps/lmud/include/types.hrl").
+-include_lib("apps/lmud/include/state.hrl").
 
 
 %% ==========================================================================
@@ -40,7 +38,7 @@ start_link(Port, Acceptors) ->
 %% ==========================================================================
 
 init([Port, Acceptors]) ->
-  {ok, #state{port=Port, acceptors=Acceptors}, 0}.
+  {ok, #state_listener{port=Port, acceptors=Acceptors}, 0}.
 
 handle_call(_Req, _From, State) ->
   {reply, ok, State}.
@@ -48,19 +46,19 @@ handle_call(_Req, _From, State) ->
 handle_cast(_Msg, State) ->
   {noreply, State}.
 
-handle_info(timeout, #state{port=Port, acceptors=Acceptors}=State) ->
+handle_info(timeout, #state_listener{port=Port, acceptors=Acceptors}=State) ->
   % Listen on our configured port
   {ok, LSock} = gen_tcp:listen(Port, [{active, once},
                                       {nodelay, true},
                                       {reuseaddr, true}]),
   % Start up the acceptor processes
   start_acceptors(LSock, Acceptors),
-  {noreply, State#state{lsock=LSock}};
+  {noreply, State#state_listener{lsock=LSock}};
 handle_info(_Info, State) ->
   {noreply, State}.
 
 terminate(_Reason, State) ->
-  case State#state.lsock of
+  case State#state_listener.lsock of
     undefined ->
       ok;
     LSock ->
