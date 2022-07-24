@@ -65,3 +65,9 @@
          session::pid(),
          telnet_session
       }).
+
+-record(state_listener, {
+         lsock :: socket(),
+         port :: inet_port(),
+         acceptors :: count()
+      }).
