@@ -5,6 +5,6 @@
 
 (defun verify
   ((priv (match-req user user))
-    (case (lmud-player:has_privilege user priv)
+    (case (lmud-user:has-privilege? user priv)
       ('true 'ok)
       ('false (throw 'not_allowed)))))

@@ -1,5 +1,5 @@
 ;;;; A plain simple_one_for_one supervisor that allows em_living processes to
-;;;; be started when a player logs in.
+;;;; be started when a user logs in.
 (defmodule lmud-living-sup
   (behaviour supervisor)
   (export all))

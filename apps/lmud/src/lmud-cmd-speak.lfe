@@ -45,7 +45,7 @@
     (lmud-io:print "Whisper what to whom?" req)
     `#(ok ,req))
   (((cons who (cons word words)) (= (match-req user user) req))
-    (let ((name (lmud-player:get_name user))
+    (let ((name (lmud-user:name user))
           (text (string:join (cons (em_text:capitalize word) words) " ")))
       (case (em_game:lookup_user who)
         (`#(error not_found)
@@ -53,7 +53,7 @@
         (`#(ok #(,addressee ,_)) (when (== addressee name))
           (lmud-io:print "Talking to yourself again, eh?\n" req))
         (`#(ok #(,other-name ,other-user))
-          (lmud-player:print
+          (lmud-user:print
             other-user
             (++ (color:magenta "[Whisper] ") "From ~s: \"~s\"~n")
             (list name text))

@@ -155,7 +155,7 @@ code_change(_OldVsn, State, _Extra) ->
 %% User Handling
 
 do_login(User, #state{users=Users}=State) ->
-  Name = 'lmud-player':get_name(User),
+  Name = 'lmud-user':name(User),
   case lists:keyfind(Name, 1, Users) of
     {_Name, _User} ->
       {{error, user_exists}, State};

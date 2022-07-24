@@ -11,6 +11,9 @@ build:
 	@ERL_LIBS=$(REL_ERL_LIBS) rebar3 release
 
 clean:
+	@rm -rf _build/default/lib/lmud/ebin/*
+
+clean-all:
 	@rm -rf _build
 
 clean-lock:
