@@ -241,18 +241,13 @@ update_character([_Other|Data], State) ->
 
 -spec do_save(#state_character{}) -> {ok, #state_character{}} | {error, any()}.
 do_save(#state_character{name=Name}=State) ->
-  Data = save_character(State),
-  ?'log-debug'("serialised character data: ~s", [Data]),
-  case 'lmud-filestore':write("characters", Name, Data) of
+  Data1 = 'lmud-datamodel':character(State),
+  ?'log-debug'("saving character: ~p", [Data1]),
+  Data2 = 'lmud-filestore':serialise(Data1),
+  ?'log-debug'("serialised character data: ~s", [Data2]),
+  case 'lmud-filestore':write("characters", Name, Data2) of
     ok ->
       {ok, State};
     {error, Reason} ->
       {error, file:format_error(Reason)}
   end.
-
--spec save_character(#state_character{}) -> string().
-save_character(State) ->
-    Data = 'lmud-datamodel':character(State),
-  ?'log-debug'("saving character: ~p", [Data]),
-  'lmud-filestore':serialise(Data).
-                                 

@@ -13,14 +13,14 @@
       }).
 
 -record(state_room, {
-         name :: any(),
-         title :: any(),
-         brief :: any(),
-         desc :: any(),
-         people=[],
-         exits=[],
-         objects=[],
-         resets=[],
+         name :: string(),
+         title="" :: string(),
+         brief="" :: string(),
+         desc="" :: string(),
+         people=[], % TODO: rename this to characters; also add npcs
+         exits=[] :: em_room:exits(),
+         objects=[] :: [em_object:object()],
+         resets=[] :: [em_object:object()],
          event_listeners=[]
       }).
 

@@ -26,7 +26,9 @@
 -include_lib("apps/lmud/include/state.hrl").
 
 -opaque object() :: #object{}.
--export_type([object/0]).
+-type objects() :: [object()].
+
+-export_type([object/0, objects/0]).
 
 %% Type Specifications
 -include("apps/lmud/include/types.hrl").
