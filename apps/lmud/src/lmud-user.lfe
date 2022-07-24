@@ -5,30 +5,26 @@
    all))
 
 (include-lib "logjam/include/logjam.hrl")
+(include-lib "apps/lmud/include/state.hrl")
 
 (deftype user-pid (pid))
-
-(defrecord state
-  name
-  conn
-  (privileges (ordsets:new)))
 
 (defun start_link (name conn)
   (gen_server:start_link (MODULE) `(,name ,conn) '()))
 
 (defun init
   (((list name conn))
-    `#(ok ,(make-state name name conn conn))))
+    `#(ok ,(make-state_user name name conn conn))))
 
 (defun handle_call
-  (((tuple 'has-privilege? priv) _from (= (match-state privileges privs) state))
+  (((tuple 'has-privilege? priv) _from (= (match-state_user privileges privs) state))
     `#(reply ,(ordsets:is_element priv privs) ,state))
-  (('name _from (= (match-state name name) state))
+  (('name _from (= (match-state_user name name) state))
     `#(reply ,name ,state))
-  (((tuple 'print format) _from (= (match-state conn conn) state))
+  (((tuple 'print format) _from (= (match-state_user conn conn) state))
     (em_conn:print conn format)
     `#(reply ok ,state))
-  (((tuple 'print format args) _from (= (match-state conn conn) state))
+  (((tuple 'print format args) _from (= (match-state_user conn conn) state))
     (em_conn:print conn format args)
     `#(reply ok ,state))
   (('load _from state)
@@ -72,7 +68,7 @@
 ;; Private functions
 
 (defun do-load
-  (((= (match-state name name) state))
+  (((= (match-state_user name name) state))
     (load-user name state)))
 
 (defun load-user (name state)
@@ -87,6 +83,6 @@
   (('() state)
     state)
   (((cons (tuple 'privileges priv-list) data) state)
-    (update-user data (make-state privileges (ordsets:from_list priv-list))))
+    (update-user data (make-state_user privileges (ordsets:from_list priv-list))))
   (((cons _ data) state)
     (update-user data state)))
