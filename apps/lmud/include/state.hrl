@@ -1,3 +1,5 @@
+%% Game state
+
 -record(state_character, {
          name="noname" :: em_character:name_type(),
          room :: em_room:room_pid(),
@@ -50,4 +52,12 @@
          is_plural=false :: boolean(),
          is_unique=false :: boolean(),
          template="dummy" :: string()
+      }).
+
+%% System state
+
+-record(state_conn, {
+         socket::socket(),
+         session::pid(),
+         telnet_session
       }).
