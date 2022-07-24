@@ -42,7 +42,7 @@ handle_event([Pid, Event]) ->
 
 do_handle_event({enter_room, _Liv}, State) ->
   Caster = State#state.caster,
-  em_living:print(Caster, "A tingling sensation tells you that a ward has "
+  em_character:print(Caster, "A tingling sensation tells you that a ward has "
                           "been tripped.\n"),
   {stop, normal, State};
 do_handle_event(_Event, State) ->

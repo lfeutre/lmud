@@ -6,13 +6,13 @@
 %%% and acting upon the world as directed by the user's commands.
 %%% @end
 %%% =========================================================================
--module(em_living).
+-module(em_character).
 
 -behaviour(gen_server).
 
 %% API
 -export([start_link/2, start/2, stop/1,
-         get_name/1,
+         name/1,
          get_room/1, set_room/2,
          add_object/2, move_object/3, get_objects/1, remove_object/2,
          set_desc/2, desc/1,
@@ -29,11 +29,13 @@
 %% ==========================================================================
 %% Type Specifications
 %% ==========================================================================
--include("apps/lmud/include/types.hrl").
--type living_name() :: string().
--type living_pid() :: pid().
 
--export_type([living_name/0, living_pid/0]).
+-include("apps/lmud/include/types.hrl").
+
+-type name_type() :: string().
+-type pid_type() :: pid().
+
+-export_type([name_type/0, pid_type/0]).
 
 
 %% ==========================================================================
@@ -46,66 +48,66 @@ start_link(Name, Client) ->
 start(Name, Client) ->
   gen_server:start(?MODULE, [Name, Client], []).
 
--spec get_name(living_pid()) -> living_name().
-get_name(Pid) ->
-  gen_server:call(Pid, get_name).
+-spec name(pid_type()) -> name_type().
+name(Pid) ->
+  gen_server:call(Pid, name).
 
--spec get_room(living_pid()) -> em_room:room_pid()|undefined.
+-spec get_room(pid_type()) -> em_room:room_pid()|undefined.
 get_room(Pid) ->
   gen_server:call(Pid, get_room).
 
--spec add_object(living_pid(), em_object:object()) -> ok.
+-spec add_object(pid_type(), em_object:object()) -> ok.
 add_object(Pid, Ob) ->
   gen_server:call(Pid, {add_object, Ob}).
 
--spec move_object(living_pid(), em_object:object(),
+-spec move_object(pid_type(), em_object:object(),
                   {to_room, em_room:room_pid()}) -> ok.
 move_object(Pid, Ob, Dest) ->
   gen_server:call(Pid, {move_object, Ob, Dest}).
 
--spec get_objects(living_pid()) -> [em_object:object()].
+-spec get_objects(pid_type()) -> [em_object:object()].
 get_objects(Pid) ->
   gen_server:call(Pid, get_objects).
 
--spec remove_object(living_pid(), em_object:object()) -> ok.
+-spec remove_object(pid_type(), em_object:object()) -> ok.
 remove_object(Pid, Ob) ->
   gen_server:call(Pid, {remove_object, Ob}).
 
--spec set_room(living_pid(), em_room:room_name() | em_room:room_pid()) -> ok.
+-spec set_room(pid_type(), em_room:room_name() | em_room:room_pid()) -> ok.
 set_room(Pid, Room) when is_pid(Room) ->
   gen_server:call(Pid, {set_room_pid, Room});
 set_room(Pid, Room) when is_list(Room) ->
   gen_server:call(Pid, {set_room_str, Room}).
 
--spec set_desc(living_pid(), string()) -> ok.
+-spec set_desc(pid_type(), string()) -> ok.
 set_desc(Pid, Desc) ->
   gen_server:call(Pid, {set_desc, Desc}).
 
--spec desc(living_pid()) -> string().
+-spec desc(pid_type()) -> string().
 desc(Pid) ->
   gen_server:call(Pid, desc).
 
--spec cmd(living_pid(), string()) -> ok.
+-spec cmd(pid_type(), string()) -> ok.
 cmd(Pid, Line) ->
   gen_server:call(Pid, {cmd, Line}).
 
--spec print(living_pid(), iolist()) -> ok.
+-spec print(pid_type(), iolist()) -> ok.
 print(Pid, Format) ->
   gen_server:call(Pid, {print, Format}).
 
--spec print(living_pid(), iolist(), list()) -> ok.
+-spec print(pid_type(), iolist(), list()) -> ok.
 print(Pid, Format, Args) ->
   gen_server:call(Pid, {print, Format, Args}).
 
--spec stop(living_pid()) -> ok.
+-spec stop(pid_type()) -> ok.
 stop(Pid) ->
   gen_server:cast(Pid, stop).
 
--spec load(living_pid()) -> ok|{error, not_found}.
+-spec load(pid_type()) -> ok|{error, not_found}.
 load(Pid) ->
   gen_server:call(Pid, load).
 
--spec save(living_pid()) -> ok|{error, any()}.
+-spec save(pid_type()) -> ok|{error, any()}.
 save(Pid) ->
   gen_server:call(Pid, save).
 
@@ -115,35 +117,35 @@ save(Pid) ->
 %% ==========================================================================
 
 init([Name, Client]) ->
-  {ok, #state_living{name=Name, client=Client}}.
+  {ok, #state_character{name=Name, client=Client}}.
 
-handle_call(get_name, _From, #state_living{name=Name}=State) ->
+handle_call(name, _From, #state_character{name=Name}=State) ->
   {reply, Name, State};
-handle_call(get_room, _From, #state_living{room=Room}=State) ->
+handle_call(get_room, _From, #state_character{room=Room}=State) ->
   {reply, Room, State};
-handle_call({add_object, Ob}, _From, #state_living{objects=Obs}=State) ->
-  {reply, ok, State#state_living{objects=[Ob|Obs]}};
+handle_call({add_object, Ob}, _From, #state_character{objects=Obs}=State) ->
+  {reply, ok, State#state_character{objects=[Ob|Obs]}};
 handle_call({move_object, Ob, Dest}, _From, State) ->
   {Result, NewState} = do_move_object(Ob, Dest, State),
   {reply, Result, NewState};
-handle_call(get_objects, _From, #state_living{objects=Obs}=State) ->
+handle_call(get_objects, _From, #state_character{objects=Obs}=State) ->
   {reply, Obs, State};
 handle_call({remove_object, Ob}, _From, State) ->
   {Result, NewState} = do_remove_object(Ob, State),
   {reply, Result, NewState};
 handle_call({set_room_pid, Room}, _From, State) ->
-  {reply, ok, State#state_living{room=Room}};
+  {reply, ok, State#state_character{room=Room}};
 handle_call({set_room_str, RoomStr}, _From, State) ->
   {ok, Room} = em_room_mgr:get_room(RoomStr),
-  {reply, ok, State#state_living{room=Room}};
+  {reply, ok, State#state_character{room=Room}};
 handle_call({set_desc, Desc}, _From, State) ->
-  {reply, ok, State#state_living{desc=Desc}};
-handle_call(desc, _From, #state_living{desc=Desc}=State) ->
+  {reply, ok, State#state_character{desc=Desc}};
+handle_call(desc, _From, #state_character{desc=Desc}=State) ->
   {reply, Desc, State};
-handle_call({print, Format}, _From, #state_living{client={_,Out}}=State) ->
+handle_call({print, Format}, _From, #state_character{client={_,Out}}=State) ->
   em_conn:print(Out, Format),
   {reply, ok, State};
-handle_call({print, Format, Args}, _From, #state_living{client={_,Out}}=State) ->
+handle_call({print, Format, Args}, _From, #state_character{client={_,Out}}=State) ->
   em_conn:print(Out, Format, Args),
   {reply, ok, State};
 handle_call(load, _From, State) ->
@@ -162,8 +164,8 @@ handle_call(save, _From, State) ->
       {reply, {error, Reason}, State}
   end.
 
-handle_cast(stop, #state_living{client={_,Out}}=State) ->
-  em_conn:print(Out, "living(): stopping.~n"),
+handle_cast(stop, #state_character{client={_,Out}}=State) ->
+  em_conn:print(Out, "stopping character ...~n"),
   {stop, normal, ok, State}.
 
 handle_info(_Info, State) ->
@@ -175,83 +177,82 @@ terminate(_Reason, _State) ->
 code_change(_OldVsn, State, _Extra) ->
   {ok, State}.
 
-
 %% ==========================================================================
 %% Internal functions
 %% ==========================================================================
 
 -spec do_move_object(em_object:object(), {to_room, em_room:room_pid()},
-                     #state_living{}) -> {ok, #state_living{}}.
-do_move_object(Ob, {to_room, Room}, #state_living{objects=Obs}=State) ->
+                     #state_character{}) -> {ok, #state_character{}}.
+do_move_object(Ob, {to_room, Room}, #state_character{objects=Obs}=State) ->
   case lists:member(Ob, Obs) of
     false -> throw(not_found);
     true ->
       NewObs = lists:delete(Ob, Obs),
       ok = em_room:add_object(Room, Ob),
-      {ok, State#state_living{objects = NewObs}}
+      {ok, State#state_character{objects = NewObs}}
   end.
 
--spec do_remove_object(em_object:object(), #state_living{}) ->
-        {ok, #state_living{}} | {{error, not_found}, #state_living{}}.
-do_remove_object(Ob, #state_living{objects=Obs}=State) ->
+-spec do_remove_object(em_object:object(), #state_character{}) ->
+        {ok, #state_character{}} | {{error, not_found}, #state_character{}}.
+do_remove_object(Ob, #state_character{objects=Obs}=State) ->
   do_remove_object(Ob, State, Obs, []).
 
--spec do_remove_object(em_object:object(), #state_living{}, [em_object:object()],
+-spec do_remove_object(em_object:object(), #state_character{}, [em_object:object()],
                        [em_object:object()]) ->
-        {ok, #state_living{}} | {{error, not_found}, #state_living{}}.
+        {ok, #state_character{}} | {{error, not_found}, #state_character{}}.
 do_remove_object(_Ob, State, [], _Searched) ->
   {{error, not_found}, State};
 do_remove_object(Ob, State, [Ob|Obs], Searched) ->
-  {ok, State#state_living{objects=Obs ++ Searched}};
+  {ok, State#state_character{objects=Obs ++ Searched}};
 do_remove_object(Ob, State, [NoMatch|Obs], Searched) ->
   do_remove_object(Ob, State, Obs, [NoMatch|Searched]).
 
 %% Load
 
--spec do_load(#state_living{}) -> {ok, #state_living{}} | {error, not_found}.
-do_load(#state_living{name=Name}=State) ->
-  load_living(Name, State).
+-spec do_load(#state_character{}) -> {ok, #state_character{}} | {error, not_found}.
+do_load(#state_character{name=Name}=State) ->
+  load_character(Name, State).
 
--spec load_living(file_path(), #state_living{}) ->
-        {ok, #state_living{}} | {error, not_found}.
-load_living(Name, State) ->
-  ?'log-info'("loading living: ~s",
-            ['lmud-filestore':'living-file'(Name)]),
-  case 'lmud-filestore':'read'("livings", Name) of
+-spec load_character(file_path(), #state_character{}) ->
+        {ok, #state_character{}} | {error, not_found}.
+load_character(Name, State) ->
+  ?'log-info'("loading character: ~s",
+            ['lmud-filestore':'character-file'(Name)]),
+  case 'lmud-filestore':'read'("characters", Name) of
       {ok, Data} ->
-      NewState = update_living(Data, State),
+      NewState = update_character(Data, State),
       {ok, NewState};
     {error, _Reason} ->
       {error, not_found}
   end.
 
--spec update_living([{any(), any()}], #state_living{}) -> #state_living{}.
-update_living([], State) ->
+-spec update_character([{any(), any()}], #state_character{}) -> #state_character{}.
+update_character([], State) ->
   State;
-update_living([{desc, Desc}|Data], State) ->
-  update_living(Data, State#state_living{desc=Desc});
-update_living([{room, Room}|Data], State) ->
+update_character([{desc, Desc}|Data], State) ->
+  update_character(Data, State#state_character{desc=Desc});
+update_character([{room, Room}|Data], State) ->
   {ok, RoomPid} = em_room_mgr:get_room(Room),
-  update_living(Data, State#state_living{room=RoomPid});
-update_living([{objects, ObList}|Data], State) ->
-  update_living(Data, State#state_living{objects=em_object:load_obs(ObList)});
-update_living([_Other|Data], State) ->
-  update_living(Data, State).
+  update_character(Data, State#state_character{room=RoomPid});
+update_character([{objects, ObList}|Data], State) ->
+  update_character(Data, State#state_character{objects=em_object:load_obs(ObList)});
+update_character([_Other|Data], State) ->
+  update_character(Data, State).
 
--spec do_save(#state_living{}) -> {ok, #state_living{}} | {error, any()}.
-do_save(#state_living{name=Name}=State) ->
-  Data = save_living(State),
-  ?'log-debug'("serialised living data: ~s", [Data]),
-  case 'lmud-filestore':write("livings", Name, Data) of
+-spec do_save(#state_character{}) -> {ok, #state_character{}} | {error, any()}.
+do_save(#state_character{name=Name}=State) ->
+  Data = save_character(State),
+  ?'log-debug'("serialised character data: ~s", [Data]),
+  case 'lmud-filestore':write("characters", Name, Data) of
     ok ->
       {ok, State};
     {error, Reason} ->
       {error, file:format_error(Reason)}
   end.
 
--spec save_living(#state_living{}) -> string().
-save_living(State) ->
-    Data = 'lmud-datamodel':living(State),
-  ?'log-debug'("saving living: ~p", [Data]),
+-spec save_character(#state_character{}) -> string().
+save_character(State) ->
+    Data = 'lmud-datamodel':character(State),
+  ?'log-debug'("saving character: ~p", [Data]),
   'lmud-filestore':serialise(Data).
                                  

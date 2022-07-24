@@ -4,38 +4,38 @@
 (include-lib "apps/lmud/include/request.hrl")
 
 (defun base-emote
-  ((args (= (match-req living living) req) format-str)
+  ((args (= (match-req character character) req) format-str)
     (let ((text (em_english:punctuate (string:join args " ")))
-          (name (em_living:get_name living))
-          (room (em_living:get_room living)))
-      (em_room:print_except 'yellowb room living format-str (list name text))
+          (name (em_character:name character))
+          (room (em_character:get_room character)))
+      (em_room:print_except 'yellowb room character format-str (list name text))
       (lmud-io:print 'yellowb format-str (list name text) req)
       `#(ok ,req))))
 
 (defun emote
-  ((args (= (match-req living living) req))
+  ((args (= (match-req character character) req))
     (base-emote args req "~s ~s~n")))
 
 (defun emote-ns
-  ((args (= (match-req living living) req))
+  ((args (= (match-req character character) req))
     (base-emote args req "~s~s~n")))
 
 (defun think
-  ((args (= (match-req living living) req))
+  ((args (= (match-req character character) req))
     (let ((text (em_english:punctuate (string:join args " ")))
-          (name (em_living:get_name living))
-          (room (em_living:get_room living)))
-      (em_room:print_except 'blackb room living
+          (name (em_character:name character))
+          (room (em_character:get_room character)))
+      (em_room:print_except 'blackb room character
                             "~s is pondering something.~n" (list name))
       (lmud-io:print 'blackb "~s thinks ~s~n" (list name text) req)
       `#(ok ,req))))
 
 (defun say
-  (((cons word words) (= (match-req living living) req))
+  (((cons word words) (= (match-req character character) req))
     (let ((text (string:join (cons (em_text:capitalize word) words) " "))
-          (name (em_living:get_name living))
-          (room (em_living:get_room living)))
-      (em_room:print_except 'yellowb room living
+          (name (em_character:name character))
+          (room (em_character:get_room character)))
+      (em_room:print_except 'yellowb room character
                             "~s says, \"~s\"~n" (list name text))
       (lmud-io:print 'yellowb "You say, \"~s\"~n" (list text) req)
       `#(ok ,req))))

@@ -145,7 +145,7 @@ handle_call({leave, Who}, _From, #state{people=People} = State) ->
   {reply, ok, State#state{people=People -- [Who]}};
 handle_call({print_while, Pred, Format, Args}, _From, State) ->
   People = lists:filter(Pred, State#state.people),
-  PrintFun = fun(Liv) -> em_living:print(Liv, Format, Args) end,
+  PrintFun = fun(Liv) -> em_character:print(Liv, Format, Args) end,
   lists:map(PrintFun, People),
   {reply, ok, State};
 handle_call({set_title, Title}, _From, State) ->
@@ -240,7 +240,7 @@ list_objects([Ob|Obs], ObDesc) ->
 list_people([]) ->
   "";
 list_people(People) ->
-  Names = lists:map(fun em_living:get_name/1, People),
+  Names = lists:map(fun em_character:name/1, People),
   ["\n", [[N, " is here.\n"] || N <- Names]].
 
 %% Save

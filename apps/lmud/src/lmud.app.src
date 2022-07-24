@@ -3,7 +3,7 @@
   {description, "El-MUD Game Server"},
   {vsn, "0.6.0-dev"},
   {registered, ['lmud-sup', em_game, 'lmud-room-sup', 'lmud-room-pool-sup',
-                em_room_mgr, 'lmud-living-sup', 'lmud-user-sup',
+                em_room_mgr, 'lmud-character-sup', 'lmud-user-sup',
                 'lmud-req-sup',
                 'lmud-session-sup', 'lmud-cmd-game', 'lmud-cmd-interact',
                 'lmud-conn-sup', 'lmud-acceptor-sup', 'lmud-acceptor-pool',

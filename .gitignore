@@ -6,7 +6,7 @@ edoc-info
 *.beam
 *.boot
 users/*.dat
-livings/*.dat
+characters/*.dat
 *.script
 *.swp
 *.tar.gz

@@ -1,5 +1,5 @@
--record(state_living, {
-          name="noname" :: em_living:living_name(),
+-record(state_character, {
+          name="noname" :: em_character:name_type(),
           room :: em_room:room_pid(),
           client,
           desc="" :: string(),

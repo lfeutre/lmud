@@ -1,6 +1,6 @@
-;;;; A plain simple_one_for_one supervisor that allows em_living processes to
+;;;; A plain simple_one_for_one supervisor that allows em_character processes to
 ;;;; be started when a user logs in.
-(defmodule lmud-living-sup
+(defmodule lmud-character-sup
   (behaviour supervisor)
   (export all))
 
@@ -13,13 +13,13 @@
   (supervisor:start_child (server) `(,name, ,client)))
 
 (defun init
-  ;; Allow 2000ms for em_living to clean up; removing itself
+  ;; Allow 2000ms for em_character to clean up; removing itself
   ;; from the game world..
   (('())
      `#(ok #(#(simple_one_for_one 0 1)
-              (#(em_living
-               #(em_living start_link ())
+              (#(em_character
+               #(em_character start_link ())
                temporary
                2000
                worker
-               (em_living)))))))
+               (em_character)))))))

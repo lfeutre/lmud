@@ -4,19 +4,19 @@
 (include-lib "apps/lmud/include/request.hrl")
 
 (defun cast
-  ((`("ward") (= (match-req living living) req))
-    (let ((room (em_living:get_room living))
-          (name (em_living:get_name living)))
-      (em_living:print
-        living
+  ((`("ward") (= (match-req character character) req))
+    (let ((room (em_character:get_room character))
+          (name (em_character:name character)))
+      (em_character:print
+        character
         (++ "As you quietly vocalize your chosen mnemonics, "
             "the spell takes shape.\n"))
       (em_room:print_except
-        room living
+        room character
         (++ "~s starts muttering something incomprehensible. "
             "It's probably a spell.\n")
         (list name))
-      (em_spell_ward:start living room))
+      (em_spell_ward:start character room))
     `#(ok ,req))
   ((_ req)
     (lmud-io:print

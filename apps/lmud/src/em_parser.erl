@@ -86,12 +86,12 @@ parse_cmd(Cmd, PassedArgs, Line, Req) ->
 
 %% @open
 -spec cmd_open([string()], req()) -> cmd_ok().
-cmd_open([InputDir, ToName|_Rest], #req{living=Liv}=Req) ->
+cmd_open([InputDir, ToName|_Rest], #req{character=Character}=Req) ->
   {ok, Dir} = check_dir(InputDir),
   ok = 'lmud-perms':verify(aesir, Req),
   case em_room_mgr:get_room(ToName) of
     {ok, _ToRoom} ->
-      FromRoom = em_living:get_room(Liv),
+      FromRoom = em_character:get_room(Character),
       em_room:add_exit(FromRoom, Dir, ToName),
       ok = em_room:save(FromRoom);
     {error, not_found} ->
@@ -106,13 +106,13 @@ cmd_open(_Args, Req) ->
   {ok, Req}.
 
 %% @dig
-cmd_dig([InputDir, ToName|_Rest], #req{living=Liv}=Req) ->
+cmd_dig([InputDir, ToName|_Rest], #req{character=Character}=Req) ->
   ok = 'lmud-perms':verify(aesir, Req),
   case check_dir(InputDir) of
     {ok, Dir} ->
       case em_room_mgr:new_room(ToName) of
         {ok, ToRoom} ->
-          FromRoom = em_living:get_room(Liv),
+          FromRoom = em_character:get_room(Character),
           FromName = em_room:get_name(FromRoom),
           em_room:add_exit(FromRoom, Dir, ToName),
           ok = em_room:save(FromRoom),
@@ -134,23 +134,23 @@ cmd_dig(_Args, Req) ->
 
 %% REdit
 -spec cmd_redit([string()], req()) -> cmd_ok().
-cmd_redit(["title", What|Rest], #req{living=Liv}=Req) ->
+cmd_redit(["title", What|Rest], #req{character=Character}=Req) ->
   ok = 'lmud-perms':verify(aesir, Req),
-  Room = em_living:get_room(Liv),
+  Room = em_character:get_room(Character),
   Title = string:join([What|Rest], " "),
   em_room:set_title(Room, Title),
   ok = em_room:save(Room),
   {ok, Req};
-cmd_redit(["brief", What|Rest], #req{living=Liv}=Req) ->
+cmd_redit(["brief", What|Rest], #req{character=Character}=Req) ->
   ok = 'lmud-perms':verify(aesir, Req),
-  Room = em_living:get_room(Liv),
+  Room = em_character:get_room(Character),
   Brief = string:join([What|Rest], " "),
   em_room:set_brief(Room, Brief),
   ok = em_room:save(Room),
   {ok, Req};
-cmd_redit(["desc", What|Rest], #req{living=Liv}=Req) ->
+cmd_redit(["desc", What|Rest], #req{character=Character}=Req) ->
   ok = 'lmud-perms':verify(aesir, Req),
-  Room = em_living:get_room(Liv),
+  Room = em_character:get_room(Character),
   Desc = string:join([What|Rest], " "),
   em_room:set_desc(Room, Desc),
   ok = em_room:save(Room),

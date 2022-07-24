@@ -74,7 +74,7 @@ login({new_user_pw_confirm, Name, Password}, Password, #req{conn=Conn}=Req) ->
     lists:flatten([
     "{version, 1}.\n",
     "{password, \"", CryptPw, "\"}.\n"])),
-  'lmud-filestore':write("livings", Name,
+  'lmud-filestore':write("characters", Name,
     lists:flatten([
     "{version, 1}.\n",
     "{desc, \"", Name, " looks pretty ordinary.\"}.\n"])),
@@ -108,11 +108,11 @@ do_login(Name, #req{conn=Conn}=Req) ->
   ok = 'lmud-user':load(User),
   case em_game:login(User) of
     ok ->
-      {ok, Living} = 'lmud-living-sup':start_child(Name, {User, Conn}),
-      link(Living),
-      ok = em_living:load(Living),
-      {ok, NewReq} = do_incarnate(Req#req{user=User, living=Living}),
-      unlink(Living),
+      {ok, Character} = 'lmud-character-sup':start_child(Name, {User, Conn}),
+      link(Character),
+      ok = em_character:load(Character),
+      {ok, NewReq} = do_incarnate(Req#req{user=User, character=Character}),
+      unlink(Character),
       unlink(User),
       ?req_next_and_link(em_parser, parse, [], NewReq);
     {error, user_exists} ->
@@ -124,8 +124,8 @@ do_login(Name, #req{conn=Conn}=Req) ->
   end.
 
 -spec do_incarnate(req()) -> {ok, req()}.
-do_incarnate(#req{conn=Conn, living=Living}=Req) ->
-  ok = em_game:incarnate(Living),
+do_incarnate(#req{conn=Conn, character=Character}=Req) ->
+  ok = em_game:incarnate(Character),
   em_conn:print(Conn, 'lmud-config':'post-login-msg'()),
   'lmud-cmd-interact':glance([], Req),
   em_conn:print(Conn, "\n> "),
