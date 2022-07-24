@@ -31,7 +31,7 @@
          room :: any()
       }).
 
--record(state_uaer, {
+-record(state_user, {
          name,
          conn,
          privileges=ordsets:new()
@@ -57,17 +57,17 @@
 %% System state
 
 -record(state_acceptor, {
-         lsock::socket()
+         lsock :: port()
       }).
 
 -record(state_conn, {
-         socket::socket(),
-         session::pid(),
+         socket :: port(),
+         session :: pid(),
          telnet_session
       }).
 
 -record(state_listener, {
-         lsock :: socket(),
-         port :: inet_port(),
-         acceptors :: count()
+         lsock :: port(),
+         port :: 0..65535,
+         acceptors :: non_neg_integer()
       }).
