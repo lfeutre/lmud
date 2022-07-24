@@ -21,8 +21,7 @@
          terminate/2, code_change/3]).
 
 -include_lib("logjam/include/logjam.hrl").
-
--record(state, {users=[]::users()}).
+-include("apps/lmud/include/state.hrl").
 
 -define(SERVER, ?MODULE).
 
@@ -34,6 +33,8 @@
 
 -type user() :: {string(), pid()}.
 -type users() :: [user()].
+
+-export_type([user/0, users/0]).
 
 
 %% ==========================================================================
@@ -96,9 +97,9 @@ print_while(Pred, Format, Args) ->
 
 init([]) ->
   process_flag(trap_exit, true),
-  {ok, #state{}}.
+  {ok, #state_game{}}.
 
-handle_call(get_users, _From, #state{users=Users}=State) ->
+handle_call(get_users, _From, #state_game{users=Users}=State) ->
   {reply, Users, State};
 handle_call({login, User}, _From, State) ->
   {Result, NewState} = do_login(User, State),
@@ -110,29 +111,29 @@ handle_call({logout, User}, _From, State) ->
   ?'log-debug'("Logging out user ..."),
   {Result, NewState} = do_logout(User, State),
   {reply, Result, NewState};
-handle_call({lookup_user, Name}, _From, #state{users=Users}=State)
+handle_call({lookup_user, Name}, _From, #state_game{users=Users}=State)
     when is_list(Name) ->
   Result = case lists:keyfind(em_text:capitalize(Name), 1, Users) of
              false -> {error, not_found};
              UserTuple -> {ok, UserTuple}
            end,
   {reply, Result, State};
-handle_call({lookup_user_pid, Pid}, _From, #state{users=Users}=State)
+handle_call({lookup_user_pid, Pid}, _From, #state_game{users=Users}=State)
     when is_pid(Pid) ->
   Result = do_lookup_user_pid(Pid, Users),
   {reply, Result, State};
 handle_call({print_except, User, Format, Args}, _From, State) ->
-  do_print_except(State#state.users, User, Format, Args),
+  do_print_except(State#state_game.users, User, Format, Args),
   {reply, ok, State};
 handle_call({print_while, Pred, Format, Args}, _From, State) ->
-  do_print_while(State#state.users, Pred, Format, Args),
+  do_print_while(State#state_game.users, Pred, Format, Args),
   {reply, ok, State}.
 
 handle_cast(_Msg, State) ->
   {noreply, State}.
 
 % If user dies, remove from state; die on other EXIT signals
-handle_info({'EXIT', From, Reason}, #state{users=Users}=State) ->
+handle_info({'EXIT', From, Reason}, #state_game{users=Users}=State) ->
   case do_lookup_user_pid(From, Users) of
     {ok, {_Name, User}} ->
       {ok, NewState} = do_logout(User, State),
@@ -154,7 +155,7 @@ code_change(_OldVsn, State, _Extra) ->
 
 %% User Handling
 
-do_login(User, #state{users=Users}=State) ->
+do_login(User, #state_game{users=Users}=State) ->
   Name = 'lmud-user':name(User),
   case lists:keyfind(Name, 1, Users) of
     {_Name, _User} ->
@@ -162,10 +163,10 @@ do_login(User, #state{users=Users}=State) ->
     false ->
       link(User),
       do_print_except(Users, User, color:blue("[Notice]") ++ " ~s has logged in.~n", [Name]),
-      {ok, State#state{users=[{Name, User}|Users]}}
+      {ok, State#state_game{users=[{Name, User}|Users]}}
   end.
 
--spec do_incarnate(em_character:pid_type(), #state{}) -> {ok, #state{}}.
+-spec do_incarnate(em_character:pid_type(), #state_game{}) -> {ok, #state_game{}}.
 do_incarnate(Character, State) ->
   Name = em_character:name(Character),
   Room = case em_character:get_room(Character) of
@@ -182,14 +183,14 @@ do_incarnate(Character, State) ->
 
 %% @doc Log out a user. Do NOT actually touch the User process here, it might
 %% have crashed when we call do_logout(). Or could it really, since we link?!
-do_logout(User, #state{users=Users}=State) ->
+do_logout(User, #state_game{users=Users}=State) ->
   ?'log-debug'("Users: ~p", [Users]),
   case lists:keyfind(User, 2, Users) of
     {Name, User} ->
       unlink(User),
       ?'log-notice'("~s has logged out", [Name]),
       do_print_except(Users, User, "[Notice] ~s has logged out.~n", [Name]),
-      {ok, State#state{users=lists:keydelete(User, 2, Users)}};
+      {ok, State#state_game{users=lists:keydelete(User, 2, Users)}};
     false ->
       ?'log-error'("Couldn't find user game state's list of users"),
       {{error, not_found}, State}
