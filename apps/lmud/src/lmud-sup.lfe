@@ -16,7 +16,7 @@
                ,(lmud-util:make-child 'lmud-spell-sup 'supervisor)
                ,(lmud-util:make-child 'lmud-room-sup 'supervisor)
                ,(lmud-util:make-child 'lmud-living-sup 'supervisor)
-               ,(lmud-util:make-child 'lmud-player-sup 'supervisor)
+               ,(lmud-util:make-child 'lmud-user-sup 'supervisor)
                ,(lmud-util:make-child 'lmud-session-sup 'supervisor)
                ,(lmud-util:make-child 'lmud-req-sup 'supervisor)
                ,(lmud-util:make-child 'lmud-conn-sup 'supervisor)

@@ -1,8 +1,8 @@
 %%% =========================================================================
 %%% @author Johan Warlander <johan@snowflake.nu>
 %%% @copyright 2010-2011 Johan Warlander
-%%% @doc Embodiment of player characters in the game.
-%%% This gen_server represents player characters, holding the necessary state
+%%% @doc Embodiment of playing characters in the game.
+%%% This gen_server represents playing characters, holding the necessary state
 %%% and acting upon the world as directed by the user's commands.
 %%% @end
 %%% =========================================================================

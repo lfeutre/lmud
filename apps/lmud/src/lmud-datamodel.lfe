@@ -13,7 +13,7 @@
      #(room ,(em_room:get_name r))
      #(objects ,(em_object:get_templates os)))))
 
-(defun player
+(defun user
   ()
   "")
 

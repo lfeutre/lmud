@@ -1,5 +1,5 @@
 ;;;; Instantiates user processes on demand.
-(defmodule lmud-player-sup
+(defmodule lmud-user-sup
   (behaviour supervisor)
   (export all))
 
@@ -14,9 +14,9 @@
 (defun init
   (('())
      `#(ok #(#(simple_one_for_one 0 1)
-              (#(lmud-player
-               #(lmud-player start_link ())
+              (#(lmud-user
+               #(lmud-user start_link ())
                temporary
                brutal_kill
                worker
-               (lmud-player)))))))
+               (lmud-user)))))))
