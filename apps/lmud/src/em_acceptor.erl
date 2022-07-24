@@ -9,7 +9,6 @@
 %%% @end
 %%% =========================================================================
 -module(em_acceptor).
--include("apps/lmud/include/types.hrl").
 
 -behaviour(gen_server).
 
@@ -20,8 +19,8 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
--record(state, {lsock::socket()}).
-
+-include_lib("apps/lmud/include/state.hrl").
+-include("apps/lmud/include/types.hrl").
 
 %% ==========================================================================
 %% API Functions
@@ -41,25 +40,25 @@ start_link(LSock) ->
 %% @doc Set up local state, then return with a timeout. We use a 0 timeout to
 %% allow the lmud-acceptor-pool to go on with its business, while we start an
 %% accept call to wait for a connection.
--spec init([socket()]) -> {ok, #state{}, integer()}.
+-spec init([socket()]) -> {ok, #state_acceptor{}, integer()}.
 init([LSock]) ->
-  {ok, #state{lsock = LSock}, 0}.
+  {ok, #state_acceptor{lsock = LSock}, 0}.
 
 %% @doc We don't listen to any calls, just empty the queue.
--spec handle_call(any(), pid(), #state{}) -> {reply, ok, #state{}}.
+-spec handle_call(any(), pid(), #state_acceptor{}) -> {reply, ok, #state_acceptor{}}.
 handle_call(_Req, _From, State) ->
   {reply, ok, State}.
 
 %% @doc We don't listen to any casts, just empty the queue.
--spec handle_cast(any(), #state{}) -> {noreply, #state{}}.
+-spec handle_cast(any(), #state_acceptor{}) -> {noreply, #state_acceptor{}}.
 handle_cast(_Msg, State) ->
   {noreply, State}.
 
 %% @doc Handle other messages. If it's a timeout, start listening on the
 %% given socket; otherwise, just empty the queue.
--spec handle_info(timeout | any(), #state{}) ->
-  {noreply, #state{}, integer()} | {stop, normal, #state{}}.
-handle_info(timeout, #state{lsock=LSock}=State) ->
+-spec handle_info(timeout | any(), #state_acceptor{}) ->
+  {noreply, #state_acceptor{}, integer()} | {stop, normal, #state_acceptor{}}.
+handle_info(timeout, #state_acceptor{lsock=LSock}=State) ->
   case gen_tcp:accept(LSock) of
     {ok, Socket} ->
       {ok, Conn} = 'lmud-conn-sup':start_child(Socket),
@@ -76,11 +75,11 @@ handle_info(timeout, #state{lsock=LSock}=State) ->
 handle_info(_Info, State) ->
   {noreply, State}.
 
--spec terminate(any(), #state{}) -> ok.
+-spec terminate(any(), #state_acceptor{}) -> ok.
 terminate(_Reason, _State) ->
   ok.
 
--spec code_change(string(), #state{}, any()) -> {ok, #state{}}.
+-spec code_change(string(), #state_acceptor{}, any()) -> {ok, #state_acceptor{}}.
 code_change(_Vsn, State, _Extra) ->
   {ok, State}.
 

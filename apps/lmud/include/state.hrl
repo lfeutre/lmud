@@ -56,6 +56,10 @@
 
 %% System state
 
+-record(state_acceptor, {
+         lsock::socket()
+      }).
+
 -record(state_conn, {
          socket::socket(),
          session::pid(),
