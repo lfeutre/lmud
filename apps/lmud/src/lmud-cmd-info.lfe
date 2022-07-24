@@ -4,16 +4,11 @@
 (include-lib "apps/lmud/include/request.hrl")
 
 (defun inv
-  ((_ (= (match-req living living) req))
+  ((_ (= (match-req character character) req))
    (do-inv
-    (em_living:get_objects living)
+    (em_character:get_objects character)
     req)
    `#(ok ,req)))
-
-;; cmd_inv(_Args, #req{living=Liv}=Req) ->
-;;   Obs = em_living:get_objects(Liv),
-;;   do_inv(Obs, Req),
-;;   {ok, Req}.
 
 (defun do-inv
   (('() req)
@@ -22,23 +17,12 @@
    (lmud-io:print "You're carrying:\n" req)
    (lmud-io:print (desc-inv objs '()) req)))
 
-;; do_inv([], Req) ->
-;;   print("You're not carrying anything.\n", Req);
-;; do_inv(Obs, Req) ->
-;;   print("You're carrying:\n", Req),
-;;   print(desc_inv(Obs, []), Req).
-
 (defun desc-inv
   (('() result)
    result)
   (((cons obj objs) result)
    (let ((line `(" " ,(em_object:a_short obj) "\n")))
      (desc-inv objs `(,result ,line)))))
-
-;; desc_inv([], Result) -> Result;
-;; desc_inv([Ob|Obs], Result) ->
-;;   Line = [" ", em_object:a_short(Ob), "\n"],
-;;   desc_inv(Obs, [Result, Line]).
 
 (defun who (_ req)
   (lmud-io:print (list "Users:\n" (em_game:get_user_names)) req)
@@ -52,8 +36,8 @@
   `#(ok ,req))
 
 (defun setdesc
-  ((args (= (match-req living living) req))
-   (em_living:set_desc
-    living
+  ((args (= (match-req character character) req))
+   (em_character:set_desc
+    character
     (io_lib:format "~p" (list (string:join args " "))))
    `#(ok ,req)))

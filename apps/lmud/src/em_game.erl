@@ -64,10 +64,10 @@ get_user_names() ->
 login(User) ->
   gen_server:call(?SERVER, {login, User}).
 
-%% @doc Incarnate a living, putting them in the room where they last saved.
--spec incarnate(em_living:living_pid()) -> ok.
-incarnate(Living) ->
-  gen_server:call(?SERVER, {incarnate, Living}).
+%% @doc Incarnate a character, putting them in the room where they last saved.
+-spec incarnate(em_character:pid_type()) -> ok.
+incarnate(Character) ->
+  gen_server:call(?SERVER, {incarnate, Character}).
 
 %% @doc Log out the specified user. Returns an error if user isn't logged on.
 logout(User) ->
@@ -103,8 +103,8 @@ handle_call(get_users, _From, #state{users=Users}=State) ->
 handle_call({login, User}, _From, State) ->
   {Result, NewState} = do_login(User, State),
   {reply, Result, NewState};
-handle_call({incarnate, Living}, _From, State) ->
-  {Result, NewState} = do_incarnate(Living, State),
+handle_call({incarnate, Character}, _From, State) ->
+  {Result, NewState} = do_incarnate(Character, State),
   {reply, Result, NewState};
 handle_call({logout, User}, _From, State) ->
   ?'log-debug'("Logging out user ..."),
@@ -165,19 +165,19 @@ do_login(User, #state{users=Users}=State) ->
       {ok, State#state{users=[{Name, User}|Users]}}
   end.
 
--spec do_incarnate(em_living:living_pid(), #state{}) -> {ok, #state{}}.
-do_incarnate(Living, State) ->
-  Name = em_living:get_name(Living),
-  Room = case em_living:get_room(Living) of
+-spec do_incarnate(em_character:pid_type(), #state{}) -> {ok, #state{}}.
+do_incarnate(Character, State) ->
+  Name = em_character:name(Character),
+  Room = case em_character:get_room(Character) of
            undefined ->
              {ok, StartRoom} = em_room_mgr:get_room("room1"), % TODO: let's not hard-code this ... put in config
-             em_living:set_room(Living, StartRoom),
+             em_character:set_room(Character, StartRoom),
              StartRoom;
            LoadedRoom ->
              LoadedRoom
          end,
-  em_room:enter(Room, Living),
-  em_room:print_except(yellowb, Room, Living, "~n~s arrives.~n", [Name]),
+  em_room:enter(Room, Character),
+  em_room:print_except(yellowb, Room, Character, "~n~s arrives.~n", [Name]),
   {ok, State}.
 
 %% @doc Log out a user. Do NOT actually touch the User process here, it might
@@ -208,5 +208,5 @@ do_print_except(Users, User, Format, Args) ->
 do_print_while(Users, Pred, Format, Args) ->
   Pids = [Pid || {_User, Pid} <- Users],
   ToPids = lists:filter(Pred, Pids),
-  PrintFun = fun(Pid) -> em_living:print(Pid, Format, Args) end,
+  PrintFun = fun(Pid) -> em_character:print(Pid, Format, Args) end,
   lists:map(PrintFun, ToPids).

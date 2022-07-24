@@ -85,7 +85,7 @@ handle_data(RawData, State) ->
       {ok, NewState#req{handlers = Rest}};
     {link, NewMFA, NewState} ->
       link(NewState#req.user),
-      link(NewState#req.living),
+      link(NewState#req.character),
       {ok, NewState#req{handlers = [NewMFA | Rest]}};
     {ok, NewMFA, NewState} ->
       {ok, NewState#req{handlers = [NewMFA | Rest]}};

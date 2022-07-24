@@ -37,8 +37,8 @@
 (defun user-file (user-name)
   (table-file "users" user-name))
 
-(defun living-file (user-name)
-  (table-file "livings" user-name))
+(defun character-file (user-name)
+  (table-file "characters" user-name))
 
 (defun object-file (user-name)
   (table-file "objects" user-name))

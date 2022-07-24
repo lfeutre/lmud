@@ -1,9 +1,9 @@
 % request.hrl
 -record(req, {conn::em_conn:conn_pid(),
-              user::pid(),
-              living::em_living:living_pid(),
-              queue=[]::[init | {input, string()}],
-              handlers=[]::[req_handler()]}).
+            user::pid(),
+            character::em_character:pid_type(),
+            queue=[]::[init | {input, string()}],
+            handlers=[]::[req_handler()]}).
 
 -define(req_done, {done, Req}).
 -define(req_next(Fun), {ok, {?MODULE, Fun, []}, Req}).
