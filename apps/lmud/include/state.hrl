@@ -6,6 +6,10 @@
          objects=[] :: [em_object:object()]
       }).
 
+-record(state_game, {
+         users=[] :: em_game:users()
+      }).
+
 -record(state_room, {
          name :: any(),
          title :: any(),
