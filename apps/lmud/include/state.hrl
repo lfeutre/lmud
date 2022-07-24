@@ -25,6 +25,12 @@
          room :: any()
       }).
 
+-record(state_uaer, {
+         name,
+         conn,
+         privileges=ordsets:new()
+      }).
+
 -record(object, {
          ids=[] :: em_object:id_list(),
          plurals=[] :: em_object:id_list(),
