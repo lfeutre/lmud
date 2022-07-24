@@ -18,6 +18,7 @@
 -define(TABLE_ID, ?MODULE).
 
 -include_lib("logjam/include/logjam.hrl").
+-include("apps/lmud/include/state.hrl").
 
 %% API
 
