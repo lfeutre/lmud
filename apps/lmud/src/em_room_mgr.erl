@@ -107,7 +107,7 @@ try_load_room(Name) ->
   load_room(Name).
 
 load_room(Name) ->
-  ?'log-info'("loading: ~s", ['lmud-filestore':'room-file'(Name)]),
+  ?'log-info'("loading room: ~s", ['lmud-filestore':'room-file'(Name)]),
   case 'lmud-filestore':read("rooms", Name) of
     {ok, Data} ->
       Room = make_room(Name, Data),

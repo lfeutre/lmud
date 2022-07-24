@@ -21,6 +21,13 @@
   ()
   "")
 
+(defun room (state)
+  (room 1 state))
+
 (defun room
-  ()
-  "")
+  ((version (match-state_room title t desc d exits es resets rs))
+   `(#(version ,version)
+     #(title ,t)
+     #(desc ,d)
+     #(exits ,es)
+     #(objects ,(em_object:get_templates rs)))))

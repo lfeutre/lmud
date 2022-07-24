@@ -31,7 +31,12 @@
 
 -type room_name() :: string().
 -type room_pid() :: pid().
--export_type([room_name/0, room_pid/0]).
+-type direction() :: string().
+-type destination() :: string().
+-type room_exit() :: {direction(), destination()}.
+-type exits() :: [room_exit()].
+
+-export_type([room_name/0, room_pid/0, direction/0, destination/0, room_exit/0, exits/0]).
 
 start_link(Name, Title, Desc) ->
   gen_server:start_link(?MODULE, [Name, Title, Desc], []).
@@ -243,45 +248,15 @@ list_people(People) ->
 
 %% Save
 
-do_save(State) ->
-  Data = save_room(State),
-  Name = State#state_room.name,
-  ?'log-info'("saving room: ~s~n~p",
-            ['lmud-filestore':'room-file'(Name), Data]),
-  case 'lmud-filestore':write("rooms", Name, Data) of
+do_save(#state_room{name=Name}=State) ->
+  Data1 = 'lmud-datamodel':room(State),
+  Data2 = 'lmud-filestore':serialise(Data1),
+  ?'log-info'("saving room: ~s~n",
+            ['lmud-filestore':'room-file'(Name)]),
+  ?'log-debug'("room data: ~n~p~n", Data2),
+  case 'lmud-filestore':write("rooms", Name, Data2) of
     ok ->
       {ok, State};
     {error, Reason} ->
       {error, file:format_error(Reason)}
   end.
-
-save_room(State) ->
-  lists:flatten([
-    "{version, 1}.\n",
-    "{title, \"", State#state_room.title, "\"}.\n",
-    "{desc, \"", State#state_room.desc, "\"}.\n",
-    save_desc(State),
-    "{exits, ", save_exits(State), "}.\n",
-    save_resets(State)
-  ]).
-
-save_desc(#state_room{desc=undefined}) ->
-  "";
-save_desc(#state_room{desc=Desc}) ->
-  ["{desc, \"", Desc, "\"}.\n"].
-
-save_exits(State) ->
-  ["[", save_exits(State#state_room.exits, []), "]"].
-
-save_exits([], Result) ->
-  string:join(Result, ",");
-save_exits([{Dir, Dest}|Exits], Result) ->
-  save_exits(Exits, Result ++ [["{\"",Dir,"\",\"",Dest,"\"}"]]).
-
-save_resets(State) ->
-  Resets = State#state_room.resets,
-  ["{objects, ", save_stringlist(Resets), "}.\n"].
-
-save_stringlist(List) ->
-  ["[", string:join([["\"",Str,"\""]||Str <- List], ", "), "]"].
-
