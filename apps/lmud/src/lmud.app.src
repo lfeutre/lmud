@@ -15,7 +15,9 @@
                   eunit,
                   color,
                   lutil,
-                  logjam
+                  logjam,
+                  mudstore,
+                  filestore
                  ]},
   {mod, {'lmud-app', []}},
   {env, []}

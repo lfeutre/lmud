@@ -214,40 +214,38 @@ do_load(#state_character{name=Name}=State) ->
   load_character(Name, State).
 
 -spec load_character(file_path(), #state_character{}) ->
-        {ok, #state_character{}} | {error, not_found}.
+          {ok, #state_character{}} | {error, not_found}.
 load_character(Name, State) ->
-  ?'log-info'("loading character: ~s",
-            ['lmud-filestore':'character-file'(Name)]),
-  case 'lmud-filestore':'read'("characters", Name) of
-      {ok, Data} ->
-      NewState = update_character(Data, State),
-      {ok, NewState};
-    {error, _Reason} ->
-      {error, not_found}
-  end.
+    ?'log-debug'("loading character: ~s", [Name]),
+    case mudstore:load("characters", Name) of
+        {ok, Data} ->
+            NewState = update_character(Data, State),
+            {ok, NewState};
+        {error, _Reason} ->
+            {error, not_found}
+    end.
 
 -spec update_character([{any(), any()}], #state_character{}) -> #state_character{}.
 update_character([], State) ->
-  State;
+    State;
 update_character([{desc, Desc}|Data], State) ->
-  update_character(Data, State#state_character{desc=Desc});
+    update_character(Data, State#state_character{desc=Desc});
 update_character([{room, Room}|Data], State) ->
-  {ok, RoomPid} = em_room_mgr:get_room(Room),
-  update_character(Data, State#state_character{room=RoomPid});
+    {ok, RoomPid} = em_room_mgr:get_room(Room),
+    update_character(Data, State#state_character{room=RoomPid});
 update_character([{objects, ObList}|Data], State) ->
-  update_character(Data, State#state_character{objects=em_object:load_obs(ObList)});
+    update_character(Data, State#state_character{objects=em_object:load_obs(ObList)});
 update_character([_Other|Data], State) ->
-  update_character(Data, State).
+    update_character(Data, State).
 
 -spec do_save(#state_character{}) -> {ok, #state_character{}} | {error, any()}.
 do_save(#state_character{name=Name}=State) ->
-  Data1 = 'lmud-datamodel':character(State),
-  ?'log-debug'("saving character: ~p", [Data1]),
-  Data2 = 'lmud-filestore':serialise(Data1),
-  ?'log-debug'("serialised character data: ~s", [Data2]),
-  case 'lmud-filestore':write("characters", Name, Data2) of
-    ok ->
-      {ok, State};
-    {error, Reason} ->
-      {error, file:format_error(Reason)}
-  end.
+    ?'log-debug'("saving character: ~s", [Name]),
+    Data = mudstore:serialise(State),
+    ?'log-debug'("serialised character data: ~n~s", [Data]),
+    case mudstore:dump("characters", Name, Data) of
+        ok ->
+            {ok, State};
+        {error, Reason} ->
+            {error, file:format_error(Reason)}
+    end.

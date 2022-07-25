@@ -63,6 +63,7 @@ get_user_names() ->
 %% @doc Log in a user to the game. Returns an error if the user is already
 %% logged in.
 login(User) ->
+  ?'log-debug'("logging in user ~p", [User]),
   gen_server:call(?SERVER, {login, User}).
 
 %% @doc Incarnate a character, putting them in the room where they last saved.
@@ -102,13 +103,14 @@ init([]) ->
 handle_call(get_users, _From, #state_game{users=Users}=State) ->
   {reply, Users, State};
 handle_call({login, User}, _From, State) ->
+  ?'log-debug'("logging in user ~p ...", [User]),
   {Result, NewState} = do_login(User, State),
   {reply, Result, NewState};
 handle_call({incarnate, Character}, _From, State) ->
   {Result, NewState} = do_incarnate(Character, State),
   {reply, Result, NewState};
 handle_call({logout, User}, _From, State) ->
-  ?'log-debug'("Logging out user ..."),
+  ?'log-debug'("logging out user ..."),
   {Result, NewState} = do_logout(User, State),
   {reply, Result, NewState};
 handle_call({lookup_user, Name}, _From, #state_game{users=Users}=State)
@@ -157,6 +159,8 @@ code_change(_OldVsn, State, _Extra) ->
 
 do_login(User, #state_game{users=Users}=State) ->
   Name = 'lmud-user':name(User),
+  ?'log-debug'("trying to log in user ~p (~p)", [Name, User]),
+  ?'log-debug'("users in game: ~p", [Users]),
   case lists:keyfind(Name, 1, Users) of
     {_Name, _User} ->
       {{error, user_exists}, State};
@@ -169,6 +173,7 @@ do_login(User, #state_game{users=Users}=State) ->
 -spec do_incarnate(em_character:pid_type(), #state_game{}) -> {ok, #state_game{}}.
 do_incarnate(Character, State) ->
   Name = em_character:name(Character),
+  ?'log-debug'("incarnating character ~p", [Character]),
   Room = case em_character:get_room(Character) of
            undefined ->
              {ok, StartRoom} = em_room_mgr:get_room("room1"), % TODO: let's not hard-code this ... put in config

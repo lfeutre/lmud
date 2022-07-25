@@ -2,8 +2,8 @@
   (export all))
 
 (defun all ()
-  `#m(backend (backend)
-     lookup (lookup)))
+  `#m(backend ,(backend)
+     lookup ,(lookup)))
 
 (defun backend ()
   (let ((`#(ok ,storage) (application:get_env 'mudstore 'backend)))

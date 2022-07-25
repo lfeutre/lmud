@@ -57,8 +57,8 @@ new(Ids, Adjs) ->
 
 -spec load(name()) -> {ok, object()} | {error, not_found}.
 load(Name) ->
-  ?'log-info'("loading object: ~s", ['lmud-filestore':'object-file'(Name)]),
-  case 'lmud-filestore':read("objects", Name) of
+  ?'log-info'("loading object: ~s", [Name]),
+  case mudstore:load("objects", Name) of
     {ok, Data} ->
       Ob = make_object(Data, #object{template=Name}),
       {ok, Ob};

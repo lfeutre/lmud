@@ -24,7 +24,7 @@
 
 (defun do-drop
   ((obj (= (match-req character character) req))
-    (let ((name (em_character:get_name character))
+    (let ((name (em_character:name character))
           (room (em_character:get_room character))
           (a-short (em_object:a_short obj))
           (the-short (em_object:the_short obj)))
@@ -57,7 +57,7 @@
       ('false (check-take id objs req)))))
 
 (defun do-take (obj character req)
-  (let ((name (em_character:get_name character))
+  (let ((name (em_character:name character))
         (room (em_character:get_room character))
         (the-short (em_object:the_short obj)))
     (lmud-io:print "You take ~s.\n" `(,the-short) req)
@@ -114,7 +114,7 @@
   ((_ '() req)
     `#(error not_found))
   ((id (cons character people) req)
-    (case (string:to_lower (em_character:get_name character))
+    (case (string:to_lower (em_character:name character))
       (name (when (== name id))
         (lmud-io:print
           (++
