@@ -8,6 +8,10 @@
 (defun description ()
   (proplists:get_value 'description (lmud-util:app-cfg)))
 
+(defun hash-algo ()
+  (let ((`#(ok ,algo) (application:get_env 'lmud 'hash-algo)))
+    algo))
+
 (defun port ()
   (let ((`#(ok ,port) (application:get_env 'lmud 'port)))
     port))
