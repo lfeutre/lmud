@@ -12,6 +12,7 @@
 -export([welcome/1, login/3]).
 
 -include("apps/lmud/include/request.hrl").
+-include("apps/lmud/include/state.hrl").
 
 %% Type Specifications
 -include("apps/lmud/include/types.hrl").
@@ -70,14 +71,13 @@ login({new_user_pw, Name}, Password, #req{conn=Conn}=Req) ->
 login({new_user_pw_confirm, Name, Password}, Password, #req{conn=Conn}=Req) ->
   em_conn:echo_on(Conn),
   CryptPw = base64:encode_to_string(em_util_sha2:hexdigest256(Password)),
-  'lmud-filestore':write("users", Name,
-    lists:flatten([
-    "{version, 1}.\n",
-    "{password, \"", CryptPw, "\"}.\n"])),
-  'lmud-filestore':write("characters", Name,
-    lists:flatten([
-    "{version, 1}.\n",
-    "{desc, \"", Name, " looks pretty ordinary.\"}.\n"])),
+  UserData1 = 'lmud-datamodel':user(#state_user{password=CryptPw}),
+  UserData2 = 'lmud-filestore':serialise(UserData1),
+  'lmud-filestore':write("users", Name, UserData2),
+  CharDesc = io_lib:format("~s looks fairly ordinary; maybe they should update their description?", [Name]),
+  CharData1 = 'lmud-datamodel':character(#state_character{desc=CharDesc}),
+  CharData2 = 'lmud-filestore':serialise(CharData1),
+  'lmud-filestore':write("characters", Name, CharData2),
   em_conn:print(Conn, ["\nWelcome, ", Name, "!\n\n"]),
   do_login(Name, Req);
 login({new_user_pw_confirm, Name, _Password}, _WrongPassword, #req{conn=Conn}=Req) ->

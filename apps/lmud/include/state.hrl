@@ -34,6 +34,7 @@
 -record(state_user, {
          name,
          conn,
+         password="" :: string(),
          privileges=ordsets:new()
       }).
 
