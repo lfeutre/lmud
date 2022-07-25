@@ -1,0 +1,15 @@
+{application, mudstore,
+ [
+  {description, "λMUD Store Server"},
+  {vsn, "0.1.0-dev"},
+  {registered, ['ms-sup']},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  color,
+                  lutil,
+                  logjam
+                 ]},
+  {mod, {'ms-app', []}},
+  {env, []}
+ ]}.
