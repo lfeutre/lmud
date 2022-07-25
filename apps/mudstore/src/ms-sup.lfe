@@ -36,7 +36,7 @@
 ;;; -----------------------
 
 (defun init (_args)
-  `#(ok #(,(sup-flags) (,(child 'ms-server 'start_link (ms-config:all))))))
+  `#(ok #(,(sup-flags) (,(child 'ms-server 'start_link (list (ms-config:all)))))))
 
 ;;; -----------------
 ;;; private functions

@@ -249,12 +249,10 @@ list_people(People) ->
 %% Save
 
 do_save(#state_room{name=Name}=State) ->
-  Data1 = 'lmud-datamodel':room(State),
-  Data2 = 'lmud-filestore':serialise(Data1),
-  ?'log-info'("saving room: ~s~n",
-            ['lmud-filestore':'room-file'(Name)]),
-  ?'log-debug'("room data: ~n~p~n", Data2),
-  case 'lmud-filestore':write("rooms", Name, Data2) of
+  Data = mudstore:serialise(State),
+  ?'log-info'("saving room: ~s~n", [Name]),
+  ?'log-debug'("room data: ~n~p~n", Data),
+  case mudstore:dump("rooms", Name, Data) of
     ok ->
       {ok, State};
     {error, Reason} ->

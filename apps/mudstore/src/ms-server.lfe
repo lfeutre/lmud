@@ -2,7 +2,7 @@
   (behaviour gen_server)
   ;; gen_server implementation
   (export
-   (start_link 0)
+   (start_link 1)
    (stop 0))
   ;; callback implementation
   (export
@@ -16,6 +16,8 @@
   (export
    (ping 0)
    (echo 1)))
+
+(include-lib "logjam/include/logjam.hrl")
 
 ;;; ----------------
 ;;; config functions
@@ -41,6 +43,11 @@
          (key (tuple (clj:get-in cfg '(backend name))
                      (clj:get-in cfg '(backend version)))) 
          (mod (proplists:get_value key lookup)))
+    (log-info "starting mudstore ...")
+    (log-debug "using config: ~p" (list cfg))
+    (log-debug "using lookup: ~p" (list lookup))
+    (log-debug "got lookup key: ~p" (list key))
+    (log-debug "storage module to call: ~p" (list mod))
     (gen_server:start_link `#(local ,(SERVER))
                            (MODULE)
                            (make-state config cfg

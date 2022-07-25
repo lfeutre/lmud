@@ -11,6 +11,8 @@
 %% API
 -export([welcome/1, login/3]).
 
+-include_lib("logjam/include/logjam.hrl").
+
 -include("apps/lmud/include/request.hrl").
 -include("apps/lmud/include/state.hrl").
 
@@ -34,11 +36,12 @@ welcome(Conn) ->
 %% Got a username, do something with it
 -spec login(any(), string(), req()) -> req_ok() | req_link().
 login(got_user, "", #req{conn=Conn}=Req) ->
+  ?'log-debug'("got invalid user name"),
   em_conn:print(Conn, "Invalid username.\n\n"),
   em_conn:print(Conn, "Login: "),
   ?req_next(login, [got_user]);
 login(got_user, UserName, #req{conn=Conn}=Req) ->
-  case 'lmud-filestore':read("users", UserName) of
+  case mudstore:load("users", UserName) of
     {ok, Settings} ->
       em_conn:print(Conn, "Password: "),
       em_conn:echo_off(Conn),
@@ -50,6 +53,7 @@ login(got_user, UserName, #req{conn=Conn}=Req) ->
   end;
 %% It's a new user, confirm if name is correct
 login({new_user_confirm, Name}, YesNo, #req{conn=Conn}=Req) ->
+  ?'log-debug'("creating new user for ~p ...", [Name]),
   case string:to_lower(YesNo) of
     [$y|_Rest] ->
       em_conn:print(Conn, "\nPick a password: "),
@@ -71,13 +75,11 @@ login({new_user_pw, Name}, Password, #req{conn=Conn}=Req) ->
 login({new_user_pw_confirm, Name, Password}, Password, #req{conn=Conn}=Req) ->
   em_conn:echo_on(Conn),
   CryptPw = base64:encode_to_string(em_util_sha2:hexdigest256(Password)),
-  UserData1 = 'lmud-datamodel':user(#state_user{password=CryptPw}),
-  UserData2 = 'lmud-filestore':serialise(UserData1),
-  'lmud-filestore':write("users", Name, UserData2),
-  CharDesc = io_lib:format("~s looks fairly ordinary; maybe they should update their description?", [Name]),
-  CharData1 = 'lmud-datamodel':character(#state_character{desc=CharDesc}),
-  CharData2 = 'lmud-filestore':serialise(CharData1),
-  'lmud-filestore':write("characters", Name, CharData2),
+  UserData = mudstore:serialise(#state_user{password=CryptPw}),
+  mudstore:dump("users", Name, UserData),
+  CharDesc = lists:flatten(io_lib:format("~s looks fairly ordinary; maybe they should update their description?", [Name])),
+  CharData = mudstore:serialise(#state_character{desc=CharDesc}),
+  mudstore:dump("characters", Name, CharData),
   em_conn:print(Conn, ["\nWelcome, ", Name, "!\n\n"]),
   do_login(Name, Req);
 login({new_user_pw_confirm, Name, _Password}, _WrongPassword, #req{conn=Conn}=Req) ->
@@ -86,6 +88,7 @@ login({new_user_pw_confirm, Name, _Password}, _WrongPassword, #req{conn=Conn}=Re
   ?req_next(login, [{new_user_pw, Name}]);
 %% Existing user; load file and compare passwords, log in if correct
 login({got_password, Settings, Name}, Password, #req{conn=Conn}=Req) ->
+  ?'log-debug'("attempting login for ~p ...", [Name]),
   em_conn:echo_on(Conn),
   CryptPw = base64:encode_to_string(em_util_sha2:hexdigest256(Password)),
   case lists:keyfind(password, 1, Settings) of
@@ -103,21 +106,26 @@ login({got_password, Settings, Name}, Password, #req{conn=Conn}=Req) ->
 
 -spec do_login(string(), req()) -> req_ok() | req_link().
 do_login(Name, #req{conn=Conn}=Req) ->
-  {ok, User} = 'lmud-user-sup':start_child(Name, Conn),
-  link(User),
-  ok = 'lmud-user':load(User),
-  case em_game:login(User) of
+  ?'log-debug'("attempting login for ~p ...", [Name]),
+  {ok, UserPid} = 'lmud-user-sup':start_child(Name, Conn),
+  ?'log-debug'("created supervised child: ~p ...", [UserPid]),
+  link(UserPid),
+  ?'log-debug'("loading user ~p (~p) ...", [Name, UserPid]),
+  ?'log-debug'("state before: ~p", ['lmud-user':state(UserPid)]),
+  ok = 'lmud-user':load(UserPid),
+  ?'log-debug'("state after: ~p", ['lmud-user':state(UserPid)]),
+  case em_game:login(UserPid) of
     ok ->
-      {ok, Character} = 'lmud-character-sup':start_child(Name, {User, Conn}),
+      {ok, Character} = 'lmud-character-sup':start_child(Name, {UserPid, Conn}),
       link(Character),
       ok = em_character:load(Character),
-      {ok, NewReq} = do_incarnate(Req#req{user=User, character=Character}),
+      {ok, NewReq} = do_incarnate(Req#req{user=UserPid, character=Character}),
       unlink(Character),
-      unlink(User),
+      unlink(UserPid),
       ?req_next_and_link(em_parser, parse, [], NewReq);
     {error, user_exists} ->
-      unlink(User),
-      exit(User, user_exists),
+      unlink(UserPid),
+      exit(UserPid, user_exists),
       em_conn:print(Conn, "User already logged in, try again.\n\n"),
       em_conn:print(Conn, "Login: "),
       ?req_next(login, [got_user])

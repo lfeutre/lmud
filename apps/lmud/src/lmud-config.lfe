@@ -1,8 +1,9 @@
 (defmodule lmud-config
   (export all))
 
-(defun version ()
-  (proplists:get_value 'vsn (lmud-util:app-cfg)))
+(defun acceptors ()
+  (let ((`#(ok ,acceptors) (application:get_env 'lmud 'acceptors)))
+    acceptors))
 
 (defun description ()
   (proplists:get_value 'description (lmud-util:app-cfg)))
@@ -11,9 +12,8 @@
   (let ((`#(ok ,port) (application:get_env 'lmud 'port)))
     port))
 
-(defun acceptors ()
-  (let ((`#(ok ,acceptors) (application:get_env 'lmud 'acceptors)))
-    acceptors))
+(defun version ()
+  (proplists:get_value 'vsn (lmud-util:app-cfg)))
 
 (defun wrap-width () 64)
 (defun divider-char () "-")

@@ -13,26 +13,30 @@
   (gen_server:start_link (MODULE) `(,name ,conn) '()))
 
 (defun init
-  (((list name conn))
-    `#(ok ,(make-state_user name name conn conn))))
+  ((`(,name ,conn))
+   (let ((initial-state (make-state_user name name conn conn)))
+     (log-debug "setting initial state: ~p" (list initial-state))
+     `#(ok ,initial-state))))
 
 (defun handle_call
   (((tuple 'has-privilege? priv) _from (= (match-state_user privileges privs) state))
-    `#(reply ,(ordsets:is_element priv privs) ,state))
+   `#(reply ,(ordsets:is_element priv privs) ,state))
   (('name _from (= (match-state_user name name) state))
-    `#(reply ,name ,state))
+   `#(reply ,name ,state))
   (((tuple 'print format) _from (= (match-state_user conn conn) state))
-    (em_conn:print conn format)
-    `#(reply ok ,state))
+   (em_conn:print conn format)
+   `#(reply ok ,state))
   (((tuple 'print format args) _from (= (match-state_user conn conn) state))
-    (em_conn:print conn format args)
-    `#(reply ok ,state))
+   (em_conn:print conn format args)
+   `#(reply ok ,state))
   (('load _from state)
-    (case (do-load state)
-      ((tuple 'ok new-state)
-        `#(reply ok ,new-state))
-      ((tuple 'error reason)
-        `#(reply #(error ,reason) ,state)))))
+   (case (do-load state)
+     ((tuple 'ok new-state)
+      `#(reply ok ,new-state))
+     ((tuple 'error reason)
+      `#(reply #(error ,reason) ,state))))
+  (('state _from state)
+   `#(reply ,state ,state)))
 
 (defun handle_cast (_msg state)
   `#(noreply ,state))
@@ -65,24 +69,17 @@
 (defun load (pid)
   (gen_server:call pid 'load))
 
+(defun state (pid)
+  (gen_server:call pid 'state))
+
 ;; Private functions
 
 (defun do-load
   (((= (match-state_user name name) state))
-    (load-user name state)))
-
-(defun load-user (name state)
-  (log-info "loading user: ~s" (list (lmud-filestore:user-file name)))
-  (case (lmud-filestore:read "users" name)
-    ((tuple 'ok data)
-      `#(ok ,(update-user data state)))
-    ((tuple 'error _reason)
-      `#(error not_found))))
-
-(defun update-user
-  (('() state)
-    state)
-  (((cons (tuple 'privileges priv-list) data) state)
-    (update-user data (make-state_user privileges (ordsets:from_list priv-list))))
-  (((cons _ data) state)
-    (update-user data state)))
+   (log-info "loading user: ~s" (list name))
+   (case (mudstore:load "users" name)
+     (`#(ok ,data)
+      `#(ok ,(update-state_user state privileges (proplists:get_value 'privileges data))))
+     (`#(error ,reason)
+      (log-debug "Couldn't load user from store: ~p" (list reason))
+      `#(error not_found)))))
