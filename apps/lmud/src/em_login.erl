@@ -74,7 +74,7 @@ login({new_user_pw, Name}, Password, #req{conn=Conn}=Req) ->
 %% Confirm the password
 login({new_user_pw_confirm, Name, Password}, Password, #req{conn=Conn}=Req) ->
   em_conn:echo_on(Conn),
-  CryptPw = base64:encode_to_string(em_util_sha2:hexdigest256(Password)),
+  CryptPw = base64:encode_to_string(hmac:hmac256(Password)),
   UserData = mudstore:serialise(#state_user{password=CryptPw}),
   mudstore:dump("users", Name, UserData),
   CharDesc = lists:flatten(io_lib:format("~s looks fairly ordinary; maybe they should update their description?", [Name])),
@@ -90,7 +90,7 @@ login({new_user_pw_confirm, Name, _Password}, _WrongPassword, #req{conn=Conn}=Re
 login({got_password, Settings, Name}, Password, #req{conn=Conn}=Req) ->
   ?'log-debug'("attempting login for ~p ...", [Name]),
   em_conn:echo_on(Conn),
-  CryptPw = base64:encode_to_string(em_util_sha2:hexdigest256(Password)),
+  CryptPw = base64:encode_to_string(hmac:hmac256(Password)),
   case lists:keyfind(password, 1, Settings) of
     false ->
       em_conn:print(Conn, "Error: Invalid user file.\n\n"),
