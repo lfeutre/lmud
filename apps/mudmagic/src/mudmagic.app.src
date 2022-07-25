@@ -1,4 +1,4 @@
-{application, mudstore,
+{application, mudmagic,
  [
   {description, "λMUD Magic"},
   {vsn, "0.1.0-dev"},
@@ -8,8 +8,7 @@
                   stdlib,
                   color,
                   lutil,
-                  logjam,
-                  filestore
+                  logjam
                  ]},
   {env, []}
  ]}.
