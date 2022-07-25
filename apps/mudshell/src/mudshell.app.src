@@ -1,0 +1,12 @@
+{application, mudshell, [
+  {description, "λMUD Shell"},
+  {vsn, "0.1.0-dev"},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  color,
+                  lutil,
+                  logjam
+                 ]},
+  {env, []}
+ ]}.
