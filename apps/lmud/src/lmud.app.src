@@ -5,9 +5,8 @@
   {registered, ['lmud-sup', em_game, 'lmud-room-sup', 'lmud-room-pool-sup',
                 em_room_mgr, 'lmud-character-sup', 'lmud-user-sup',
                 'lmud-req-sup',
-                'lmud-session-sup', 'lmud-cmd-game', 'lmud-cmd-interact',
-                'lmud-conn-sup', 'lmud-acceptor-sup', 'lmud-acceptor-pool',
-                em_listener]},
+                'lmud-cmd-game', 'lmud-cmd-interact'
+               ]},
   {applications, [
                   kernel,
                   stdlib,
@@ -16,6 +15,7 @@
                   color,
                   lutil,
                   logjam,
+                  mudnet,
                   mudmagic,
                   mudstore,
                   filestore
