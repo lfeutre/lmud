@@ -17,6 +17,7 @@
                   logjam,
                   mudnet,
                   mudmagic,
+                  mudshell,
                   mudstore,
                   filestore
                  ]},
