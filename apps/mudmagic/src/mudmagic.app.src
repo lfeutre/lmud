@@ -1,0 +1,15 @@
+{application, mudstore,
+ [
+  {description, "λMUD Magic"},
+  {vsn, "0.1.0-dev"},
+  {registered, ['lmud-spell-sup']},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  color,
+                  lutil,
+                  logjam,
+                  filestore
+                 ]},
+  {env, []}
+ ]}.
