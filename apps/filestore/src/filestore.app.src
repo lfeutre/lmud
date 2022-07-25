@@ -1,0 +1,12 @@
+{application, filestore, [
+    {description, "λMUD File Store Backend"},
+    {vsn, "0.1.0-dev"},
+    {applications, [
+                  kernel,
+                  stdlib,
+                  color,
+                  lutil,
+                  logjam
+                 ]},
+    {env, []}
+ ]}.
