@@ -6,7 +6,7 @@
 (defun inv
   ((_ (= (match-req character character) req))
    (do-inv
-    (em_character:get_objects character)
+    (lmud_character:get_objects character)
     req)
    `#(ok ,req)))
 
@@ -21,11 +21,11 @@
   (('() result)
    result)
   (((cons obj objs) result)
-   (let ((line `(" " ,(em_object:a_short obj) "\n")))
+   (let ((line `(" " ,(lmud_object:a_short obj) "\n")))
      (desc-inv objs `(,result ,line)))))
 
 (defun who (_ req)
-  (lmud-io:print (list "Users:\n" (em_game:get_user_names)) req)
+  (lmud-io:print (list "Users:\n" (lmud_game:get_user_names)) req)
   `#(ok ,req))
 
 (defun news (_ req)
@@ -37,7 +37,7 @@
 
 (defun setdesc
   ((args (= (match-req character character) req))
-   (em_character:set_desc
+   (lmud_character:set_desc
     character
     (io_lib:format "~p" (list (string:join args " "))))
    `#(ok ,req)))

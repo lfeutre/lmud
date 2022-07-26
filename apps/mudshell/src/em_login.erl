@@ -113,11 +113,11 @@ do_login(Name, #req{conn=Conn}=Req) ->
   ?'log-debug'("state before: ~p", ['lmud-user':state(UserPid)]),
   ok = 'lmud-user':load(UserPid),
   ?'log-debug'("state after: ~p", ['lmud-user':state(UserPid)]),
-  case em_game:login(UserPid) of
+  case lmud_game:login(UserPid) of
     ok ->
       {ok, Character} = 'lmud-character-sup':start_child(Name, {UserPid, Conn}),
       link(Character),
-      ok = em_character:load(Character),
+      ok = lmud_character:load(Character),
       {ok, NewReq} = do_incarnate(Req#req{user=UserPid, character=Character}),
       unlink(Character),
       unlink(UserPid),
@@ -132,7 +132,7 @@ do_login(Name, #req{conn=Conn}=Req) ->
 
 -spec do_incarnate(req()) -> {ok, req()}.
 do_incarnate(#req{conn=Conn, character=Character}=Req) ->
-  ok = em_game:incarnate(Character),
+  ok = lmud_game:incarnate(Character),
   mn_conn:print(Conn, 'lmud-config':'post-login-msg'()),
   'lmud-cmd-interact':glance([], Req),
   mn_conn:print(Conn, "\n> "),

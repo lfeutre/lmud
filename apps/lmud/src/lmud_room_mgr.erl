@@ -5,7 +5,7 @@
 %%% Handle room lookups, loading/instantiation, deletion etc.
 %%% @end
 %%% =========================================================================
--module(em_room_mgr).
+-module(lmud_room_mgr).
 
 -behaviour(gen_server).
 
@@ -25,7 +25,7 @@
 start_link() ->
   gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
 
-% Concurrent lookup if room is loaded; call to em_room_mgr otherwise.
+% Concurrent lookup if room is loaded; call to lmud_room_mgr otherwise.
 get_room(Name) ->
   case ets:lookup(?TABLE_ID, Name) of
     [{Name, Room}] ->
@@ -98,8 +98,8 @@ refresh([]) ->
   ok;
 refresh([{_, undefined, _, _}|Children]) ->
   refresh(Children);
-refresh([{_, Room, worker, [em_room]}|Children]) ->
-  Name = em_room:get_name(Room),
+refresh([{_, Room, worker, [lmud_room]}|Children]) ->
+  Name = lmud_room:get_name(Room),
   ets:insert(?TABLE_ID, {Name, Room}),
   refresh(Children).
 
@@ -126,9 +126,9 @@ make_room(Name, Data) ->
            false -> undefined
          end,
   Resets = proplists:get_value(objects, Data, []),
-  Obs = em_object:load_obs(Resets),
+  Obs = lmud_object:load_obs(Resets),
   {ok, Room} = 'lmud-room-pool-sup':start_child(Name, Title, Desc),
-  em_room:set_desc(Room, Desc),
+  lmud_room:set_desc(Room, Desc),
   add_exits(Room, Exits),
   add_objects(Room, Obs),
   add_resets(Room, Resets),
@@ -137,17 +137,17 @@ make_room(Name, Data) ->
 add_objects(Room, []) ->
   Room;
 add_objects(Room, [Ob|Obs]) ->
-  em_room:add_object(Room, Ob),
+  lmud_room:add_object(Room, Ob),
   add_objects(Room, Obs).
 
 add_exits(Room, []) ->
   Room;
 add_exits(Room, [{Dir, Dest}|Exits]) ->
-  em_room:add_exit(Room, Dir, Dest),
+  lmud_room:add_exit(Room, Dir, Dest),
   add_exits(Room, Exits).
 
 add_resets(Room, []) ->
   Room;
 add_resets(Room, [Reset|Resets]) ->
-  em_room:add_reset(Room, Reset),
+  lmud_room:add_reset(Room, Reset),
   add_resets(Room, Resets).

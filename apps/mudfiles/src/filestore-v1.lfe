@@ -25,8 +25,8 @@
   (((match-state_character desc d room r objects os))
    `(#(version ,(version))
      #(desc ,d)
-     #(room ,(em_room:get_name r))
-     #(objects ,(em_object:get_templates os)))))
+     #(room ,(lmud_room:get_name r))
+     #(objects ,(lmud_object:get_templates os)))))
 
 (defun object
   ()
@@ -41,7 +41,7 @@
      #(title ,t)
      #(desc ,d)
      #(exits ,es)
-     #(objects ,(em_object:get_templates rs)))))
+     #(objects ,(lmud_object:get_templates rs)))))
 
 (defun user ()
   (user (make-state_user)))
@@ -88,4 +88,4 @@
 
 (defun table-file (table-name row-name)
   (filename:join
-    (list (em_game:data_dir) table-name (++ row-name (file-extension)))))
+    (list (lmud_game:data_dir) table-name (++ row-name (file-extension)))))

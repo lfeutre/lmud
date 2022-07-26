@@ -12,7 +12,7 @@
 (defun init
   (('())
      `#(ok #(#(one_for_one 5 10)
-              (,(lmud-util:make-child 'em_game 'worker)
+              (,(lmud-util:make-child 'lmud_game 'worker)
                ,(lmud-util:make-child 'lmud-spell-sup 'supervisor)
                ,(lmud-util:make-child 'lmud-room-sup 'supervisor)
                ,(lmud-util:make-child 'lmud-character-sup 'supervisor)
