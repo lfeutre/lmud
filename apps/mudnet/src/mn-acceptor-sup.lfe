@@ -2,7 +2,7 @@
 ;;;; in one_for_all supervision. This prevents issues if the pool dies; the
 ;;;; listener will also be restarted, and subsequently start up the acceptors
 ;;;; in the pool again.
-(defmodule lmud-acceptor-sup
+(defmodule mn-acceptor-sup
   (behaviour supervisor)
   (export all))
 
@@ -14,11 +14,11 @@
 (defun start_listener (port acceptors)
   (supervisor:start_child
     (server)
-    (lmud-util:supervisor-child 'em_listener `(,port ,acceptors) 'worker)))
+    (lmud-util:supervisor-child 'mn_listener `(,port ,acceptors) 'worker)))
 
 (defun init
   (('())
      `#(ok #(#(one_for_all 5 10)
               (,(lmud-util:supervisor-child
-                  'lmud-acceptor-pool
+                  'mn-acceptor-pool
                   'supervisor))))))

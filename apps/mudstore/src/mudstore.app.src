@@ -9,7 +9,7 @@
                   color,
                   lutil,
                   logjam,
-                  filestore
+                  mudfiles
                  ]},
   {mod, {'ms-app', []}},
   {env, []}

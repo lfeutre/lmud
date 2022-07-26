@@ -2,11 +2,11 @@
 %%% @author Johan Warlander <johan@snowflake.nu>
 %%% @copyright 2010-2011 Johan Warlander
 %%% @doc Manage new TCP connections.
-%%% This gen_server will launch a new em_session server for the new
+%%% This gen_server will launch a new mn_session server for the new
 %%% connection, then handle any input/output on the socket.
 %%% @end
 %%% =========================================================================
--module(em_conn).
+-module(mn_conn).
 
 -behaviour(gen_server).
 
@@ -53,10 +53,10 @@ init([Socket]) ->
   {ok, #state_conn{socket = Socket}, 0}.
 
 handle_call(echo_off, _From, State) ->
-  {ok, TelSess} = em_telnet:will(?ECHO, State#state_conn.telnet_session),
+  {ok, TelSess} = mn_telnet:will(?ECHO, State#state_conn.telnet_session),
   {reply, ok, State#state_conn{telnet_session=TelSess}};
 handle_call(echo_on, _From, State) ->
-  {ok, TelSess} = em_telnet:wont(?ECHO, State#state_conn.telnet_session),
+  {ok, TelSess} = mn_telnet:wont(?ECHO, State#state_conn.telnet_session),
   {reply, ok, State#state_conn{telnet_session=TelSess}};
 handle_call({print, Format}, _From, #state_conn{socket=Socket}=State) ->
   write(Socket, Format, []),
@@ -69,16 +69,16 @@ handle_cast(_Msg, State) ->
   {noreply, State}.
 
 handle_info({tcp, Socket, RawData}, State) ->
-  {ok, NewSession} = em_telnet:parse(State#state_conn.telnet_session, RawData),
+  {ok, NewSession} = mn_telnet:parse(State#state_conn.telnet_session, RawData),
   inet:setopts(Socket, [{active, once}]),
   {noreply, State#state_conn{telnet_session=NewSession}};
 handle_info({tcp_closed, _Socket}, State) ->
   {stop, tcp_closed, State};
 handle_info(timeout, #state_conn{socket=Socket}=State) ->
-  {ok, Session} = 'lmud-session-sup':start_child(self()),
+  {ok, Session} = 'mn-session-sup':start_child(self()),
   link(Session),
-  PrintFun = fun(Line) -> em_session:receive_line(Session, Line) end,
-  TelnetSession = em_telnet:new(Socket, PrintFun),
+  PrintFun = fun(Line) -> mn_session:receive_line(Session, Line) end,
+  TelnetSession = mn_telnet:new(Socket, PrintFun),
   {noreply, State#state_conn{socket=Socket, session=Session,
                         telnet_session=TelnetSession}}.
 

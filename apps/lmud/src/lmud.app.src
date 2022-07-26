@@ -15,11 +15,11 @@
                   color,
                   lutil,
                   logjam,
-                  mudnet,
+                  mudfiles,
                   mudmagic,
+                  mudnet,
                   mudshell,
-                  mudstore,
-                  filestore
+                  mudstore
                  ]},
   {mod, {'lmud-app', []}},
   {env, []}

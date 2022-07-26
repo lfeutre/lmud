@@ -10,7 +10,7 @@
 (defun start (start-type start-args)
   (case (lmud-sup:start_link)
     ((tuple 'ok pid)
-       (lmud-acceptor-sup:start_listener
+       (mn-acceptor-sup:start_listener
         (lmud-config:port)
         (lmud-config:acceptors))
        `#(ok ,pid))

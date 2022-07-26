@@ -4,7 +4,7 @@
 %%% @doc Handle incoming data and option negotiation in a telnet session.
 %%% @end
 %%% =========================================================================
--module(em_telnet).
+-module(mn_telnet).
 
 %% API
 -export([new/2, parse/2, will/2, wont/2, do/2, dont/2]).

@@ -143,10 +143,10 @@ handle_call({set_desc, Desc}, _From, State) ->
 handle_call(desc, _From, #state_character{desc=Desc}=State) ->
   {reply, Desc, State};
 handle_call({print, Format}, _From, #state_character{client={_,Out}}=State) ->
-  em_conn:print(Out, Format),
+  mn_conn:print(Out, Format),
   {reply, ok, State};
 handle_call({print, Format, Args}, _From, #state_character{client={_,Out}}=State) ->
-  em_conn:print(Out, Format, Args),
+  mn_conn:print(Out, Format, Args),
   {reply, ok, State};
 handle_call(load, _From, State) ->
   case do_load(State) of
@@ -165,7 +165,7 @@ handle_call(save, _From, State) ->
   end.
 
 handle_cast(stop, #state_character{client={_,Out}}=State) ->
-  em_conn:print(Out, "stopping character ...~n"),
+  mn_conn:print(Out, "stopping character ...~n"),
   {stop, normal, ok, State}.
 
 handle_info(_Info, State) ->

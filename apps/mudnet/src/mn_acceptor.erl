@@ -3,12 +3,12 @@
 %%% @copyright 2010-2011 Johan Warlander
 %%% @doc Accept new TCP connections.
 %%% This gen_server will wait in a gen_tcp:accept() call until someone makes
-%%% a connection, then it will immediately launch a new em_conn server and
+%%% a connection, then it will immediately launch a new mn_conn server and
 %%% hand over the new socket for further processing, before it returns with
 %%% a timeout so that it'll go back into accept mode again.
 %%% @end
 %%% =========================================================================
--module(em_acceptor).
+-module(mn_acceptor).
 
 -behaviour(gen_server).
 
@@ -38,7 +38,7 @@ start_link(LSock) ->
 %% ==========================================================================
 
 %% @doc Set up local state, then return with a timeout. We use a 0 timeout to
-%% allow the lmud-acceptor-pool to go on with its business, while we start an
+%% allow the mn-acceptor-pool to go on with its business, while we start an
 %% accept call to wait for a connection.
 -spec init([socket()]) -> {ok, #state_acceptor{}, integer()}.
 init([LSock]) ->
@@ -61,7 +61,7 @@ handle_cast(_Msg, State) ->
 handle_info(timeout, #state_acceptor{lsock=LSock}=State) ->
   case gen_tcp:accept(LSock) of
     {ok, Socket} ->
-      {ok, Conn} = 'lmud-conn-sup':start_child(Socket),
+      {ok, Conn} = 'mn-conn-sup':start_child(Socket),
       case gen_tcp:controlling_process(Socket, Conn) of
         ok ->
           ok;
