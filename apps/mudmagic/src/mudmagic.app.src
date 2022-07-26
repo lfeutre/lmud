@@ -2,7 +2,7 @@
  [
   {description, "λMUD Magic"},
   {vsn, "0.1.0-dev"},
-  {registered, ['lmud-spell-sup']},
+  {registered, ['mm-spell-sup']},
   {applications, [
                   kernel,
                   stdlib,

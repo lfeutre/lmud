@@ -1,6 +1,6 @@
 ;;;; Spell supervisor, used to initialize new spells given a callback
 ;;;; module and args.
-(defmodule lmud-spell-sup
+(defmodule mm-spell-sup
   (behaviour supervisor)
   (export all))
 
@@ -17,9 +17,9 @@
 (defun init
   (('())
      `#(ok #(#(simple_one_for_one 0 1)
-              (#(em_spell
-               #(em_spell start_link ())
+              (#(mm_spell
+               #(mm_spell start_link ())
                temporary
                brutal_kill
                worker
-               (em_spell)))))))
+               (mm_spell)))))))
