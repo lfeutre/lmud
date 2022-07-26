@@ -5,13 +5,13 @@
 
 (defun cast
   ((`("ward") (= (match-req character character) req))
-    (let ((room (em_character:get_room character))
-          (name (em_character:name character)))
-      (em_character:print
+    (let ((room (lmud_character:get_room character))
+          (name (lmud_character:name character)))
+      (lmud_character:print
         character
         (++ "As you quietly vocalize your chosen mnemonics, "
             "the spell takes shape.\n"))
-      (em_room:print_except
+      (lmud_room:print_except
         room character
         (++ "~s starts muttering something incomprehensible. "
             "It's probably a spell.\n")

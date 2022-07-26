@@ -6,7 +6,7 @@
 %%% game - plain items, weapons, NPCs, PCs etc.
 %%% @end
 %%% =========================================================================
--module(em_object).
+-module(lmud_object).
 
 -export([new/1, new/2, load/1, load_obs/1,
          has_id/2, has_plural_id/2,

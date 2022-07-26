@@ -1,7 +1,7 @@
 % request.hrl
 -record(req, {conn::mn_conn:conn_pid(),
             user::pid(),
-            character::em_character:pid_type(),
+            character::lmud_character:pid_type(),
             queue=[]::[init | {input, string()}],
             handlers=[]::[req_handler()]}).
 

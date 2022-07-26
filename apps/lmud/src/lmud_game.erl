@@ -6,7 +6,7 @@
 %%% logged-on users.
 %%% @end
 %%% =========================================================================
--module(em_game).
+-module(lmud_game).
 
 -behaviour(gen_server).
 
@@ -67,7 +67,7 @@ login(User) ->
   gen_server:call(?SERVER, {login, User}).
 
 %% @doc Incarnate a character, putting them in the room where they last saved.
--spec incarnate(em_character:pid_type()) -> ok.
+-spec incarnate(lmud_character:pid_type()) -> ok.
 incarnate(Character) ->
   gen_server:call(?SERVER, {incarnate, Character}).
 
@@ -170,20 +170,20 @@ do_login(User, #state_game{users=Users}=State) ->
       {ok, State#state_game{users=[{Name, User}|Users]}}
   end.
 
--spec do_incarnate(em_character:pid_type(), #state_game{}) -> {ok, #state_game{}}.
+-spec do_incarnate(lmud_character:pid_type(), #state_game{}) -> {ok, #state_game{}}.
 do_incarnate(Character, State) ->
-  Name = em_character:name(Character),
+  Name = lmud_character:name(Character),
   ?'log-debug'("incarnating character ~p", [Character]),
-  Room = case em_character:get_room(Character) of
+  Room = case lmud_character:get_room(Character) of
            undefined ->
-             {ok, StartRoom} = em_room_mgr:get_room("room1"), % TODO: let's not hard-code this ... put in config
-             em_character:set_room(Character, StartRoom),
+             {ok, StartRoom} = lmud_room_mgr:get_room("room1"), % TODO: let's not hard-code this ... put in config
+             lmud_character:set_room(Character, StartRoom),
              StartRoom;
            LoadedRoom ->
              LoadedRoom
          end,
-  em_room:enter(Room, Character),
-  em_room:print_except(yellowb, Room, Character, "~n~s arrives.~n", [Name]),
+  lmud_room:enter(Room, Character),
+  lmud_room:print_except(yellowb, Room, Character, "~n~s arrives.~n", [Name]),
   {ok, State}.
 
 %% @doc Log out a user. Do NOT actually touch the User process here, it might
@@ -214,5 +214,5 @@ do_print_except(Users, User, Format, Args) ->
 do_print_while(Users, Pred, Format, Args) ->
   Pids = [Pid || {_User, Pid} <- Users],
   ToPids = lists:filter(Pred, Pids),
-  PrintFun = fun(Pid) -> em_character:print(Pid, Format, Args) end,
+  PrintFun = fun(Pid) -> lmud_character:print(Pid, Format, Args) end,
   lists:map(PrintFun, ToPids).

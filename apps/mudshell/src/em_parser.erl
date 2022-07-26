@@ -91,11 +91,11 @@ parse_cmd(Cmd, PassedArgs, Line, Req) ->
 cmd_open([InputDir, ToName|_Rest], #req{character=Character}=Req) ->
   {ok, Dir} = check_dir(InputDir),
   ok = 'lmud-perms':verify(aesir, Req),
-  case em_room_mgr:get_room(ToName) of
+  case lmud_room_mgr:get_room(ToName) of
     {ok, _ToRoom} ->
-      FromRoom = em_character:get_room(Character),
-      em_room:add_exit(FromRoom, Dir, ToName),
-      ok = em_room:save(FromRoom);
+      FromRoom = lmud_character:get_room(Character),
+      lmud_room:add_exit(FromRoom, Dir, ToName),
+      ok = lmud_room:save(FromRoom);
     {error, not_found} ->
       'lmud-io':print("No such room exists!\n", Req)
   end,
@@ -112,14 +112,14 @@ cmd_dig([InputDir, ToName|_Rest], #req{character=Character}=Req) ->
   ok = 'lmud-perms':verify(aesir, Req),
   case check_dir(InputDir) of
     {ok, Dir} ->
-      case em_room_mgr:new_room(ToName) of
+      case lmud_room_mgr:new_room(ToName) of
         {ok, ToRoom} ->
-          FromRoom = em_character:get_room(Character),
-          FromName = em_room:get_name(FromRoom),
-          em_room:add_exit(FromRoom, Dir, ToName),
-          ok = em_room:save(FromRoom),
-          em_room:add_exit(ToRoom, reverse_dir(Dir), FromName),
-          ok = em_room:save(ToRoom);
+          FromRoom = lmud_character:get_room(Character),
+          FromName = lmud_room:get_name(FromRoom),
+          lmud_room:add_exit(FromRoom, Dir, ToName),
+          ok = lmud_room:save(FromRoom),
+          lmud_room:add_exit(ToRoom, reverse_dir(Dir), FromName),
+          ok = lmud_room:save(ToRoom);
         {error, room_exists} ->
           'lmud-io':print("That room already exists!\n", Req)
       end;
@@ -138,24 +138,24 @@ cmd_dig(_Args, Req) ->
 -spec cmd_redit([string()], req()) -> cmd_ok().
 cmd_redit(["title", What|Rest], #req{character=Character}=Req) ->
   ok = 'lmud-perms':verify(aesir, Req),
-  Room = em_character:get_room(Character),
+  Room = lmud_character:get_room(Character),
   Title = string:join([What|Rest], " "),
-  em_room:set_title(Room, Title),
-  ok = em_room:save(Room),
+  lmud_room:set_title(Room, Title),
+  ok = lmud_room:save(Room),
   {ok, Req};
 cmd_redit(["brief", What|Rest], #req{character=Character}=Req) ->
   ok = 'lmud-perms':verify(aesir, Req),
-  Room = em_character:get_room(Character),
+  Room = lmud_character:get_room(Character),
   Brief = string:join([What|Rest], " "),
-  em_room:set_brief(Room, Brief),
-  ok = em_room:save(Room),
+  lmud_room:set_brief(Room, Brief),
+  ok = lmud_room:save(Room),
   {ok, Req};
 cmd_redit(["desc", What|Rest], #req{character=Character}=Req) ->
   ok = 'lmud-perms':verify(aesir, Req),
-  Room = em_character:get_room(Character),
+  Room = lmud_character:get_room(Character),
   Desc = string:join([What|Rest], " "),
-  em_room:set_desc(Room, Desc),
-  ok = em_room:save(Room),
+  lmud_room:set_desc(Room, Desc),
+  ok = lmud_room:save(Room),
   {ok, Req};
 cmd_redit(_Args, Req) ->
   ok = 'lmud-perms':verify(aesir, Req),

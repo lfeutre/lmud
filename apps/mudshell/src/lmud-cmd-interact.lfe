@@ -10,7 +10,7 @@
   (((cons id _) (= (match-req character character) req))
     (try-drop
       id
-      (em_character:get_objects character)
+      (lmud_character:get_objects character)
       req)
     `#(ok ,req)))
 
@@ -18,21 +18,21 @@
   ((_ '() req)
     (lmud-io:print "You don't have anything like that.\n" req))
   ((id (cons obj objs) req)
-    (case (em_object:has_id obj id)
+    (case (lmud_object:has_id obj id)
       ('true (do-drop obj req))
       ('false (try-drop id objs req)))))
 
 (defun do-drop
   ((obj (= (match-req character character) req))
-    (let ((name (em_character:name character))
-          (room (em_character:get_room character))
-          (a-short (em_object:a_short obj))
-          (the-short (em_object:the_short obj)))
+    (let ((name (lmud_character:name character))
+          (room (lmud_character:get_room character))
+          (a-short (lmud_object:a_short obj))
+          (the-short (lmud_object:the_short obj)))
       (try
-        (progn (em_character:move_object character obj `#(to_room ,room))
+        (progn (lmud_character:move_object character obj `#(to_room ,room))
           (lmud-io:print "You drop ~s.\n" `(,the-short) req)
-          (em_room:print_except room character "~s drops ~s.~n" `(,name ,a-short)))
-        (catch ((tuple 'throw (tuple 'em_character 'not_found) _)
+          (lmud_room:print_except room character "~s drops ~s.~n" `(,name ,a-short)))
+        (catch ((tuple 'throw (tuple 'lmud_character 'not_found) _)
           (lmud-io:print "You don't have anything like that.\n" req)))))))
 
 (defun take
@@ -40,11 +40,11 @@
     (lmud-io:print "Take what?\n" req)
     `#(ok ,req))
   (((cons id _) (= (match-req character character) req))
-    (let* ((room (em_character:get_room character))
+    (let* ((room (lmud_character:get_room character))
            (objs (lists:filter
                    (lambda (obj)
-                     (not (em_object:is_attached obj)))
-                   (em_room:get_objects room))))
+                     (not (lmud_object:is_attached obj)))
+                   (lmud_room:get_objects room))))
       (check-take id objs req)
       `#(ok ,req))))
 
@@ -52,37 +52,37 @@
   ((_ '() req)
     (lmud-io:print "There's no such thing here.\n" req))
   ((id (cons obj objs) (= (match-req character character) req))
-    (case (em_object:has_id obj id)
+    (case (lmud_object:has_id obj id)
       ('true (do-take obj character req))
       ('false (check-take id objs req)))))
 
 (defun do-take (obj character req)
-  (let ((name (em_character:name character))
-        (room (em_character:get_room character))
-        (the-short (em_object:the_short obj)))
+  (let ((name (lmud_character:name character))
+        (room (lmud_character:get_room character))
+        (the-short (lmud_object:the_short obj)))
     (lmud-io:print "You take ~s.\n" `(,the-short) req)
-    (em_room:remove_object room obj)
-    (em_room:print_except room character "~s takes ~s.~n" `(,name ,the-short))
-    (em_character:add_object character obj)))
+    (lmud_room:remove_object room obj)
+    (lmud_room:print_except room character "~s takes ~s.~n" `(,name ,the-short))
+    (lmud_character:add_object character obj)))
 
 (defun glance
   ((_ (= (match-req character character) req))
-    (let* ((room (em_character:get_room character))
-           (desc (em_room:describe_except room character)))
+    (let* ((room (lmud_character:get_room character))
+           (desc (lmud_room:describe_except room character)))
       (lmud-io:print desc req)
       `#(ok ,req))))
 
 (defun look
   (('() (= (match-req character character) req))
-    (let* ((room (em_character:get_room character))
-           (msg (em_room:looking room character)))
+    (let* ((room (lmud_character:get_room character))
+           (msg (lmud_room:looking room character)))
       (lmud-io:print msg req)
       `#(ok ,req)))
   (((cons raw-id _) (= (match-req character character) req))
-    (let* ((room (em_character:get_room character))
-           (objs (em_room:get_objects room))
+    (let* ((room (lmud_character:get_room character))
+           (objs (lmud_room:get_objects room))
            (id (string:to_lower raw-id))
-           (people (lists:delete character (em_room:get_people room))))
+           (people (lists:delete character (lmud_room:get_people room))))
       (case (do-look-obj id objs req)
         ('ok
           `#(ok ,req))
@@ -98,12 +98,12 @@
   ((_ '() req)
     `#(error not_found))
   ((id (cons obj objs) req)
-    (case (em_object:has_id obj id)
+    (case (lmud_object:has_id obj id)
       ('true
         (lmud-io:print
           "~s\n"
           (list (em_text:wrapline
-                  (em_object:desc obj)
+                  (lmud_object:desc obj)
                   (lmud-config:wrap-width)))
           req)
           'ok)
@@ -114,11 +114,11 @@
   ((_ '() req)
     `#(error not_found))
   ((id (cons character people) req)
-    (case (string:to_lower (em_character:name character))
+    (case (string:to_lower (lmud_character:name character))
       (name (when (== name id))
         (lmud-io:print
           (++
-            (em_text:wrapline (em_character:desc character)
+            (em_text:wrapline (lmud_character:desc character)
               (lmud-config:wrap-width))
             "\n")
           req))

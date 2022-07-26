@@ -27,7 +27,7 @@ handle_cast({handle_event, Event}, State) ->
   do_handle_event(Event, State).
 
 handle_info(timeout, State) ->
-  em_room:add_event_listener(State#state_speller.room, {em_spell_ward, [self()]}),
+  lmud_room:add_event_listener(State#state_speller.room, {em_spell_ward, [self()]}),
   {noreply, State}.
 
 terminate(_Reason, _State) ->
@@ -42,7 +42,7 @@ handle_event([Pid, Event]) ->
 
 do_handle_event({enter_room, _Liv}, State) ->
   Caster = State#state_speller.caster,
-  em_character:print(Caster, "A tingling sensation tells you that a ward has "
+  lmud_character:print(Caster, "A tingling sensation tells you that a ward has "
                           "been tripped.\n"),
   {stop, normal, State};
 do_handle_event(_Event, State) ->

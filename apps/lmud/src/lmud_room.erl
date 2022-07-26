@@ -6,7 +6,7 @@
 %%% the room etc.
 %%% @end
 %%% =========================================================================
--module(em_room).
+-module(lmud_room).
 
 -behaviour(gen_server).
 -behaviour('lmud-event-source').
@@ -148,7 +148,7 @@ handle_call({leave, Who}, _From, #state_room{people=People} = State) ->
   {reply, ok, State#state_room{people=People -- [Who]}};
 handle_call({print_while, Pred, Format, Args}, _From, State) ->
   People = lists:filter(Pred, State#state_room.people),
-  PrintFun = fun(Liv) -> em_character:print(Liv, Format, Args) end,
+  PrintFun = fun(Liv) -> lmud_character:print(Liv, Format, Args) end,
   lists:map(PrintFun, People),
   {reply, ok, State};
 handle_call({set_title, Title}, _From, State) ->
@@ -234,16 +234,16 @@ list_objects(Objects) ->
 list_objects([], ObDesc) ->
   ObDesc;
 list_objects([Ob|Obs], ObDesc) ->
-  Desc = case em_object:is_attached(Ob) of
+  Desc = case lmud_object:is_attached(Ob) of
            true -> ObDesc;
-           false -> ObDesc ++ em_object:show_in_room(Ob)
+           false -> ObDesc ++ lmud_object:show_in_room(Ob)
          end,
   list_objects(Obs, Desc).
 
 list_people([]) ->
   "";
 list_people(People) ->
-  Names = lists:map(fun em_character:name/1, People),
+  Names = lists:map(fun lmud_character:name/1, People),
   ["\n", [[N, " is here.\n"] || N <- Names]].
 
 %% Save

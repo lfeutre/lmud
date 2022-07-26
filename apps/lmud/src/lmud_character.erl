@@ -6,7 +6,7 @@
 %%% and acting upon the world as directed by the user's commands.
 %%% @end
 %%% =========================================================================
--module(em_character).
+-module(lmud_character).
 
 -behaviour(gen_server).
 
@@ -52,28 +52,28 @@ start(Name, Client) ->
 name(Pid) ->
   gen_server:call(Pid, name).
 
--spec get_room(pid_type()) -> em_room:room_pid()|undefined.
+-spec get_room(pid_type()) -> lmud_room:room_pid()|undefined.
 get_room(Pid) ->
   gen_server:call(Pid, get_room).
 
--spec add_object(pid_type(), em_object:object()) -> ok.
+-spec add_object(pid_type(), lmud_object:object()) -> ok.
 add_object(Pid, Ob) ->
   gen_server:call(Pid, {add_object, Ob}).
 
--spec move_object(pid_type(), em_object:object(),
-                  {to_room, em_room:room_pid()}) -> ok.
+-spec move_object(pid_type(), lmud_object:object(),
+                  {to_room, lmud_room:room_pid()}) -> ok.
 move_object(Pid, Ob, Dest) ->
   gen_server:call(Pid, {move_object, Ob, Dest}).
 
--spec get_objects(pid_type()) -> [em_object:object()].
+-spec get_objects(pid_type()) -> [lmud_object:object()].
 get_objects(Pid) ->
   gen_server:call(Pid, get_objects).
 
--spec remove_object(pid_type(), em_object:object()) -> ok.
+-spec remove_object(pid_type(), lmud_object:object()) -> ok.
 remove_object(Pid, Ob) ->
   gen_server:call(Pid, {remove_object, Ob}).
 
--spec set_room(pid_type(), em_room:room_name() | em_room:room_pid()) -> ok.
+-spec set_room(pid_type(), lmud_room:room_name() | lmud_room:room_pid()) -> ok.
 set_room(Pid, Room) when is_pid(Room) ->
   gen_server:call(Pid, {set_room_pid, Room});
 set_room(Pid, Room) when is_list(Room) ->
@@ -136,7 +136,7 @@ handle_call({remove_object, Ob}, _From, State) ->
 handle_call({set_room_pid, Room}, _From, State) ->
   {reply, ok, State#state_character{room=Room}};
 handle_call({set_room_str, RoomStr}, _From, State) ->
-  {ok, Room} = em_room_mgr:get_room(RoomStr),
+  {ok, Room} = lmud_room_mgr:get_room(RoomStr),
   {reply, ok, State#state_character{room=Room}};
 handle_call({set_desc, Desc}, _From, State) ->
   {reply, ok, State#state_character{desc=Desc}};
@@ -181,24 +181,24 @@ code_change(_OldVsn, State, _Extra) ->
 %% Internal functions
 %% ==========================================================================
 
--spec do_move_object(em_object:object(), {to_room, em_room:room_pid()},
+-spec do_move_object(lmud_object:object(), {to_room, lmud_room:room_pid()},
                      #state_character{}) -> {ok, #state_character{}}.
 do_move_object(Ob, {to_room, Room}, #state_character{objects=Obs}=State) ->
   case lists:member(Ob, Obs) of
     false -> throw(not_found);
     true ->
       NewObs = lists:delete(Ob, Obs),
-      ok = em_room:add_object(Room, Ob),
+      ok = lmud_room:add_object(Room, Ob),
       {ok, State#state_character{objects = NewObs}}
   end.
 
--spec do_remove_object(em_object:object(), #state_character{}) ->
+-spec do_remove_object(lmud_object:object(), #state_character{}) ->
         {ok, #state_character{}} | {{error, not_found}, #state_character{}}.
 do_remove_object(Ob, #state_character{objects=Obs}=State) ->
   do_remove_object(Ob, State, Obs, []).
 
--spec do_remove_object(em_object:object(), #state_character{}, [em_object:object()],
-                       [em_object:object()]) ->
+-spec do_remove_object(lmud_object:object(), #state_character{}, [lmud_object:object()],
+                       [lmud_object:object()]) ->
         {ok, #state_character{}} | {{error, not_found}, #state_character{}}.
 do_remove_object(_Ob, State, [], _Searched) ->
   {{error, not_found}, State};
@@ -231,10 +231,10 @@ update_character([], State) ->
 update_character([{desc, Desc}|Data], State) ->
     update_character(Data, State#state_character{desc=Desc});
 update_character([{room, Room}|Data], State) ->
-    {ok, RoomPid} = em_room_mgr:get_room(Room),
+    {ok, RoomPid} = lmud_room_mgr:get_room(Room),
     update_character(Data, State#state_character{room=RoomPid});
 update_character([{objects, ObList}|Data], State) ->
-    update_character(Data, State#state_character{objects=em_object:load_obs(ObList)});
+    update_character(Data, State#state_character{objects=lmud_object:load_obs(ObList)});
 update_character([_Other|Data], State) ->
     update_character(Data, State).
 

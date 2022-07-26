@@ -1,5 +1,5 @@
 ;;;; Manages the pool of instantiated rooms in the game. Only used by the
-;;;; em_room_mgr, where room instantiation happens. This is really just a
+;;;; lmud_room_mgr, where room instantiation happens. This is really just a
 ;;;; cache to avoid loading the room each time people walk into it.
 (defmodule lmud-room-pool-sup
   (behaviour supervisor)
@@ -19,9 +19,9 @@
 (defun init
   (('())
      `#(ok #(#(simple_one_for_one 0 1)
-              (#(em_room
-                 #(em_room start_link ())
+              (#(lmud_room
+                 #(lmud_room start_link ())
                  temporary
                  brutal_kill
                  worker
-                 (em_room)))))))
+                 (lmud_room)))))))
