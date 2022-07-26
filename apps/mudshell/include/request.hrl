@@ -1,5 +1,5 @@
 % request.hrl
--record(req, {conn::em_conn:conn_pid(),
+-record(req, {conn::mn_conn:conn_pid(),
             user::pid(),
             character::em_character:pid_type(),
             queue=[]::[init | {input, string()}],

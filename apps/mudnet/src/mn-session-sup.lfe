@@ -1,5 +1,5 @@
 ;;;; Basic simple_one_for_one supervisor that starts new sessions on request.
-(defmodule lmud-session-sup
+(defmodule mn-session-sup
   (behaviour supervisor)
   (export all))
 
@@ -14,9 +14,9 @@
 (defun init
   (('())
      `#(ok #(#(simple_one_for_one 0 1)
-              (#(em_session
-               #(em_session start_link ())
+              (#(mn_session
+               #(mn_session start_link ())
                temporary
                brutal_kill
                supervisor
-               (em_session)))))))
+               (mn_session)))))))

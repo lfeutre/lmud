@@ -1,5 +1,5 @@
 ;;;; The connection supervisor.
-(defmodule lmud-conn-sup
+(defmodule mn-conn-sup
   (behaviour supervisor)
   (export all))
 
@@ -16,9 +16,9 @@
 (defun init
   (('())
      `#(ok #(#(simple_one_for_one 0 1)
-              (#(em_conn
-               #(em_conn start_link ())
+              (#(mn_conn
+               #(mn_conn start_link ())
                temporary
                brutal_kill
                worker
-               (em_conn)))))))
+               (mn_conn)))))))

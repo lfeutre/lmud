@@ -2,11 +2,11 @@
  [
   {description, "λMUD Network Services"},
   {vsn, "0.1.0-dev"},
-  {registered, ['lmud-acceptor-pool',
-                'lmud-acceptor-sup', 
-                'lmud-conn-sup', 
-                'lmud-session-sup',
-                em_listener
+  {registered, ['mn-acceptor-pool',
+                'mn-acceptor-sup',
+                'mn-conn-sup',
+                'mn-session-sup',
+                mn_listener
                ]},
   {applications, [
                   kernel,

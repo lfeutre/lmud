@@ -1,7 +1,7 @@
 ;;;; Acceptor children that will wait for incoming connections can be started,
 ;;;; given a listener socket. With a transient restart strategy, the acceptors
 ;;;; in the pool will always be restarted if they die unexpectedly.
-(defmodule lmud-acceptor-pool
+(defmodule mn-acceptor-pool
   (behaviour supervisor)
   (export all))
 
@@ -21,9 +21,9 @@
 (defun init
   (('())
      `#(ok #(#(simple_one_for_one 4 3600)
-              (#(em_acceptor
-               #(em_acceptor start_link ())
+              (#(mn_acceptor
+               #(mn_acceptor start_link ())
                transient
                brutal_kill
                worker
-               (em_acceptor)))))))
+               (mn_acceptor)))))))

@@ -6,7 +6,7 @@
 %%% then start a number of acceptors in the acceptor pool.
 %%% @end
 %%% =========================================================================
--module(em_listener).
+-module(mn_listener).
 -behaviour(gen_server).
 
 %% API
@@ -75,5 +75,5 @@ code_change(_OldVsn, State, _Extra) ->
 -spec start_acceptors(socket(), count()) -> ok.
 start_acceptors(_LSock, 0) -> ok;
 start_acceptors(LSock, Acceptors) when is_integer(Acceptors), Acceptors > 0 ->
-  'lmud-acceptor-pool':start_child(LSock),
+  'mn-acceptor-pool':start_child(LSock),
   start_acceptors(LSock, Acceptors-1).
