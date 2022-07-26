@@ -13,10 +13,9 @@
 
 -include_lib("logjam/include/logjam.hrl").
 
--include("apps/lmud/include/request.hrl").
--include("apps/lmud/include/state.hrl").
+-include("apps/mudshell/include/request.hrl").
 
-%% Type Specifications
+-include("apps/lmud/include/state.hrl").
 -include("apps/lmud/include/types.hrl").
 
 

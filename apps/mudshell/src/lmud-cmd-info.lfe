@@ -1,7 +1,7 @@
 (defmodule lmud-cmd-info
   (export all))
 
-(include-lib "apps/lmud/include/request.hrl")
+(include-lib "apps/mudshell/include/request.hrl")
 
 (defun inv
   ((_ (= (match-req character character) req))

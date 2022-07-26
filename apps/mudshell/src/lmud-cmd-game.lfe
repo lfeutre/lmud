@@ -1,8 +1,9 @@
 (defmodule lmud-cmd-game
   (export all))
 
-(include-lib "apps/lmud/include/request.hrl")
 (include-lib "logjam/include/logjam.hrl")
+
+(include-lib "apps/mudshell/include/request.hrl")
 
 (defun help
   (('("privileges") req)

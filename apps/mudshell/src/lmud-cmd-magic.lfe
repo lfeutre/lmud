@@ -1,7 +1,7 @@
 (defmodule lmud-cmd-magic
   (export all))
 
-(include-lib "apps/lmud/include/request.hrl")
+(include-lib "apps/mudshell/include/request.hrl")
 
 (defun cast
   ((`("ward") (= (match-req character character) req))

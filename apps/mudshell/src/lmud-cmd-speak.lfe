@@ -1,7 +1,7 @@
 (defmodule lmud-cmd-speak
   (export all))
 
-(include-lib "apps/lmud/include/request.hrl")
+(include-lib "apps/mudshell/include/request.hrl")
 
 (defun base-emote
   ((args (= (match-req character character) req) format-str)
