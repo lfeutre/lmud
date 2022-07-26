@@ -1,11 +1,11 @@
--module(em_spell_ward).
--behaviour(em_spell).
+-module(mm_spell_ward).
+-behaviour(mm_spell).
 -behaviour('lmud-event-listener').
 
 %% API
 -export([start/2]).
 
-%% em_spell exports
+%% mm_spell exports
 -export([init/1, handle_cast/2, handle_info/2, terminate/2]).
 
 %% lmud-event-listener exports
@@ -16,9 +16,9 @@
 %% API
 
 start(Caster, Room) ->
-  'lmud-spell-sup':start_child(?MODULE, [Caster, Room]).
+  'mm-spell-sup':start_child(?MODULE, [Caster, Room]).
 
-%% em_spell exports
+%% mm_spell exports
 
 init([Caster, Room]) ->
   {ok, #state_speller{caster=Caster, room=Room}, 0}.
@@ -27,7 +27,7 @@ handle_cast({handle_event, Event}, State) ->
   do_handle_event(Event, State).
 
 handle_info(timeout, State) ->
-  lmud_room:add_event_listener(State#state_speller.room, {em_spell_ward, [self()]}),
+  lmud_room:add_event_listener(State#state_speller.room, {mm_spell_ward, [self()]}),
   {noreply, State}.
 
 terminate(_Reason, _State) ->

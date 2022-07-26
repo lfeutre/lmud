@@ -2,7 +2,7 @@
 %%% @author Johan Warlander <johan@snowflake.nu>
 %%% @copyright 2010-2011 Johan Warlander
 %%% =========================================================================
--module(em_spell).
+-module(mm_spell).
 
 -include("apps/lmud/include/state.hrl").
 -include("apps/lmud/include/types.hrl").
@@ -30,7 +30,7 @@ behaviour_info(_Other) ->
 %% API Functions
 %% ==========================================================================
 
--spec start_link(atom(), list()) -> 
+-spec start_link(atom(), list()) ->
   {ok, pid()} | {error, term()} | ignore.
 start_link(Mod, Args) ->
   gen_server:start_link(?MODULE, [Mod, Args], []).
