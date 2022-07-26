@@ -1,4 +1,4 @@
-{application, filestore, [
+{application, mudfiles, [
     {description, "λMUD File Store Backend"},
     {vsn, "0.1.0-dev"},
     {applications, [
