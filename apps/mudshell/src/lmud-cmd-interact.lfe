@@ -1,7 +1,7 @@
 (defmodule lmud-cmd-interact
   (export all))
 
-(include-lib "apps/lmud/include/request.hrl")
+(include-lib "apps/mudshell/include/request.hrl")
 
 (defun drop
   (('() req)
