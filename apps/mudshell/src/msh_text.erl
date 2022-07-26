@@ -6,7 +6,7 @@
 %%% text, etc.
 %%% @end
 %%% =========================================================================
--module(em_text).
+-module(msh_text).
 -include_lib("eunit/include/eunit.hrl").
 
 %% API

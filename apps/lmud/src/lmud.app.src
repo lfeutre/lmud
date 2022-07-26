@@ -5,7 +5,7 @@
   {registered, ['lmud-sup', lmud_game, 'lmud-room-sup', 'lmud-room-pool-sup',
                 lmud_room_mgr, 'lmud-character-sup', 'lmud-user-sup',
                 'lmud-req-sup',
-                'lmud-cmd-game', 'lmud-cmd-interact'
+                'msh-cmd-game', 'msh-cmd-interact'
                ]},
   {applications, [
                   kernel,

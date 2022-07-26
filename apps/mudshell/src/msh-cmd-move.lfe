@@ -1,4 +1,4 @@
-(defmodule lmud-cmd-move
+(defmodule msh-cmd-move
   (export all))
 
 (include-lib "apps/mudshell/include/request.hrl")
@@ -27,4 +27,4 @@
       (lmud_room:enter destination-room character)
       (lmud_room:print_except
         'yellowb destination-room character "~s arrives.~n" (list name))
-      (lmud-cmd-interact:glance '() req))))
+      (msh-cmd-interact:glance '() req))))

@@ -1,4 +1,4 @@
-(defmodule lmud-cmd-info
+(defmodule msh-cmd-info
   (export all))
 
 (include-lib "apps/mudshell/include/request.hrl")

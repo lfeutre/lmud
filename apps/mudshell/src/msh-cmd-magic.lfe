@@ -1,4 +1,4 @@
-(defmodule lmud-cmd-magic
+(defmodule msh-cmd-magic
   (export all))
 
 (include-lib "apps/mudshell/include/request.hrl")

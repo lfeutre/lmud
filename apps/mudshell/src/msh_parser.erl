@@ -6,7 +6,7 @@
 %%% here, to the parse/2 function.
 %%% @end
 %%% =========================================================================
--module(em_parser).
+-module(msh_parser).
 
 %% API
 -export([parse/2]).
@@ -40,7 +40,7 @@ parse(Line, Req) ->
 parse_cmd(Cmd, PassedArgs, Line, Req) ->
   LowerCmd = string:to_lower(Cmd),
   try
-    case 'lmud-cmd':'get-command-or-alias'(LowerCmd, 'lmud-cmd':'base+admin'()) of
+    case 'msh-cmd':'get-command-or-alias'(LowerCmd, 'msh-cmd':'base+admin'()) of
       [{args,DefinedArgs},_,{func,Func},{mod,Mod},_] ->
         Args = lists:merge([DefinedArgs,PassedArgs]),
         ?'log-debug'("PassedArgs: ~p",[PassedArgs]),

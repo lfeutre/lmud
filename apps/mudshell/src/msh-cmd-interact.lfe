@@ -1,4 +1,4 @@
-(defmodule lmud-cmd-interact
+(defmodule msh-cmd-interact
   (export all))
 
 (include-lib "apps/mudshell/include/request.hrl")
@@ -102,7 +102,7 @@
       ('true
         (lmud-io:print
           "~s\n"
-          (list (em_text:wrapline
+          (list (msh_text:wrapline
                   (lmud_object:desc obj)
                   (lmud-config:wrap-width)))
           req)
@@ -118,7 +118,7 @@
       (name (when (== name id))
         (lmud-io:print
           (++
-            (em_text:wrapline (lmud_character:desc character)
+            (msh_text:wrapline (lmud_character:desc character)
               (lmud-config:wrap-width))
             "\n")
           req))

@@ -1,14 +1,14 @@
-(defmodule lmud-cmd-help
+(defmodule msh-cmd-help
   (export all))
 
 (defun base ()
-  (lmud-help:get-groups-help "BASE HELP" (lmud-cmd:base)))
+  (msh-help:get-groups-help "BASE HELP" (msh-cmd:base)))
 
 (defun admin ()
-  (lmud-help:get-groups-help "ADMIN HELP" (lmud-cmd:admin)))
+  (msh-help:get-groups-help "ADMIN HELP" (msh-cmd:admin)))
 
 (defun aliases ()
-  (lmud-help:get-groups-help "ALIASES HELP" (lmud-aliases:all)))
+  (msh-help:get-groups-help "ALIASES HELP" (msh-aliases:all)))
 
 (defun all ()
   (++ (base)

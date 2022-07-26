@@ -205,7 +205,7 @@ do_notify(Event, [{Mod, Args}|Rest], Remaining) ->
 
 do_describe(#state_room{title=Title, desc=Desc, people=People, exits=Exits, objects=Objects}) ->
   ["\n", color:greenb(Title), "\n\n",
-   em_text:wrapline(Desc, 'lmud-config':'wrap-width'()), "\n\n",
+   msh_text:wrapline(Desc, 'lmud-config':'wrap-width'()), "\n\n",
    color:blackb("[Exits: " ++ list_exits(Exits) ++ "]"), "\n\n",
    list_objects(Objects),
    list_people(People)].

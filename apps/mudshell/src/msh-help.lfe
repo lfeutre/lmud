@@ -1,4 +1,4 @@
-(defmodule lmud-help
+(defmodule msh-help
   (export all))
 
 (include-lib "logjam/include/logjam.hrl")
@@ -11,7 +11,7 @@
       (lists:map
         (lambda (x)
           (get-group-help
-            x (lmud-cmd:get-longest-command-length prop-list)))
+            x (msh-cmd:get-longest-command-length prop-list)))
         prop-list)
       (lmud-config:divider)
       "\n"))

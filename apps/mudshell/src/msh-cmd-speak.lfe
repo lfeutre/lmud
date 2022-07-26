@@ -1,11 +1,11 @@
-(defmodule lmud-cmd-speak
+(defmodule msh-cmd-speak
   (export all))
 
 (include-lib "apps/mudshell/include/request.hrl")
 
 (defun base-emote
   ((args (= (match-req character character) req) format-str)
-    (let ((text (em_english:punctuate (string:join args " ")))
+    (let ((text (msh_english:punctuate (string:join args " ")))
           (name (lmud_character:name character))
           (room (lmud_character:get_room character)))
       (lmud_room:print_except 'yellowb room character format-str (list name text))
@@ -22,7 +22,7 @@
 
 (defun think
   ((args (= (match-req character character) req))
-    (let ((text (em_english:punctuate (string:join args " ")))
+    (let ((text (msh_english:punctuate (string:join args " ")))
           (name (lmud_character:name character))
           (room (lmud_character:get_room character)))
       (lmud_room:print_except 'blackb room character
@@ -32,7 +32,7 @@
 
 (defun say
   (((cons word words) (= (match-req character character) req))
-    (let ((text (string:join (cons (em_text:capitalize word) words) " "))
+    (let ((text (string:join (cons (msh_text:capitalize word) words) " "))
           (name (lmud_character:name character))
           (room (lmud_character:get_room character)))
       (lmud_room:print_except 'yellowb room character
@@ -46,7 +46,7 @@
     `#(ok ,req))
   (((cons who (cons word words)) (= (match-req user user) req))
     (let ((name (lmud-user:name user))
-          (text (string:join (cons (em_text:capitalize word) words) " ")))
+          (text (string:join (cons (msh_text:capitalize word) words) " ")))
       (case (lmud_game:lookup_user who)
         (`#(error not_found)
           (lmud-io:print "There is not such user.\n" req))

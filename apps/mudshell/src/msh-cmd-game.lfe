@@ -1,4 +1,4 @@
-(defmodule lmud-cmd-game
+(defmodule msh-cmd-game
   (export all))
 
 (include-lib "logjam/include/logjam.hrl")
@@ -20,15 +20,15 @@
    `#(ok ,req))
   (('("aliases") req)
    (lmud-io:print (++ "\n" (lmud-config:simple-welcome)
-                      "\n" (lmud-cmd-help:aliases)) req)
+                      "\n" (msh-cmd-help:aliases)) req)
    `#(ok ,req))
   (('("all") req)
    (lmud-io:print (++ "\n" (lmud-config:simple-welcome)
-                      "\n" (lmud-cmd-help:all)) req)
+                      "\n" (msh-cmd-help:all)) req)
    `#(ok ,req))
   (('("admin") req)
    (lmud-io:print (++ "\n" (lmud-config:simple-welcome)
-                      "\n" (lmud-cmd-help:admin)) req)
+                      "\n" (msh-cmd-help:admin)) req)
    `#(ok ,req))
   ;; alias help commands
   (('("priv") req)
@@ -38,11 +38,11 @@
   (('("alias") req)
    (help '("aliases") req))
   (('("cast") req)
-   (lmud-cmd-magic:cast '() req))
+   (msh-cmd-magic:cast '() req))
   ;; catch-all
   (('() req)
    (lmud-io:print (++ "\n" (lmud-config:simple-welcome)
-                      "\n" (lmud-cmd-help:base)) req)
+                      "\n" (msh-cmd-help:base)) req)
    `#(ok ,req)))
 
 (defun quit

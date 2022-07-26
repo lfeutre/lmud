@@ -1,4 +1,4 @@
-(defmodule lmud-aliases
+(defmodule msh-aliases
   (export all))
 
 (defun base ()
@@ -152,7 +152,7 @@
     #("WoW Alias Group" ,(aliases-wow))))
 
 (defun get-alias (name prop-list)
-  (lmud-cmd:get-command name prop-list))
+  (msh-cmd:get-command name prop-list))
 
 (defun get-value (alias-name prop-list key)
   (let ((result (get-alias alias-name (all))))
@@ -160,9 +160,9 @@
       ((tuple 'error _)
         result)
       (_
-        (lmud-cmd:get-command
+        (msh-cmd:get-command
           (proplists:get_value key result)
-          (lmud-cmd:all))))))
+          (msh-cmd:all))))))
 
 (defun get-command (alias-name prop-list)
   (let ((result (get-value alias-name prop-list 'command)))

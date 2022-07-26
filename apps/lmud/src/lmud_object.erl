@@ -95,7 +95,7 @@ load_obs([Name|Rest], ObList) ->
 
 -spec a_short(object()) -> string().
 a_short(#object{short=Short}) ->
-  em_english:add_article(Short).
+  msh_english:add_article(Short).
 
 -spec the_short(object()) -> nonempty_string().
 the_short(#object{short=Short}) ->
@@ -141,7 +141,7 @@ set_name(Ob, Name) ->
 set_name(Ob, [], [], []) ->
   resync_names(Ob);
 set_name(Ob, [], Ids, Adjs) ->
-  Plurals = lists:map(fun em_english:pluralize/1, Ids),
+  Plurals = lists:map(fun msh_english:pluralize/1, Ids),
   resync_names(Ob#object{ids=Ids, plurals=Plurals, adjs=Adjs});
 %
 set_name(Ob, [LastToken], Ids, Adjs) ->
@@ -159,8 +159,8 @@ set_show_in_room(Ob, Desc) ->
 
 -spec show_in_room(object()) -> string().
 show_in_room(#object{show_in_room="", short=Short}) ->
-  A_Short =em_english:add_article(Short),
-  [em_text:capitalize(A_Short), " lies here, discarded.\n"];
+  A_Short =msh_english:add_article(Short),
+  [msh_text:capitalize(A_Short), " lies here, discarded.\n"];
 show_in_room(#object{show_in_room=Desc}) ->
   Len = string:len(Desc),
   case string:rchr(Desc, $\n) of

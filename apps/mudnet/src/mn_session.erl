@@ -59,8 +59,8 @@ code_change(_OldVsn, State, _Extra) ->
 process_queue(#req{queue=[]}=State) ->
   {noreply, State};
 process_queue(#req{queue=[init|Queue],conn=Conn}=State) ->
-  em_login:welcome(Conn),
-  Handlers=[{em_login, login, [got_user]}],
+  msh_login:welcome(Conn),
+  Handlers=[{msh_login, login, [got_user]}],
   process_queue(State#req{queue=Queue, handlers=Handlers});
 process_queue(#req{queue=[{input, RawData}|Queue]}=State) ->
   {ok, NewState} = handle_data(RawData, State),

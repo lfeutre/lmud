@@ -1,4 +1,4 @@
-%%% XXX rename this module to em_english.erl.
+%%% XXX rename this module to msh_english.erl.
 %%%
 %%% =========================================================================
 %%% @author Johan Warlander <johan@snowflake.nu>
@@ -8,7 +8,7 @@
 %%% functions, item name manipulation and so on.
 %%% @end
 %%% =========================================================================
--module(em_english).
+-module(msh_english).
 
 %% API
 -export([add_article/1, number_of/2, number_word/1, pluralize/1, punctuate/1]).

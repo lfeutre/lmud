@@ -6,7 +6,7 @@
 %%% to the in-game request handler.
 %%% @end
 %%% =========================================================================
--module(em_login).
+-module(msh_login).
 
 %% API
 -export([welcome/1, login/3]).
@@ -121,7 +121,7 @@ do_login(Name, #req{conn=Conn}=Req) ->
       {ok, NewReq} = do_incarnate(Req#req{user=UserPid, character=Character}),
       unlink(Character),
       unlink(UserPid),
-      ?req_next_and_link(em_parser, parse, [], NewReq);
+      ?req_next_and_link(msh_parser, parse, [], NewReq);
     {error, user_exists} ->
       unlink(UserPid),
       exit(UserPid, user_exists),
@@ -134,7 +134,7 @@ do_login(Name, #req{conn=Conn}=Req) ->
 do_incarnate(#req{conn=Conn, character=Character}=Req) ->
   ok = lmud_game:incarnate(Character),
   mn_conn:print(Conn, 'lmud-config':'post-login-msg'()),
-  'lmud-cmd-interact':glance([], Req),
+  'msh-cmd-interact':glance([], Req),
   mn_conn:print(Conn, "\n> "),
   {ok, Req}.
 
