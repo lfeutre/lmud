@@ -115,7 +115,7 @@ handle_call({logout, User}, _From, State) ->
   {reply, Result, NewState};
 handle_call({lookup_user, Name}, _From, #state_game{users=Users}=State)
     when is_list(Name) ->
-  Result = case lists:keyfind(em_text:capitalize(Name), 1, Users) of
+  Result = case lists:keyfind(msh_text:capitalize(Name), 1, Users) of
              false -> {error, not_found};
              UserTuple -> {ok, UserTuple}
            end,

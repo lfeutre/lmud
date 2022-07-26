@@ -15,16 +15,16 @@
 
 (defun request (mfa)
   (let* (((tuple 'ok req) (start_child mfa))
-         (result (em_req:run req)))
+         (result (msh_req:run req)))
     (exit req 'normal)
     result))
 
 (defun init
   (('())
      `#(ok #(#(simple_one_for_one 0 1)
-              (#(em_req
-               #(em_req start_link ())
+              (#(msh_req
+               #(msh_req start_link ())
                temporary
                brutal_kill
                worker
-               (em_req)))))))
+               (msh_req)))))))

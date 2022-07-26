@@ -8,7 +8,7 @@
 %%% process, evaluate run(), and then kill the process.
 %%% @end
 %%% =========================================================================
--module(em_req).
+-module(msh_req).
 
 -behaviour(gen_server).
 
