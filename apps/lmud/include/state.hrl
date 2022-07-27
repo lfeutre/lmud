@@ -2,14 +2,20 @@
 
 -record(state_character, {
          name="noname" :: lmud_character:name_type(),
-         room :: lmud_room:room_pid(),
-         client :: any(),
          desc="" :: string(),
-         objects=[] :: [lmud_object:object()]
+         level :: integer(),
+         type="" :: string(),
+         subtype="" :: string(),
+         species="" :: string(),
+         room :: lmud_room:room_pid(),
+         objects=[] :: [lmud_object:object()],
+         client :: any(),
+         'connected-since'
       }).
 
 -record(state_game, {
-         users=[] :: lmud_game:users()
+         users=[] :: lmud_game:users(),
+         characters=[] :: pid()
       }).
 
 -record(state_room, {
@@ -17,7 +23,7 @@
          title="" :: string(),
          brief="" :: string(),
          desc="" :: string(),
-         people=[], % TODO: rename this to characters; also add npcs
+         people=[], % TODO: rename this to pcs; also add npcs
          exits=[] :: lmud_room:exits(),
          objects=[] :: [lmud_object:object()],
          resets=[] :: [lmud_object:object()],
@@ -35,7 +41,9 @@
          name,
          conn,
          password="" :: string(),
-         privileges=ordsets:new()
+         privileges=ordsets:new(),
+         'member-since'=binary_to_list(iso8601:format(erlang:timestamp())),
+         character :: pid()
       }).
 
 -record(object, {
@@ -55,7 +63,7 @@
          template="dummy" :: string()
       }).
 
-%% System state
+%% System state -- TODO: move these to mudnet/include
 
 -record(state_acceptor, {
          lsock :: port()

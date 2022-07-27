@@ -73,11 +73,10 @@ login({new_user_pw, Name}, Password, #req{conn=Conn}=Req) ->
 %% Confirm the password
 login({new_user_pw_confirm, Name, Password}, Password, #req{conn=Conn}=Req) ->
   mn_conn:echo_on(Conn),
-  CryptPw = 'lmud-crypto':hash(Password),
-  UserData = mudstore:serialise(#state_user{password=CryptPw}),
+  UserData = mudstore:serialise(#state_user{name=Name, password='lmud-crypto':hash(Password)}),
   mudstore:dump("users", Name, UserData),
   CharDesc = lists:flatten(io_lib:format("~s looks fairly ordinary; maybe they should update their description?", [Name])),
-  CharData = mudstore:serialise(#state_character{desc=CharDesc}),
+  CharData = mudstore:serialise(#state_character{name=Name, desc=CharDesc}),
   mudstore:dump("characters", Name, CharData),
   mn_conn:print(Conn, ["\nWelcome, ", Name, "!\n\n"]),
   do_login(Name, Req);
@@ -119,6 +118,7 @@ do_login(Name, #req{conn=Conn}=Req) ->
       link(Character),
       ok = lmud_character:load(Character),
       {ok, NewReq} = do_incarnate(Req#req{user=UserPid, character=Character}),
+      'lmud-user':'set-character'(UserPid, Character),
       unlink(Character),
       unlink(UserPid),
       ?req_next_and_link(msh_parser, parse, [], NewReq);
