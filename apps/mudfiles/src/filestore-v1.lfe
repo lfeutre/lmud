@@ -5,7 +5,6 @@
 (include-lib "apps/lmud/include/state.hrl")
 
 (defun version () 1)
-(defun file-extension () ".dat")
 
 ;;; -------------
 ;;; Datamodel API
@@ -27,10 +26,6 @@
      #(desc ,d)
      #(room ,(lmud_room:get_name r))
      #(objects ,(lmud_object:get_templates os)))))
-
-(defun object
-  ()
-  "")
 
 (defun room ()
   (room (make-state_room)))
@@ -57,12 +52,12 @@
 ;; -------------------
 
 (defun load (table-name row-name)
-  (let ((filename (table-file table-name row-name)))
+  (let ((filename (mf-table:file table-name row-name)))
     (log-debug "loading file: ~s" (list filename))
     (file:consult filename)))
 
 (defun dump (table-name row-name data)
-  (let ((filename (table-file table-name row-name)))
+  (let ((filename (mf-table:file table-name row-name)))
     (log-debug "dumping file: ~s" (list filename))
     (file:write_file filename data)))
 
@@ -83,9 +78,3 @@
    acc)
   ((`(,head . ,tail) acc)
    (serialise tail (lists:append acc (list (serialise head))))))
-
-;; Utility functions
-
-(defun table-file (table-name row-name)
-  (filename:join
-    (list (lmud_game:data_dir) table-name (++ row-name (file-extension)))))

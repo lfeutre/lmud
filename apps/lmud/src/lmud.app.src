@@ -12,6 +12,7 @@
                   stdlib,
                   sasl,
                   eunit,
+                  iso8601,
                   color,
                   lutil,
                   logjam,

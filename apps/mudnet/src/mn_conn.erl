@@ -6,7 +6,7 @@
 %%% connection, then handle any input/output on the socket.
 %%% @end
 %%% =========================================================================
--module(mn_conn).
+-module(mn_conn). %% TODO: rename to mn_io
 
 -behaviour(gen_server).
 

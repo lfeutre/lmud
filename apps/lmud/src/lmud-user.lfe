@@ -13,22 +13,27 @@
   (gen_server:start_link (MODULE) `(,name ,conn) '()))
 
 (defun init
-  ((`(,name ,conn))
-   (let ((initial-state (make-state_user name name conn conn)))
+  ((`(,n ,c))
+   (let ((initial-state (make-state_user name n conn c)))
      (log-debug "setting initial state: ~p" (list initial-state))
      `#(ok ,initial-state))))
 
 (defun handle_call
-  (((tuple 'has-privilege? priv) _from (= (match-state_user privileges privs) state))
+  (('get-character _from (= (match-state_user character c) state))
+   `#(reply ,c ,state))
+  ((`#(has-privilege? ,priv) _from (= (match-state_user privileges privs) state))
    `#(reply ,(ordsets:is_element priv privs) ,state))
+  ;; TODO: Add 'logged-in? ...
   (('name _from (= (match-state_user name name) state))
    `#(reply ,name ,state))
-  (((tuple 'print format) _from (= (match-state_user conn conn) state))
+  ((`#(print ,format) _from (= (match-state_user conn conn) state))
    (mn_conn:print conn format)
    `#(reply ok ,state))
-  (((tuple 'print format args) _from (= (match-state_user conn conn) state))
+  ((`#(print ,format ,args) _from (= (match-state_user conn conn) state))
    (mn_conn:print conn format args)
    `#(reply ok ,state))
+  ((`#(set-character ,pid) _from state)
+   `#(reply ok ,(update-state_user state character pid)))
   (('load _from state)
    (case (do-load state)
      ((tuple 'ok new-state)
@@ -54,6 +59,9 @@
 ;; API
 ;; -------------------
 
+(defun get-character (pid)
+  (gen_server:call pid 'get-character))
+
 (defun has-privilege? (pid priv)
   (gen_server:call pid `#(has-privilege? ,priv)))
 
@@ -68,6 +76,9 @@
 
 (defun load (pid)
   (gen_server:call pid 'load))
+
+(defun set-character (pid char-pid)
+  (gen_server:call pid `#(set-character ,char-pid)))
 
 (defun state (pid)
   (gen_server:call pid 'state))

@@ -16,6 +16,7 @@
          get_room/1, set_room/2,
          add_object/2, move_object/3, get_objects/1, remove_object/2,
          set_desc/2, desc/1,
+         connected_since/1, 'connected-since'/1,
          cmd/2, print/2, print/3,
          load/1, save/1]).
 
@@ -51,6 +52,12 @@ start(Name, Client) ->
 -spec name(pid_type()) -> name_type().
 name(Pid) ->
   gen_server:call(Pid, name).
+
+connected_since(Pid) ->
+  gen_server:call(Pid, 'connected-since').
+
+'connected-since'(Pid) ->
+  gen_server:call(Pid, 'connected-since').
 
 -spec get_room(pid_type()) -> lmud_room:room_pid()|undefined.
 get_room(Pid) ->
@@ -117,10 +124,16 @@ save(Pid) ->
 %% ==========================================================================
 
 init([Name, Client]) ->
-  {ok, #state_character{name=Name, client=Client}}.
+  {ok, #state_character{
+          name=Name,
+          client=Client,
+          'connected-since'=binary_to_list(iso8601:format(erlang:timestamp()))
+         }}.
 
 handle_call(name, _From, #state_character{name=Name}=State) ->
   {reply, Name, State};
+handle_call('connected-since', _From, #state_character{'connected-since'=Cs}=State) ->
+  {reply, Cs, State};
 handle_call(get_room, _From, #state_character{room=Room}=State) ->
   {reply, Room, State};
 handle_call({add_object, Ob}, _From, #state_character{objects=Obs}=State) ->
