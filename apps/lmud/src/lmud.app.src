@@ -1,7 +1,7 @@
 {application, lmud,
  [
   {description, "El-MUD Game Server"},
-  {vsn, "0.6.0-dev"},
+  {vsn, "0.6.0"},
   {registered, ['lmud-sup', lmud_game, 'lmud-room-sup', 'lmud-room-pool-sup',
                 lmud_room_mgr, 'lmud-character-sup', 'lmud-user-sup',
                 'lmud-req-sup',
