@@ -5,8 +5,16 @@
   (let ((`#(ok ,acceptors) (application:get_env 'lmud 'acceptors)))
     acceptors))
 
+(defun default-game ()
+  (let ((`#(ok ,games) (application:get_env 'lmud 'games)))
+     (proplists:get_value 'default games)))
+
 (defun description ()
-  (proplists:get_value 'description (lmud-util:app-cfg)))
+  (proplists:get_value 'description (lmud-files:app-cfg)))
+
+(defun games-dir ()
+  (let ((`#(ok ,games) (application:get_env 'lmud 'games)))
+    (proplists:get_value 'directory games)))
 
 (defun hash-algo ()
   (let ((`#(ok ,algo) (application:get_env 'lmud 'hash-algo)))
@@ -17,7 +25,7 @@
     port))
 
 (defun version ()
-  (proplists:get_value 'vsn (lmud-util:app-cfg)))
+  (proplists:get_value 'vsn (lmud-files:app-cfg)))
 
 (defun wrap-width () 64)
 (defun divider-char () "-")
