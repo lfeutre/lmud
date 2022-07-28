@@ -32,6 +32,7 @@
 %% ==========================================================================
 
 -include("apps/lmud/include/types.hrl").
+
 -type parse_mode() :: text|eol|cmd|sub.
 
 -type telopt_state() :: 'NO'|'YES'|'WANTNO'|'WANTYES'.
