@@ -19,7 +19,8 @@
 -define(SERVER, ?MODULE).
 
 -include("apps/lmud/include/types.hrl").
--include_lib("apps/lmud/include/state.hrl").
+
+-include("apps/mudnet/include/state.hrl").
 
 
 %% ==========================================================================

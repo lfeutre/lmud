@@ -19,8 +19,8 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
--include_lib("apps/lmud/include/state.hrl").
 -include("apps/lmud/include/types.hrl").
+-include("apps/mudnet/include/state.hrl").
 
 %% ==========================================================================
 %% API Functions

@@ -62,21 +62,3 @@
          is_unique=false :: boolean(),
          template="dummy" :: string()
       }).
-
-%% System state -- TODO: move these to mudnet/include
-
--record(state_acceptor, {
-         lsock :: port()
-      }).
-
--record(state_conn, {
-         socket :: port(),
-         session :: pid(),
-         telnet_session
-      }).
-
--record(state_listener, {
-         lsock :: port(),
-         port :: 0..65535,
-         acceptors :: non_neg_integer()
-      }).
