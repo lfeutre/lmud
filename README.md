@@ -12,7 +12,7 @@ curiosity than a commonplace thing.
 
 ## Milestones
 
-* Current: [0.6.x](https://github.com/lfex/lmud/milestone/3)
+* Current: [0.7.x](https://github.com/lfex/lmud/milestone/4)
 * All: [Open](https://github.com/lfex/lmud/milestones?direction=desc&sort=count&state=open)
 
 ## Background
@@ -115,7 +115,7 @@ This will use the published docker image with a game-data volume.
              /_/ \_\  M  MMM  MMM  M Mb       dM M       .MM
                       MMMMMMMMMMMMMM MMMMMMMMMMM MMMMMMMMMMM
 
-     An El-MUD Game Server, v0.6.0-dev
+     An El-MUD Game Server, v0.7.0-dev
 
      ----------------------------------------------------------------
        If you are logging in for the first time, then at the 'Login'
