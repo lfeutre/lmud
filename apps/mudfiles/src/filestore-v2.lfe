@@ -4,6 +4,7 @@
 (include-lib "logjam/include/logjam.hrl")
 (include-lib "apps/lmud/include/state.hrl")
 
+(defun file-extension () ".dat")
 (defun version () 2)
 
 ;;; -------------
@@ -64,12 +65,12 @@
 ;; -------------------
 
 (defun load (table-name row-name)
-  (let ((filename (mf-table:file table-name row-name)))
+  (let ((filename (file table-name row-name)))
     (log-debug "loading file: ~s" (list filename))
     (file:consult filename)))
 
 (defun dump (table-name row-name data)
-  (let ((filename (mf-table:file table-name row-name)))
+  (let ((filename (file table-name row-name)))
     (log-debug "dumping file: ~s" (list filename))
     (file:write_file filename data)))
 
@@ -90,3 +91,19 @@
    (io_lib:format "~p.~n" (list data)))
   ((`(,head . ,tail) acc)
    (serialise tail (lists:append acc (list (serialise head 'ignore))))))
+
+;; v2 utility functions
+
+(defun file
+  (((= "users" table-name) row-name)
+   (filename:join
+    (list (lmud-files:data-dir)
+          table-name
+          (++ row-name (file-extension)))))
+  ((table-name row-name)
+   (filename:join
+    (list (lmud-files:data-dir)
+          (lmud-config:games-dir)
+          (lmud-config:default-game)
+          table-name
+          (++ row-name (file-extension))))))

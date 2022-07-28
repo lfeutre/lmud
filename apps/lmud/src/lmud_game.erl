@@ -13,7 +13,6 @@
 %% API
 -export([start_link/0, start/0,
          connected_since/1, 'connected-since'/1,
-         data_dir/0,
          get_users/0, get_user_names/0,
          lookup_user/1, lookup_user_pid/1,
          get_characters/0, 'get-characters'/0, get_character_names/0,
@@ -59,11 +58,6 @@ connected_since(Name) ->
 
 'connected-since'(Name) ->
   gen_server:call(?SERVER, {'connected-since', Name}).
-
-%% @doc Return path to the data directory.
--spec data_dir() -> file_path().
-data_dir() ->
-  'lmud-util':'data-dir'().
 
 %% @doc Return a list of {Name, UserPid} tuples with all logged in users.
 -spec get_characters() -> characters().

@@ -19,4 +19,4 @@
     data))
 
 (defun read-news ()
-  (read (filename:join (lmud-util:text-dir) "NEWS.txt")))
+  (read (filename:join (lmud-files:text-dir) "NEWS.txt")))
