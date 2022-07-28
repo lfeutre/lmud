@@ -12,7 +12,7 @@ curiosity than a commonplace thing.
 
 ## Milestones
 
-* Current: [0.7.x](https://github.com/lfex/lmud/milestone/4)
+* Current: [0.7.x](https://github.com/lfex/lmud/milestone/5)
 * All: [Open](https://github.com/lfex/lmud/milestones?direction=desc&sort=count&state=open)
 
 ## Background
