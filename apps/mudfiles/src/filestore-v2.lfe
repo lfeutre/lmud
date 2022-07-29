@@ -19,12 +19,14 @@
   (character (make-state_character)))
 
 (defun character
-  (((match-state_character name n desc d room 'undefined objects '()))
+  (((match-state_character id i name n desc d room 'undefined objects '()))
    `(#(version ,(version))
+     #(id ,i)
      #(name ,n)
      #(desc ,d)))
-  (((match-state_character name n desc d level l type t subtype st species s room r objects os))
+  (((match-state_characterid i name n desc d level l type t subtype st species s room r objects os))
    `(#(version ,(version))
+     #(id ,i)
      #(name ,n)
      #(desc ,d)
      #(level ,l)
@@ -42,9 +44,10 @@
   (room (make-state_room)))
 
 (defun room
-  (((match-state_room title t desc d exits es resets rs))
+  (((match-state_room name n desc d exits es resets rs))
    `(#(version ,(version))
-     #(title ,t)
+     #(id ,i)
+     #(name ,n)
      #(desc ,d)
      #(exits ,es)
      #(objects ,(lmud_object:get_templates rs)))))
@@ -53,9 +56,10 @@
   (user (make-state_user)))
 
 (defun user
-  (((match-state_user name n password pw privileges ps member-since ms))
+  (((match-state_user name n email e password pw privileges ps member-since ms))
    `(#(version ,(version))
      #(name ,n)
+     #(email ,e)
      #(password ,pw)
      #(privileges ,ps)
      #(member-since ,ms))))

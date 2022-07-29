@@ -2,6 +2,7 @@
 
 -record(state_character, {
          name="noname" :: lmud_character:name_type(),
+         id=lmud:id() :: string(),
          desc="" :: string(),
          level :: integer(),
          type="" :: string(),
@@ -19,6 +20,7 @@
       }).
 
 -record(state_room, {
+         id=lmud:id() :: string(),
          name :: string(),
          title="" :: string(),
          brief="" :: string(),
@@ -39,14 +41,16 @@
 
 -record(state_user, {
          name,
-         conn,
+         email,
          password="" :: string(),
          privileges=ordsets:new(),
          'member-since'=binary_to_list(iso8601:format(erlang:timestamp())),
+         conn,
          character :: pid()
       }).
 
 -record(object, {
+         id=lmud:id() :: string(),
          ids=[] :: lmud_object:id_list(),
          plurals=[] :: lmud_object:id_list(),
          adjs=[] :: lmud_object:adj_list(),
