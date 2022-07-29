@@ -1,4 +1,5 @@
 {version, 1}.
+{id,"f53ca7d2-0efb-11ed-8fc3-8b038c9bb3bb"}.
 {primary_id, "painting"}.
 {desc, "It depicts a dramatic landscape."}.
 {is_attached, true}.

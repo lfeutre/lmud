@@ -1,4 +1,5 @@
 {version, 1}.
+{id,"fc4ae75a-0efb-11ed-abdd-e7e631866491"}.
 {primary_id, "sword"}.
 {primary_adj, "rusty"}.
 {show_in_room, "Someone left an old, rusty sword here."}.

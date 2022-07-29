@@ -1,4 +1,5 @@
 {version, 1}.
+{id,"1feb26e8-0efc-11ed-9889-8fb20fa9cdd8"}.
 {title, "This is a test room"}.
 {brief, "While mildly interesting, this room doesn't really have any substance."}.
 {desc, "If you look really hard, you can make out what looks like a shimmering portal to the south. Perhaps you should go there."}.

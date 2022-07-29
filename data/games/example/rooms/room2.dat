@@ -1,4 +1,5 @@
 {version, 1}.
+{id,"0bb75462-0efc-11ed-8df0-f35a78af7f54"}.
 {title, "A long, dark corridor"}.
 {brief, "This dark, damp corridor continues to the north."}.
 {desc, "This is the south end of a dark corridor. The smooth stones "

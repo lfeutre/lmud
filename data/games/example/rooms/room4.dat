@@ -1,4 +1,5 @@
 {version,1}.
+{id,"18dc0ebc-0efc-11ed-b65b-571c9c739870"}.
 {title,"A non-descript room"}.
 {desc,"This is a rather boring room, someone should fix that."}.
 {exits,[{"south","room3"}]}.
