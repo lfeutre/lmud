@@ -1,0 +1,13 @@
+{application, mudgraph, [
+  {description, "λMUD In-Memory Graph Database"},
+  {vsn, "0.1.0"},
+  {mod, {'mg-app', []}},
+  {applications, [
+    kernel,
+    stdlib,
+    color,
+    lutil,
+    logjam
+  ]},
+  {env, []}
+ ]}.
