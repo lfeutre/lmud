@@ -60,7 +60,7 @@ old TODO.
 * [ ] Publish player state data to internal message queue
 * [ ] Player message queue should be used for all queries about players
   * e.g., who, whois, teleport (to player location)
-
+* [ ] Allow players to create aliases for in-game items
 
 ## Mapping Areas
 
