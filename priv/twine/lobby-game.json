@@ -1,0 +1,121 @@
+{
+  "uuid": "D4C8A67F-7ABD-4E85-8200-6F38CABBE45C",
+  "name": "Test",
+  "creator": "Twine",
+  "creatorVersion": "2.4.1",
+  "schemaName": "Harlowe 3 to JSON",
+  "schemaVersion": "0.0.6",
+  "createdAtMs": 1658983896100,
+  "passages": [
+    {
+      "name": "Lobby",
+      "tags": "",
+      "id": "1",
+      "text": "You are in a lobby -- THE lobby -- and it's exaclty the sort of lobby you've fantasised about your whole life. You couldn't have designed a better one. It is, simply put, the very embodiment of aesthetic perfection itself.\n\nWhile casting your eyes about its magnificence, upward glances reveal several signs above wildly varried thresholds, each enticing you to enter its mysterious subdomain. \n\nThe most exiting looking signs are [[Create Character]], [[Join Game]] and the mind-blowingly beautiful [[Manage Account]]. A sign labelled with the promising \"Add Game\" declares its undying belief in a bright and proud future. It has staked out its territory over a pile of rubble behind which you believe you catch a fleeting glimpse of dark, cavernous nothingness.\n\nThere are two pillars off to the side, one with a sign saying \"List Games\" and another with \"List Characters\". You feel that if you look at these you will gain much worldly knowledge.\n\nTwo very threatening-looking rooms in the back have signs that say ... something. It's hard to tell, being so poorly lit that far from the other, infinitely more used rooms. You think you can make out [[Delete Character]] and [[Delete Account]]. You shudder with fear, knowing that, if you parsed the signs corectly, those rooms are not for you. \n\nSimply best to forget they even exist.",
+      "links": [
+        {
+          "linkText": "Create Character",
+          "passageName": "Create Character",
+          "original": "[[Create Character]]"
+        },
+        {
+          "linkText": "Join Game",
+          "passageName": "Join Game",
+          "original": "[[Join Game]]"
+        },
+        {
+          "linkText": "Manage Account",
+          "passageName": "Manage Account",
+          "original": "[[Manage Account]]"
+        },
+        {
+          "linkText": "Delete Character",
+          "passageName": "Delete Character",
+          "original": "[[Delete Character]]"
+        },
+        {
+          "linkText": "Delete Account",
+          "passageName": "Delete Account",
+          "original": "[[Delete Account]]"
+        }
+      ],
+      "hooks": [],
+      "cleanText": "You are in a lobby -- THE lobby -- and it's exaclty the sort of lobby you've fantasised about your whole life. You couldn't have designed a better one. It is, simply put, the very embodiment of aesthetic perfection itself.\n\nWhile casting your eyes about its magnificence, upward glances reveal several signs above wildly varried thresholds, each enticing you to enter its mysterious subdomain. \n\nThe most exiting looking signs are ,  and the mind-blowingly beautiful . A sign labelled with the promising \"Add Game\" declares its undying belief in a bright and proud future. It has staked out its territory over a pile of rubble behind which you believe you catch a fleeting glimpse of dark, cavernous nothingness.\n\nThere are two pillars off to the side, one with a sign saying \"List Games\" and another with \"List Characters\". You feel that if you look at these you will gain much worldly knowledge.\n\nTwo very threatening-looking rooms in the back have signs that say ... something. It's hard to tell, being so poorly lit that far from the other, infinitely more used rooms. You think you can make out  and . You shudder with fear, knowing that, if you parsed the signs corectly, those rooms are not for you. \n\nSimply best to forget they even exist."
+    },
+    {
+      "name": "Create Character",
+      "tags": "",
+      "id": "2",
+      "text": "If it was possible for a room to have more promise that the lobby behind you (a lobby whose beauty caused tears to freely flow down your cheeks), it is this one. It is a maze of wonderful twists and turns, like a lush art museam carved into the depths of the earth itself. \n\nThere are even museum-quality frames on the walls, viewable in every nook you can see from where you stand. The frames tower over you, and if they held art, each would be a vast universe unto itself. There are benches for admiring this art-potential under each.\n\nYou can see that the nooks seem to have passages that leads away, to what you can only assume are other, even more private, nooks. There are so many little areas for future paintings that you quickly note their strategic value for future reference: this would be a great place to eat a boxed lunch on a work day, have a romantic rendezvous, or ... both.\n\nDescrete labelling and exquisite design lead you to the inexorably logical and unerringly correct conclusion: each bench will let you create a character by visualising one in the luxurious frame above it. \n\nAfterwards, you know that the character will pull you down a passage into the world to which it belongs. You can barely contain your excitement.\n\nAt which bench do you wish to sit? (Or perhaps the siren song of the [[Lobby]]  calls to you?)",
+      "links": [
+        {
+          "linkText": "Lobby",
+          "passageName": "Lobby",
+          "original": "[[Lobby]]"
+        }
+      ],
+      "hooks": [],
+      "cleanText": "If it was possible for a room to have more promise that the lobby behind you (a lobby whose beauty caused tears to freely flow down your cheeks), it is this one. It is a maze of wonderful twists and turns, like a lush art museam carved into the depths of the earth itself. \n\nThere are even museum-quality frames on the walls, viewable in every nook you can see from where you stand. The frames tower over you, and if they held art, each would be a vast universe unto itself. There are benches for admiring this art-potential under each.\n\nYou can see that the nooks seem to have passages that leads away, to what you can only assume are other, even more private, nooks. There are so many little areas for future paintings that you quickly note their strategic value for future reference: this would be a great place to eat a boxed lunch on a work day, have a romantic rendezvous, or ... both.\n\nDescrete labelling and exquisite design lead you to the inexorably logical and unerringly correct conclusion: each bench will let you create a character by visualising one in the luxurious frame above it. \n\nAfterwards, you know that the character will pull you down a passage into the world to which it belongs. You can barely contain your excitement.\n\nAt which bench do you wish to sit? (Or perhaps the siren song of the   calls to you?)"
+    },
+    {
+      "name": "Join Game",
+      "tags": "",
+      "id": "3",
+      "text": "As you enter this room, the relaxing and gently circulating air of the lobby transforms into near gales of wind that rush into portals which open onto other worlds, ripe for exploration. Your excitement is so great and your ability to contain it so feeble that you nearly exclaim with relief when you remember a recent relinquishing of liquid burden in a majestically appointed water closet off the lobby, mere minutes ago.\n\nCrescendos of horns and strings drive your anticiaption into a near frenzy (and a possible retreat for another visit to the WC) as you view the options before you: which portal shall you choose?\n\nOr maybe the [[Lobby]] instead?",
+      "links": [
+        {
+          "linkText": "Lobby",
+          "passageName": "Lobby",
+          "original": "[[Lobby]]"
+        }
+      ],
+      "hooks": [],
+      "cleanText": "As you enter this room, the relaxing and gently circulating air of the lobby transforms into near gales of wind that rush into portals which open onto other worlds, ripe for exploration. Your excitement is so great and your ability to contain it so feeble that you nearly exclaim with relief when you remember a recent relinquishing of liquid burden in a majestically appointed water closet off the lobby, mere minutes ago.\n\nCrescendos of horns and strings drive your anticiaption into a near frenzy (and a possible retreat for another visit to the WC) as you view the options before you: which portal shall you choose?\n\nOr maybe the  instead?"
+    },
+    {
+      "name": "Delete Character",
+      "tags": "",
+      "id": "4",
+      "text": "Do people actually come IN here?\n\nDid you, really?\n\nOr is this, in fact, a nightmare from which you desperately desire to awaken?\n\nIt almost certainly is! Shall we repair to the [[Lobby]]  instead? I hear the hors d'oeuvres there are delectable ... and free!\n\nIn the event that you really do want to be in this dark hole, it seems you can do the following:",
+      "links": [
+        {
+          "linkText": "Lobby",
+          "passageName": "Lobby",
+          "original": "[[Lobby]]"
+        }
+      ],
+      "hooks": [],
+      "cleanText": "Do people actually come IN here?\n\nDid you, really?\n\nOr is this, in fact, a nightmare from which you desperately desire to awaken?\n\nIt almost certainly is! Shall we repair to the   instead? I hear the hors d'oeuvres there are delectable ... and free!\n\nIn the event that you really do want to be in this dark hole, it seems you can do the following:"
+    },
+    {
+      "name": "Manage Account",
+      "tags": "",
+      "id": "5",
+      "text": "So much comfy furniture! Such astounding lighting! What artistry! What incredible ambience! Banish all thought of being elsewhere! THIS is where you BELONG!\n\nLet the managing COMMENCE! (Or you could always return to the [[Lobby]] ...)\n\nWhich of the following would you like to do?",
+      "links": [
+        {
+          "linkText": "Lobby",
+          "passageName": "Lobby",
+          "original": "[[Lobby]]"
+        }
+      ],
+      "hooks": [],
+      "cleanText": "So much comfy furniture! Such astounding lighting! What artistry! What incredible ambience! Banish all thought of being elsewhere! THIS is where you BELONG!\n\nLet the managing COMMENCE! (Or you could always return to the  ...)\n\nWhich of the following would you like to do?"
+    },
+    {
+      "name": "Delete Account",
+      "tags": "",
+      "id": "6",
+      "text": "Oh, no ... no, no, no, no, no ... not like this, not like this ...\n\nAnd you thought the \"Delete Character\" room was bad? This howling emptiness is an abattoir of the imagination, a gibbering denial of truth, beauty, and play.\n\nI beg of your kindness: let us rescue ourselves from this insanity's brink! \n\nWith all haste, to the [[Lobby]]!\n\nOr ... you could delete your account, finishing this teeter into the abyss ...",
+      "links": [
+        {
+          "linkText": "Lobby",
+          "passageName": "Lobby",
+          "original": "[[Lobby]]"
+        }
+      ],
+      "hooks": [],
+      "cleanText": "Oh, no ... no, no, no, no, no ... not like this, not like this ...\n\nAnd you thought the \"Delete Character\" room was bad? This howling emptiness is an abattoir of the imagination, a gibbering denial of truth, beauty, and play.\n\nI beg of your kindness: let us rescue ourselves from this insanity's brink! \n\nWith all haste, to the !\n\nOr ... you could delete your account, finishing this teeter into the abyss ..."
+    }
+  ]
+}
