@@ -129,35 +129,3 @@ This will use the published docker image with a game-data volume.
   1. Create a user.
 
   1. Have fun!
-
-
-## Current Status
-
-λMUD presents what's currently at least a minimally playable environment.
-It's possible to connect, create a password-protected user account, and log
-in to the game. Once there, you can communicate with other players, walk
-around between rooms, and handle items.
-
-Do note, however, that lmud isn't a game! It's meant to be used to _create_
-games :-D
-
-Current open ticket, by milestone: (includes both features and bugs):
-* https://github.com/lfex/lmud/milestones
-
-## Game Features
-
-  * Rooms have a title, and brief + long descriptions.
-    * The brief description is used when walking into / through a room,
-      and is intended to only show the most obvious features of the room.
-    * When using the "look" command, the long description will be shown
-      instead.
-  * Items can be picked up, dropped and looked at;
-    * "get sword", "drop sword"
-    * If an item is 'attached', it can't be picked up. Instead it belongs to
-      the room, and is used to add detail descriptions so that you can for
-      example do "look painting" and see a more in-depth description of that
-      part of the room.
-  * You can see who is logged on, talk to other players, and use emotes.
-    * "who", "tell <who> <what>", "say <something>", "emote <something>"
-  * Navigation is currently restricted to the basics;
-    * "go west", "west", etc..
