@@ -5,6 +5,7 @@
 (include-lib "apps/lmud/include/state.hrl")
 
 (defun version () 1)
+(defun file-extension () ".dat")
 
 ;; Thoughts:
 ;; * can we change these to maps for easier matching?
@@ -23,51 +24,73 @@
 (defun character()
   (character (make-state_character)))
 
-(defun character
-  (((match-state_character id i name n desc d room 'undefined objects '()))
-   `(#(version ,(version))
-     #(id ,i)
-     #(name ,n)
-     #(desc ,d)))
-  (((match-state_characterid i name n desc d level l type t subtype st species s room r objects os))
-   `(#(version ,(version))
-     #(id ,i)
-     #(name ,n)
-     #(desc ,d)
-     #(level ,l)
-     #(type ,t)
-     #(subtype ,st)
-     #(species ,s)
-     #(room ,(lmud_room:get_name r))
-     #(objects ,(lmud_object:get_templates os)))))
+(defun character (data)
+  (proplists:to_map (filestore-v2:character data)))
 
-(defun object
-  ()
+;; Character location is a lookup-node: you can always query a character's
+;; location by looking up the vertex with the vertex id formatting in the
+;; following manner:
+;;   #(<character id value> location)
+;;
+;; Maybe only out-neighbours type=room is sufficient?
+(defun character-location
+  (((= `#m(id ,id) label-data)) (when (is_map label-data))
+   #(error not-implemented))
+  ((id) (when (is_list id))
+   #(error not-implemented)))
+
+;; Character inventory: a custom node directed in towards the character (i.e.,
+;; "owned by") ... a query for in-neighbours on a character filtered by
+;; type=container?
+(defun character-inventory ()
+  #(error not-implemented))
+
+;; In addition to looking up a character, whenever a character moves to a new
+;; location, that an edge is created from the character to the node that
+;; represents the room they are in (after the edge for their previous location
+;; has been deleted).
+(defun room-contents ()
+  #(error not-implemented))
+
+(defun room-objects ()
+  #(error not-implemented))
+
+(defun room-residents ()
+  #(error not-implemented))
+
+(defun room-exits ()
+  #(error not-implemented))
+
+(defun object ()
   "")
 
 (defun room ()
   (room (make-state_room)))
 
-(defun room
-  (((match-state_room name n desc d exits es resets rs))
-   `(#(version ,(version))
-     #(id ,i)
-     #(name ,n)
-     #(desc ,d)
-     #(exits ,es)
-     #(objects ,(lmud_object:get_templates rs)))))
+(defun room (data)
+  (proplists:to_map (filestore-v2:room data)))
 
 (defun user ()
   (user (make-state_user)))
 
-(defun user
-  (((match-state_user name n email e password pw privileges ps member-since ms))
-   `(#(version ,(version))
-     #(name ,n)
-     #(email ,e)
-     #(password ,pw)
-     #(privileges ,ps)
-     #(member-since ,ms))))
+(defun user (data)
+  (proplists:to_map (filestore-v2:user data)))
+
+;; Given a user ID, finding all in-neighbours (belongs to) of type=character
+;; will return all the characters created by/associated with a given user
+;; account.
+(defun user-characters ()
+  #(error not-implemented))
+
+;; All the characters that exist on a given game can be found by querying
+;; in-neighbours (belongs to) of a game (found with the game ID).
+(defun game-users ()
+  #(error not-implemented))
+
+;; All installed games can be found by querying the top-most games node for
+;; in-neighbours (belongs to) with type=games and status=active.
+(defun games ()
+  #(error not-implemented))
 
 ;; -------------------
 ;; Import / Export API

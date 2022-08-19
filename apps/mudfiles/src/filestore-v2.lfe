@@ -24,7 +24,7 @@
      #(id ,i)
      #(name ,n)
      #(desc ,d)))
-  (((match-state_characterid i name n desc d level l type t subtype st species s room r objects os))
+  (((match-state_character id i name n desc d level l type t subtype st species s room r objects os))
    `(#(version ,(version))
      #(id ,i)
      #(name ,n)
@@ -44,7 +44,7 @@
   (room (make-state_room)))
 
 (defun room
-  (((match-state_room name n desc d exits es resets rs))
+  (((match-state_room id i name n desc d exits es resets rs))
    `(#(version ,(version))
      #(id ,i)
      #(name ,n)

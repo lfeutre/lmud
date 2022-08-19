@@ -17,6 +17,7 @@
                   lutil,
                   logjam,
                   mudfiles,
+                  mudgraph,
                   mudmagic,
                   mudnet,
                   mudshell,
