@@ -105,9 +105,36 @@
           table-name
           (++ row-name (file-extension)))))
   ((table-name row-name)
+   (file (lmud-config:default-game) table-name row-name)))
+
+(defun file (game-name table-name row-name)
+  (filename:join
+    (list (lmud-files:data-dir)
+          (lmud-config:games-dir)
+          game-name
+          table-name
+          (++ row-name (file-extension)))))
+
+(defun row-names
+  (((= "users" table-name))
+   (dat-files (filename:join (lmud-files:data-dir) table-name)))
+  ((table-name)
+   (row-names (lmud-config:default-game) table-name)))
+
+(defun row-names (game-name table-name)
+  (dat-files
    (filename:join
     (list (lmud-files:data-dir)
           (lmud-config:games-dir)
-          (lmud-config:default-game)
-          table-name
-          (++ row-name (file-extension))))))
+          game-name
+          table-name))))
+
+(defun dat-files (file-path)
+  (let ((`#(ok ,files) (file:list_dir file-path))
+        (`#(ok ,regex) (re:compile (io_lib:format "(\~s$)" (list (file-extension))))))
+    (lists:filtermap
+     (lambda (x)
+       (case (re:split x regex '(#(return list)))
+         (`(,table-name ,_ext ()) `#(true ,table-name))
+         (_ 'false)))
+     files)))
