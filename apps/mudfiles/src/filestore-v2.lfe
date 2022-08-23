@@ -98,6 +98,26 @@
 
 ;; v2 utility functions
 
+;; TODO: move this to the appropriate module ... games is too general for this module.
+(defun games ()
+  (let ((`#(ok ,files) (file:list_dir
+                        (filename:join
+                         (list (lmud-files:data-dir)
+                               (lmud-config:games-dir))))))
+    files))
+
+;; TODO: move this to the appropriate module ... table-names are probably too general for this module.
+(defun table-names ()
+  (table-names (lmud-config:default-game)))
+
+(defun table-names (game-name)
+  (let ((`#(ok ,dirs) (file:list_dir
+                       (filename:join
+                        (list (lmud-files:data-dir)
+                              (lmud-config:games-dir)
+                              game-name)))))
+    (lists:append (list "users") dirs)))
+
 (defun file
   (((= "users" table-name) row-name)
    (filename:join
