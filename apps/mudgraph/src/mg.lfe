@@ -14,6 +14,22 @@
   (((= `#m(id ,id) data))
    (gen_server:call (SERVER) `#(add-vertex ,id ,data))))
 
+(defun find-vertex (key value)
+  (list:filtermap
+   (lambda (x)
+     (case (andalso (maps:is_key key x) (== (mref x key) value))
+       ('true `#(true ,x))
+       (_ 'false)))
+   (vertices)))
+
+(defun find-edges (key value)
+  (list:filtermap
+   (lambda (x)
+     (case (andalso (maps:is_key key x) (== (mref x key) value))
+       ('true `#(true ,x))
+       (_ 'false)))
+   (edges)))
+
 (defun graph ()
   (gen_server:call (SERVER) `#(graph)))
 
