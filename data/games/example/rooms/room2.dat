@@ -6,5 +6,5 @@
        "of the walls and floor seem almost slick, more like a dank "
        "cellar than anything else."}.
 {exits, [{"north", "room3"},
-         {"west",  "room1"}]}.
+         {"west",  "test1"}]}.
 
