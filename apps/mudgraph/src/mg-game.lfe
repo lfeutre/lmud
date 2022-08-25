@@ -13,3 +13,15 @@
         ('true `#(true ,(mg:vertex to)))
         (_ 'false))))
    (mg:out-edges room)))
+
+(defun inventory (character)
+  'tbd)
+
+(defun objects (room)
+  'tbd)
+
+(defun characters (user game)
+  'tbd)
+
+(defun games ()
+  'tbd)
