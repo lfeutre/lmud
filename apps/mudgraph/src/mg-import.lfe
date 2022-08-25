@@ -61,20 +61,21 @@
    (let* ((dest (mg:find-vertex 'name dest-name))
           (return-dir (return-direction origin dest)))
       (mg:add-edge origin dest `#m(direction ,dir
-                                   type transit
-                                   subtype door
-                                   size standard))
+                                   type "transit"
+                                   subtype "door"
+                                   size "standard"))
       (mg:add-edge dest origin `#m(direction ,return-dir
-                                   type transit
-                                   subtype door
-                                   size standard)))))
+                                   type "transit"
+                                   subtype "door"
+                                   size "standard")))))
 
 (defun return-direction
   ((`#m(name ,origin-name) `#m(exits ,return-exits))
+   (lists:flatten
     (lists:filtermap
      (match-lambda
        ((`#(,return-dir ,return-name)) (when (== origin-name return-name))
         `#(true ,return-dir))
        ((_)
         'false))
-     return-exits)))
+     return-exits))))

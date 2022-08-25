@@ -60,14 +60,10 @@
    `#(reply ,(in-edges graph vertex-id) ,graph))
   ((`#(in-neighbours ,vertex-id) _from graph)
    `#(reply ,(in-neighbours graph vertex-id) ,graph))
-  ((`#(in-neighbours ,vertex-id ,type) _from graph)
-   `#(reply ,(in-neighbours graph vertex-id type) ,graph))
   ((`#(out-edges ,vertex-id) _from graph)
    `#(reply ,(out-edges graph vertex-id) ,graph))
   ((`#(out-neighbours ,vertex-id) _from graph)
    `#(reply ,(out-neighbours graph vertex-id) ,graph))
-  ((`#(out-neighbours ,vertex-id ,type) _from graph)
-   `#(reply ,(out-neighbours graph vertex-id type) ,graph))
   ((`#(graph) _from graph)
    `#(reply ,graph ,graph))
   ((`#(edge ,id) _from graph)
@@ -118,39 +114,28 @@
 (defun in-edges (graph vertex-id)
   (list-comp
     ((<- e (digraph:in_edges graph vertex-id)))
-    (digraph:edge graph e)))
+    (edge->map (digraph:edge graph e))))
 
 (defun out-edges (graph vertex-id)
   (list-comp
     ((<- e (digraph:out_edges graph vertex-id)))
-    (digraph:edge graph e)))
+    (edge->map (digraph:edge graph e))))
 
 (defun in-neighbours (graph vertex-id)
   (list-comp
-    ((<- `#(,_ ,id ,_ ,_) (in-edges graph vertex-id)))
-    (let ((`#(,_ ,data) (digraph:vertex graph id)))
+    ((<- `#m(from ,from) (in-edges graph vertex-id)))
+    (let ((`#(,_ ,data) (digraph:vertex graph from)))
       data)))
-
-;; TODO: need a better, more general solution for filtering ... support arbitrary map keys
-(defun in-neighbours (graph vertex-id sought)
-  (lists:filtermap (match-lambda
-                    (((= `#(,_ ,id ,_ #m(type ,type)) e))
-                     (case (== type sought)
-                       ('true `#(true ,(digraph:vertex graph id)))
-                       (x x))))
-                     (in-edges graph vertex-id)))
 
 (defun out-neighbours (graph vertex-id)
   (list-comp
-    ((<- `#(,_ ,_ ,id ,_) (out-edges graph vertex-id)))
-    (let ((`#(,_ ,data) (digraph:vertex graph id)))
+    ((<- `#m(to ,to) (out-edges graph vertex-id)))
+    (let ((`#(,_ ,data) (digraph:vertex graph to)))
       data)))
 
-;; TODO: need a better, more general solution for filtering ... support arbitrary map keys
-(defun out-neighbours (graph vertex-id sought)
-  (lists:filtermap (match-lambda
-                    (((= `#(,_ ,_ ,id #m(type ,type)) e))
-                     (case (== type sought)
-                       ('true `#(true ,(digraph:vertex graph id)))
-                       (x x))))
-                     (out-edges graph vertex-id)))
+(defun edge->map
+  ((`#(,id ,from ,to ,label))
+   `#m(id ,id
+       from ,from
+       to ,to
+       label ,label)))
