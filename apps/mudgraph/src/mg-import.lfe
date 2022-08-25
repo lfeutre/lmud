@@ -39,7 +39,7 @@
   (((= `#m(type ,type) m))
    (case type
      ('room (list (exits m) (room-items m)))
-     ('character (inventory m))
+     ('character (list (inventory m) (location m)))
      (x `#(unsupported-edge-type ,x)))))
 
 (defun exits (room-map)
@@ -55,6 +55,11 @@
   (let ((objects (lists:map (lambda (x) (mg:find-vertex 'name x))
                             (maps:get 'objects char-map '()))))
     'tbd))
+
+(defun location (char-map)
+  ;; For looking up a user's location ...
+  ;; For finding all the users in a location ...
+  'tbd)
 
 (defun exit->edges
   ((origin `#(,dir ,dest-name))
