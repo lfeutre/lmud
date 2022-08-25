@@ -33,24 +33,26 @@
      ('room (room m))
      ('object (object m))
      ('character (character m))
-     ('user (user m)))))
+     ('user (user m))
+     (x `#(error unsupported-type ,x)))))
 
 (defun edges-from-map
   (((= `#m(type ,type) m))
    (case type
      ('room (list (exits m) (room-items m)))
-     ('character (inventory m)))))
+     ('character (inventory m))
+     (x `#(error unsupported-type ,x)))))
 
 (defun room (room-map)
   (let ((room-keys '(id name title brief desc type version)))
     (mg:add-vertex (maps:with room-keys room-map))))
 
 (defun exits (room-map)
-  (let* ((exits (lists:map #'exit->map/1 (mref room-map 'exits))))
+  (let* ((exits (lists:map #'exit->map/1 (maps:get 'exits room-map '()))))
     'tbd))
 
 (defun room-items (room-map)
-  (let ((objects (mref room-map 'objects)))
+  (let ((objects (maps:get 'objects room-map '())))
     'tbd))
 
 (defun object (object-map)
@@ -61,7 +63,7 @@
 
 (defun inventory (char-map)
   (let ((objects (lists:map (lambda (x) (mg:find-vertex 'name x))
-                            (mref char-map 'objects))))
+                            (maps:get 'objects char-map '()))))
     'tbd))
 
 (defun user (user-map)

@@ -15,7 +15,7 @@
    (gen_server:call (SERVER) `#(add-vertex ,id ,data))))
 
 (defun find-vertex (key value)
-  (list:filtermap
+  (lists:filtermap
    (lambda (x)
      (case (andalso (maps:is_key key x) (== (mref x key) value))
        ('true `#(true ,x))
@@ -63,8 +63,11 @@
 (defun edge (id)
   (gen_server:call (SERVER) `#(edge ,id)))
 
-(defun vertices ()
+(defun vertex-ids ()
   (gen_server:call (SERVER) `#(vertices)))
+
+(defun vertices ()
+  (lists:map #'vertex/1 (vertex-ids)))
 
 (defun vertex (id)
   (gen_server:call (SERVER) `#(vertex ,id)))
