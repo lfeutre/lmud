@@ -56,10 +56,10 @@
     'tbd))
 
 (defun object (object-map)
-  'tbd)
+  (mg:add-vertex object-map))
 
 (defun character (char-map)
-  'tbd)
+  (mg:add-vertex char-map))
 
 (defun inventory (char-map)
   (let ((objects (lists:map (lambda (x) (mg:find-vertex 'name x))
@@ -67,7 +67,7 @@
     'tbd))
 
 (defun user (user-map)
-  'tbd)
+  (mg:add-vertex user-map))
 
 (defun exit->map
   ((`#(,dir ,room-name))
