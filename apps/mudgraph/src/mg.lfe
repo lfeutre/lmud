@@ -14,7 +14,7 @@
   (((= `#m(id ,id) data))
    (gen_server:call (SERVER) `#(add-vertex ,id ,data))))
 
-(defun find-vertex (key value)
+(defun find-vertices (key value)
   (lists:filtermap
    (lambda (x)
      (case (andalso (maps:is_key key x) (== (mref x key) value))
@@ -22,13 +22,19 @@
        (_ 'false)))
    (vertices)))
 
+(defun find-vertex (key value)
+  (car (find-vertices key value)))
+
 (defun find-edges (key value)
-  (list:filtermap
+  (lists:filtermap
    (lambda (x)
      (case (andalso (maps:is_key key x) (== (mref x key) value))
        ('true `#(true ,x))
        (_ 'false)))
    (edges)))
+
+(defun find-edge (key value)
+  (car (find-edges key value)))
 
 (defun graph ()
   (gen_server:call (SERVER) `#(graph)))
@@ -57,11 +63,14 @@
   ((`#m(id ,vertex-id) type)
    (gen_server:call (SERVER) `#(out-neighbours ,vertex-id ,type))))
 
-(defun edges ()
+(defun edge-ids ()
   (gen_server:call (SERVER) `#(edges)))
 
 (defun edge (id)
   (gen_server:call (SERVER) `#(edge ,id)))
+
+(defun edges ()
+  (lists:map #'edge/1 (edge-ids)))
 
 (defun vertex-ids ()
   (gen_server:call (SERVER) `#(vertices)))

@@ -24,52 +24,57 @@
   (from-maps (from-fs)))
 
 (defun from-maps (list-of-maps)
-  (lists:map #'vertices-from-map/1 list-of-maps)
-  (lists:map #'edges-from-map/1 list-of-maps))
+  (list
+   (lists:map #'vertices-from-map/1 list-of-maps)
+   (lists:map #'edges-from-map/1 list-of-maps)))
 
 (defun vertices-from-map
   (((= `#m(type ,type) m))
-   (case type
-     ('room (room m))
-     ('object (object m))
-     ('character (character m))
-     ('user (user m))
-     (x `#(error unsupported-type ,x)))))
+   (let ((supported '(room object character user)))
+     (case (lists:member type supported)
+       ('true (mg:add-vertex m))
+       (x `#(unsupported-vertex-type ,x))))))
 
 (defun edges-from-map
   (((= `#m(type ,type) m))
    (case type
      ('room (list (exits m) (room-items m)))
      ('character (inventory m))
-     (x `#(error unsupported-type ,x)))))
-
-(defun room (room-map)
-  (let ((room-keys '(id name title brief desc type version)))
-    (mg:add-vertex (maps:with room-keys room-map))))
+     (x `#(unsupported-edge-type ,x)))))
 
 (defun exits (room-map)
-  (let* ((exits (lists:map #'exit->map/1 (maps:get 'exits room-map '()))))
-    'tbd))
+  (lists:map
+   (lambda (x) (exit->edges room-map x))
+   (maps:get 'exits room-map '())))
 
 (defun room-items (room-map)
   (let ((objects (maps:get 'objects room-map '())))
     'tbd))
-
-(defun object (object-map)
-  (mg:add-vertex object-map))
-
-(defun character (char-map)
-  (mg:add-vertex char-map))
 
 (defun inventory (char-map)
   (let ((objects (lists:map (lambda (x) (mg:find-vertex 'name x))
                             (maps:get 'objects char-map '()))))
     'tbd))
 
-(defun user (user-map)
-  (mg:add-vertex user-map))
+(defun exit->edges
+  ((origin `#(,dir ,dest-name))
+   (let* ((dest (mg:find-vertex 'name dest-name))
+          (return-dir (return-direction origin dest)))
+      (mg:add-edge origin dest `#m(direction ,dir
+                                   type transit
+                                   subtype door
+                                   size standard))
+      (mg:add-edge dest origin `#m(direction ,return-dir
+                                   type transit
+                                   subtype door
+                                   size standard)))))
 
-(defun exit->map
-  ((`#(,dir ,room-name))
-   `#m(destination ,room-name
-                   direction ,dir)))
+(defun return-direction
+  ((`#m(name ,origin-name) `#m(exits ,return-exits))
+    (lists:filtermap
+     (match-lambda
+       ((`#(,return-dir ,return-name)) (when (== origin-name return-name))
+        `#(true ,return-dir))
+       ((_)
+        'false))
+     return-exits)))
