@@ -47,9 +47,19 @@
    (lambda (x) (exit->edges room-map x))
    (maps:get 'exits room-map '())))
 
-(defun room-items (room-map)
-  (let ((objects (maps:get 'objects room-map '())))
-    'tbd))
+(defun room-items
+  ((`#m(objects ()))
+   '())
+  (((= `#m(objects ,obj-names) room-map))
+   (let ((obj-maps (lists:map (lambda (x)
+                                (mg:find-vertex 'name x))
+                              obj-names)))
+     (lists:map
+      (lambda (x)
+        (mg:add-edge room-map x `#m(type object)))
+      obj-maps)))
+  ((_)
+   '()))
 
 (defun inventory
   ((`#m(objects ()))

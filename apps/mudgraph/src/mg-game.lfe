@@ -35,3 +35,7 @@
 
 (defun games ()
   'tbd)
+
+(defun contents
+  (((= `#m(type room) room-map))
+   (mg:out-neighbours room-map 'type 'object)))
