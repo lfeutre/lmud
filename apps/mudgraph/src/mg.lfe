@@ -51,9 +51,14 @@
   ((`#m(id ,vertex-id))
    (gen_server:call (SERVER) `#(in-neighbours ,vertex-id))))
 
-(defun in-neighbours
-  ((`#m(id ,vertex-id) type)
-   (gen_server:call (SERVER) `#(in-neighbours ,vertex-id ,type))))
+(defun in-neighbours (vertex key value)
+  (lists:filtermap
+   (match-lambda
+     (((= `#m(label ,label from ,from) x))
+      (case (andalso (maps:is_key key label) (== value (mref label key)))
+        ('true `#(true ,(mg:vertex from)))
+        (_ 'false))))
+   (mg:in-edges vertex)))
 
 (defun out-edges
   ((`#m(id ,vertex-id))
@@ -63,9 +68,14 @@
   ((`#m(id ,vertex-id))
    (gen_server:call (SERVER) `#(out-neighbours ,vertex-id))))
 
-(defun out-neighbours
-  ((`#m(id ,vertex-id) type)
-   (gen_server:call (SERVER) `#(out-neighbours ,vertex-id ,type))))
+(defun out-neighbours (vertex key value)
+  (lists:filtermap
+   (match-lambda
+     (((= `#m(label ,label to ,to) x))
+      (case (andalso (maps:is_key key label) (== value (mref label key)))
+        ('true `#(true ,(mg:vertex to)))
+        (_ 'false))))
+   (mg:out-edges vertex)))
 
 (defun edge-ids ()
   (gen_server:call (SERVER) `#(edges)))

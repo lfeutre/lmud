@@ -116,7 +116,7 @@
                         (list (lmud-files:data-dir)
                               (lmud-config:games-dir)
                               game-name)))))
-    (lists:append (list "users") dirs)))
+    (lists:append '("users") dirs)))
 
 (defun file
   (((= "users" table-name) row-name)

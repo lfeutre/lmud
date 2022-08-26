@@ -5,20 +5,30 @@
 ;;;   HIGH LEVEL API   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun exits (room)
-  (lists:filtermap
-   (match-lambda
-     (((= `#m(label ,label to ,to) x))
-      (case (andalso (maps:is_key 'type label) (== "transit" (mref label 'type)))
-        ('true `#(true ,(mg:vertex to)))
-        (_ 'false))))
-   (mg:out-edges room)))
+(defun exits (room-map)
+  (mg:out-neighbours room-map 'type 'transit))
 
-(defun inventory (character)
-  'tbd)
+(defun inventory
+  (((= `#m(type character) char-map))
+   (mg:out-neighbours char-map 'type 'inventory)))
 
-(defun objects (room)
-  'tbd)
+(defun objects
+  (((= `#m(type room) room-map))
+   'tbd)
+  (((= `#m(type character) char-map))
+   (inventory char-map)))
+
+(defun characters
+  (((= `#m(type room) room-map))
+   ;; All characters linked to a given room
+   (mg:out-neighbours room-map 'type 'location))
+  (((= `#m(type user) user-map))
+   ;; All characters created by a user (across all games)
+   'tbd))
+
+(defun location
+  (((= `#m(type character) char-map))
+   (mg:in-neighbours char-map 'type 'location)))
 
 (defun characters (user game)
   'tbd)

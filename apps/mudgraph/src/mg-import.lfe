@@ -51,28 +51,37 @@
   (let ((objects (maps:get 'objects room-map '())))
     'tbd))
 
-(defun inventory (char-map)
-  (let ((objects (lists:map (lambda (x) (mg:find-vertex 'name x))
-                            (maps:get 'objects char-map '()))))
-    'tbd))
+(defun inventory
+  ((`#m(objects ()))
+   '())
+  ((char-map)
+   (let ((obj-maps (lists:map (lambda (x)
+                                (mg:find-vertex 'name x))
+                              (maps:get 'objects char-map '()))))
+     (lists:map
+      (lambda (x)
+        (mg:add-edge char-map x `#m(type inventory)))
+      obj-maps))))
 
-(defun location (char-map)
-  ;; For looking up a user's location ...
-  ;; For finding all the users in a location ...
-  'tbd)
+(defun location
+  (((= `#m(room ,room-name) char-map))
+   (let ((room-map (mg:find-vertex 'name room-name)))
+     (mg:add-edge room-map char-map #m(type location))))
+  ((`#m(name ,character))
+   `#(no-location-info ,character)))
 
 (defun exit->edges
   ((origin `#(,dir ,dest-name))
    (let* ((dest (mg:find-vertex 'name dest-name))
           (return-dir (return-direction origin dest)))
       (mg:add-edge origin dest `#m(direction ,dir
-                                   type "transit"
-                                   subtype "door"
-                                   size "standard"))
+                                   type transit
+                                   subtype door
+                                   size standard))
       (mg:add-edge dest origin `#m(direction ,return-dir
-                                   type "transit"
-                                   subtype "door"
-                                   size "standard")))))
+                                   type transit
+                                   subtype door
+                                   size standard)))))
 
 (defun return-direction
   ((`#m(name ,origin-name) `#m(exits ,return-exits))
