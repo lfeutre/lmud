@@ -3,7 +3,7 @@
 
 (defun from-fs ()
   (lists:flatten
-   (lists:map #'from-fs/1 (filestore-v2:table-names))))
+   (lists:map #'from-fs/1 (mudstore:table-names))))
 
 (defun from-fs (table-name)
   (lists:map (lambda (x)

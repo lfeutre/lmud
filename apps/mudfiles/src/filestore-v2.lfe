@@ -56,8 +56,9 @@
   (user (make-state_user)))
 
 (defun user
-  (((match-state_user name n email e password pw privileges ps member-since ms))
+  (((match-state_user id i name n email e password pw privileges ps member-since ms))
    `(#(version ,(version))
+     #(id ,i)
      #(name ,n)
      #(email ,e)
      #(password ,pw)
@@ -78,15 +79,18 @@
     (log-debug "dumping file: ~s" (list filename))
     (file:write_file filename data)))
 
-(defun serialise
+(defun record->proplist
   ((record) (when (is_record record 'state_character))
-   (serialise (character record)))
+   (character record))
   ((record) (when (is_record record 'state_room))
-   (serialise (room record)))
+   (room record))
   ((record) (when (is_record record 'state_user))
-   (serialise (user record)))
+   (user record))
   ((data)
-   (serialise data '())))
+   data))
+
+(defun serialise (record)
+  (serialise (record->proplist record) '()))
 
 (defun serialise
   (('() acc)
@@ -97,26 +101,6 @@
    (serialise tail (lists:append acc (list (serialise head 'ignore))))))
 
 ;; v2 utility functions
-
-;; TODO: move this to the appropriate module ... games is too general for this module.
-(defun games ()
-  (let ((`#(ok ,files) (file:list_dir
-                        (filename:join
-                         (list (lmud-files:data-dir)
-                               (lmud-config:games-dir))))))
-    files))
-
-;; TODO: move this to the appropriate module ... table-names are probably too general for this module.
-(defun table-names ()
-  (table-names (lmud-config:default-game)))
-
-(defun table-names (game-name)
-  (let ((`#(ok ,dirs) (file:list_dir
-                       (filename:join
-                        (list (lmud-files:data-dir)
-                              (lmud-config:games-dir)
-                              game-name)))))
-    (lists:append '("users") dirs)))
 
 (defun file
   (((= "users" table-name) row-name)

@@ -73,11 +73,11 @@ login({new_user_pw, Name}, Password, #req{conn=Conn}=Req) ->
 %% Confirm the password
 login({new_user_pw_confirm, Name, Password}, Password, #req{conn=Conn}=Req) ->
   mn_conn:echo_on(Conn),
-  UserData = mudstore:serialise(#state_user{name=Name, password='lmud-crypto':hash(Password)}),
+  UserData = mudstore:serialise(#state_user{id=lmud:id(), name=Name, password='lmud-crypto':hash(Password)}),
   mudstore:dump("users", Name, UserData),
   CharDesc = lists:flatten(io_lib:format("~s looks fairly ordinary; maybe they should update their description?", [Name])),
-  CharData = mudstore:serialise(#state_character{name=Name, desc=CharDesc}),
-  mudstore:dump("characters", Name, CharData),
+  CharData = mudstore:serialise(#state_character{id=lmud:id(), name=Name, desc=CharDesc}),
+  mudstore:dump("character", Name, CharData),
   mn_conn:print(Conn, ["\nWelcome, ", Name, "!\n\n"]),
   do_login(Name, Req);
 login({new_user_pw_confirm, Name, _Password}, _WrongPassword, #req{conn=Conn}=Req) ->

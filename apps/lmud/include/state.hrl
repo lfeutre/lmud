@@ -1,8 +1,8 @@
 %% Game state
 
 -record(state_character, {
-         name="noname" :: lmud_character:name_type(),
          id=lmud:id() :: string(),
+         name :: lmud_character:name_type(),
          desc="" :: string(),
          level :: integer(),
          type=undefined :: atom(),
@@ -15,6 +15,7 @@
       }).
 
 -record(state_game, {
+         id=lmud:id() :: string(),
          users=[] :: lmud_game:users(),
          characters=[] :: pid()
       }).
@@ -40,6 +41,7 @@
       }).
 
 -record(state_user, {
+         id=lmud:id() :: string(),
          name,
          email,
          password="" :: string(),
