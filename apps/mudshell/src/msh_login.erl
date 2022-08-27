@@ -77,7 +77,7 @@ login({new_user_pw_confirm, Name, Password}, Password, #req{conn=Conn}=Req) ->
   mudstore:dump("users", Name, UserData),
   CharDesc = lists:flatten(io_lib:format("~s looks fairly ordinary; maybe they should update their description?", [Name])),
   CharData = mudstore:serialise(#state_character{id=lmud:id(), name=Name, desc=CharDesc}),
-  mudstore:dump("character", Name, CharData),
+  mudstore:dump("characters", Name, CharData),
   mn_conn:print(Conn, ["\nWelcome, ", Name, "!\n\n"]),
   do_login(Name, Req);
 login({new_user_pw_confirm, Name, _Password}, _WrongPassword, #req{conn=Conn}=Req) ->
