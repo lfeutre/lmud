@@ -7,9 +7,9 @@
 (defun file-extension () ".dat")
 (defun version () 2)
 
-;;; -------------
-;;; Datamodel API
-;;; -------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;   Datamodel API   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; These functions determine how game data gets transformed (e.g., to property
 ;;; lists), suitable for output to files. The intent is that, when serialised,
@@ -65,17 +65,27 @@
      #(privileges ,ps)
      #(member-since ,ms))))
 
-;; -------------------
-;; Import / Export API
-;; -------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;   Import / Export API   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun load (table-name row-name)
-  (let ((filename (file table-name row-name)))
+  (let ((filename (data-file table-name row-name)))
+    (log-debug "loading file: ~s" (list filename))
+    (file:consult filename)))
+
+(defun load (game-name table-name row-name)
+  (let ((filename (games-file game-name table-name row-name)))
     (log-debug "loading file: ~s" (list filename))
     (file:consult filename)))
 
 (defun dump (table-name row-name data)
-  (let ((filename (file table-name row-name)))
+  (let ((filename (data-file table-name row-name)))
+    (log-debug "dumping file: ~s" (list filename))
+    (file:write_file filename data)))
+
+(defun dump (game-name table-name row-name data)
+  (let ((filename (games-file game-name table-name row-name)))
     (log-debug "dumping file: ~s" (list filename))
     (file:write_file filename data)))
 
@@ -102,16 +112,14 @@
 
 ;; v2 utility functions
 
-(defun file
+(defun data-file
   (((= "users" table-name) row-name)
    (filename:join
     (list (lmud-files:data-dir)
           table-name
-          (++ row-name (file-extension)))))
-  ((table-name row-name)
-   (file (lmud-config:default-game) table-name row-name)))
+          (++ row-name (file-extension))))))
 
-(defun file (game-name table-name row-name)
+(defun games-file (game-name table-name row-name)
   (filename:join
     (list (lmud-files:data-dir)
           (lmud-config:games-dir)
@@ -119,13 +127,11 @@
           table-name
           (++ row-name (file-extension)))))
 
-(defun row-names
+(defun data-row-names
   (((= "users" table-name))
-   (dat-files (filename:join (lmud-files:data-dir) table-name)))
-  ((table-name)
-   (row-names (lmud-config:default-game) table-name)))
+   (dat-files (filename:join (lmud-files:data-dir) table-name))))
 
-(defun row-names (game-name table-name)
+(defun game-row-names (game-name table-name)
   (dat-files
    (filename:join
     (list (lmud-files:data-dir)

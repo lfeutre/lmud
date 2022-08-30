@@ -5,6 +5,14 @@
 ;;;   HIGH LEVEL API   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun games ()
+  (let ((server-map (mg:find-vertex 'name "server")))
+    (mg:out-neighbours server-map 'type 'world)))
+
+(defun users ()
+  (let ((server-map (mg:find-vertex 'name "server")))
+    (mg:out-neighbours server-map 'type 'account)))
+
 (defun exits (room-map)
   (mg:out-neighbours room-map 'type 'transit))
 
@@ -31,9 +39,6 @@
    (mg:in-neighbours char-map 'type 'location)))
 
 (defun characters (user game)
-  'tbd)
-
-(defun games ()
   'tbd)
 
 (defun contents
